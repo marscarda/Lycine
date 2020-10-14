@@ -1,12 +1,13 @@
-package lycine;
+package lycine.newpackage;
 //***************************************************************************
-public class VarRespAlpha {
+public class Orion {
     //***********************************************************************
-    protected VarRespAlpha () {}
+    protected Orion () {}
     //=======================================================================
     int itemtype = 0;
     long itemid = 0;
     String label = null;
+    int value = 0;
     //***********************************************************************
     public int itemType () { return itemtype; }
     public long itemID () { return itemid; }
