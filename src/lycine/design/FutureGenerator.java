@@ -13,21 +13,24 @@ public class FutureGenerator {
     //***********************************************************************
     public FutureSample getSample (long sampleid) throws AppException, Exception {
         FutureSample sample = new FutureSample();
+        //===================================================================
         SampleRecord samplerec = samplelambda.getSample(sampleid);
-        ResponseObject[] respobjs = resplamda.getResponseObjects(sampleid, true);
-        
-        
-        
-        
-
-
-
-        
-        
-        
-        return null;
-
-
+        sample.setSampleRecord(samplerec);
+        //===================================================================
+        ResponseObject[] resprecords = resplamda.getResponseObjects(sampleid, true);
+        ResponseSubject response;
+        for (ResponseObject resprec : resprecords) {
+            response = new ResponseSubject();
+            response.setResponseRecord(resprec);
+            
+            
+            
+            
+            sample.addResponse(response);
+        }
+        //===================================================================
+        return sample;
+        //===================================================================
     }
     //***********************************************************************
 }
