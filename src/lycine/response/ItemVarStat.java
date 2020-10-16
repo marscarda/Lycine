@@ -1,6 +1,6 @@
-package lycine.design;
+package lycine.response;
 //***************************************************************************
-public class VariableMix {
+public class ItemVarStat {
     //************************************************************
     int vartype = 0;
     long itemid = 0;

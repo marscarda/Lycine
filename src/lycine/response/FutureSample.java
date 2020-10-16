@@ -1,4 +1,4 @@
-package lycine.design;
+package lycine.response;
 //***************************************************************************
 import tryptophan.survey.sampling.SampleRecord;
 //***************************************************************************
@@ -10,6 +10,10 @@ public class FutureSample {
     int respcount = 0;
     //************************************************************
     void setSampleRecord(SampleRecord srec) { samplerecord = srec; }
+    public SampleRecord getSampleRecord () {
+        if (samplerecord == null) return new SampleRecord();
+        return samplerecord;
+    }
     //************************************************************
     void addResponse (ResponseSubject response) {
         ResponseSubject[] newarr = new ResponseSubject[respcount + 1];

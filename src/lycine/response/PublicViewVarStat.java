@@ -1,6 +1,6 @@
-package lycine.design;
+package lycine.response;
 //***************************************************************************
-public class PublicViewVarMix extends VariableMix {
+public class PublicViewVarStat extends ItemVarStat {
     //**************************************************
     int positives = 0;
     int negatives = 0;
@@ -16,6 +16,7 @@ public class PublicViewVarMix extends VariableMix {
         }
     }
     //**************************************************
+    
     
     
     //==================================================
