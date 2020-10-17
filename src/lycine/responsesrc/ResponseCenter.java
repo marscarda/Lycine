@@ -1,4 +1,4 @@
-package lycine.response;
+package lycine.responsesrc;
 //***************************************************************************
 import methionine.AppException;
 import tryptophan.survey.responses.ResponseLambda;

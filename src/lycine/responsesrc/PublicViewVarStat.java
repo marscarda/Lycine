@@ -1,4 +1,4 @@
-package lycine.response;
+package lycine.responsesrc;
 //***************************************************************************
 public class PublicViewVarStat extends ItemVarStat {
     //**************************************************
