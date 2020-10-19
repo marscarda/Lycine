@@ -1,9 +1,9 @@
 package lycine.epsilon;
 //***************************************************************************
-import tryptophan.survey.responses.ResponseRow;
+import tryptophan.survey.responses.ReactionDB;
 import methionine.AppException;
 import tryptophan.survey.responses.ResponseLambda;
-import tryptophan.survey.responses.ResponseObject;
+import tryptophan.survey.responses.ResponseDB;
 import tryptophan.survey.baseform.BaseForm;
 import tryptophan.survey.baseform.VarClusterLambda;
 import tryptophan.survey.sampling.SampleRecord;
@@ -33,9 +33,9 @@ public class FieldCollector {
         if (fieldcast.userID() != sample.getUserId())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         //-------------------------------------------------------------------
-        ResponseRow[] rows = fieldcast.getSingleOptionsRows();
+        ReactionDB[] rows = fieldcast.getSingleOptionsRows();
         //-------------------------------------------------------------------
-        ResponseObject response = new ResponseObject();
+        ResponseDB response = new ResponseDB();
         response.setTakeFormID(survey.getID());
         response.setSampleID(sample.getSampleId());
         response.setUserID(fieldcast.userid);
