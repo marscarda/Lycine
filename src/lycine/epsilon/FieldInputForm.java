@@ -1,6 +1,6 @@
 package lycine.epsilon;
 //***************************************************************************
-import tryptophan.survey.BaseToBeNamed;
+import tryptophan.survey.ActionItemBase;
 //***************************************************************************
 public class FieldInputForm {
     //***********************************************************************
@@ -11,7 +11,7 @@ public class FieldInputForm {
     String brief = null;
     VarItem[] items = null;
     //***********************************************************************
-    public void addItem (int type, long id, BaseToBeNamed item) {
+    public void addItem (int type, long id, ActionItemBase item) {
         //-------------------------------------------------------------------
         VarItem newitem = new VarItem();
         newitem.itemtype = type;

@@ -3,7 +3,7 @@ package lycine.epsilon;
 import java.util.ArrayList;
 import java.util.List;
 import methionine.AppException;
-import tryptophan.survey.responses.ReactionDB;
+import tryptophan.survey.reaction.ReactionItem;
 //***************************************************************************
 public class FieldCast {
     //==========================================================
@@ -23,22 +23,22 @@ public class FieldCast {
      * @return
      * @throws AppException INVALIDDATASUBMITED
      */
-    public ReactionDB[] getSingleOptionsRows () throws AppException {
+    public ReactionItem[] getSingleOptionsRows () throws AppException {
         //======================================================
         if (responsestable == null)
             throw new AppException("Invalid data submited", AppException.INVALIDDATASUBMITED);
         //======================================================
         String[] trows = responsestable.split("\\r?\\n");
         String[] cols;
-        List<ReactionDB> rows = new ArrayList<>();
-        ReactionDB row;
+        List<ReactionItem> rows = new ArrayList<>();
+        ReactionItem row;
         for (String trow : trows) {
             cols = trow.split(",");
             //--------------------------------------------------
             if (cols.length < 3) 
                 throw new AppException("Invalid data submited", AppException.INVALIDDATASUBMITED);
             //--------------------------------------------------
-            row = new ReactionDB();
+            row = new ReactionItem();
             try { row.setType(Integer.parseInt(cols[0])); } catch(Exception e) {}
             try { row.setItemID(Long.parseLong(cols[1])); } catch(Exception e) {}
             try { row.setValue(Integer.parseInt(cols[2])); } catch(Exception e) {}
@@ -47,7 +47,7 @@ public class FieldCast {
             //--------------------------------------------------
         }
         //======================================================
-        return rows.toArray(new ReactionDB[0]);
+        return rows.toArray(new ReactionItem[0]);
         //======================================================
     }
     //==========================================================

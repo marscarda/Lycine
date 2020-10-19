@@ -1,16 +1,16 @@
-package lycine.tobenamed;
+package lycine.samplemetric;
 //***************************************************************************
-import tryptophan.survey.responses.ResponseDB;
-import tryptophan.survey.responses.ReactionDB;
+import tryptophan.survey.reaction.ResponseRecord;
+import tryptophan.survey.reaction.ReactionItem;
 //***************************************************************************
 public class Response {
     //************************************************************
-    private ResponseDB resprec = null;
-    private ReactionDB[] reactions = new ReactionDB[0];
+    private ResponseRecord resprec = null;
+    private ReactionItem[] reactions = new ReactionItem[0];
     private int reactcount = 0;
     //************************************************************
-    void setResponseRecord (ResponseDB resp) { resprec = resp; }
-    void setResponseRows (ReactionDB[] rows) { 
+    void setResponseRecord (ResponseRecord resp) { resprec = resp; }
+    void setResponseRows (ReactionItem[] rows) { 
         if (rows == null) return;
         reactions = rows;
         reactcount = reactions.length;
@@ -18,8 +18,8 @@ public class Response {
     //************************************************************
     int itemCount () { return reactcount; }
     //============================================================
-    ReactionDB[] getReactionRecords () {
-        if (reactions == null) return new ReactionDB[0];
+    ReactionItem[] getReactionRecords () {
+        if (reactions == null) return new ReactionItem[0];
         return reactions;
     }
     //************************************************************

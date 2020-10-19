@@ -3,12 +3,12 @@ package lycine.epsilon;
 import java.util.ArrayList;
 import java.util.List;
 import methionine.AppException;
-import tryptophan.survey.BaseToBeNamed;
+import tryptophan.survey.ActionItemBase;
 import tryptophan.survey.publicview.PVCandidate;
-import tryptophan.survey.baseform.VarClusterLambda;
+import tryptophan.survey.action.VarClusterLambda;
 import tryptophan.survey.publicview.PublicViewLambda;
-import tryptophan.survey.baseform.BaseForm;
-import tryptophan.survey.baseform.VarPointer;
+import tryptophan.survey.action.BaseForm;
+import tryptophan.survey.action.ActionItemPointer;
 //***************************************************************************
 public class VarClusterCenter {
     //***********************************************************************
@@ -25,7 +25,7 @@ public class VarClusterCenter {
      * @throws AppException UNAUTHORIZED SURVEYNOTFOUND CANDIDATENOTFOUND
      * @throws Exception 
      */
-    public String createVarPointer (VarPointer pointer, long userid) throws AppException, Exception {
+    public String createVarPointer (ActionItemPointer pointer, long userid) throws AppException, Exception {
         //==================================================================
         String label = null;
         //==================================================================
@@ -37,7 +37,7 @@ public class VarClusterCenter {
         //==================================================================
         switch (pointer.getType()) {
             //--------------------------------------------------------------
-            case VarPointer.ITEMTYPE_PUBIMAGE: {
+            case ActionItemPointer.ITEMTYPE_PUBIMAGE: {
                 PVCandidate candidate = pubviewlambda.getCandidate(pointer.getItemId());
                 if (userid != 0 && candidate.getOwner() != userid)
                     throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
@@ -79,18 +79,18 @@ public class VarClusterCenter {
      * @throws Exception 
      */
     public VarItem[] getVariablesItems (long varclusterid) throws AppException, Exception {
-        VarPointer[] pointers = clusterlambda.getItemPointers(varclusterid);
+        ActionItemPointer[] pointers = clusterlambda.getItemPointers(varclusterid);
         List<VarItem> vars = new ArrayList<>();
         VarItem vitem;
-        BaseToBeNamed item;
-        for (VarPointer pointer : pointers) {
+        ActionItemBase item;
+        for (ActionItemPointer pointer : pointers) {
             switch (pointer.getType()) {
                 //------------------------------------------------------
-                case VarPointer.ITEMTYPE_PUBIMAGE:
+                case ActionItemPointer.ITEMTYPE_PUBIMAGE:
                     try { item = pubviewlambda.getCandidate(pointer.getItemId()); }
                     catch (AppException e) { continue; }
                     vitem = new VarItem();
-                    vitem.itemtype = VarPointer.ITEMTYPE_PUBIMAGE;
+                    vitem.itemtype = ActionItemPointer.ITEMTYPE_PUBIMAGE;
                     vitem.itemid = pointer.getItemId();
                     vitem.item = item;
                     vars.add(vitem);

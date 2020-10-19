@@ -1,4 +1,4 @@
-package lycine.tobenamed;
+package lycine.samplemetric;
 //***************************************************************************
 import tryptophan.survey.sampling.SampleRecord;
 //***************************************************************************

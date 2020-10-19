@@ -1,27 +1,27 @@
-package lycine.tobenamed;
+package lycine.samplemetric;
 //***************************************************************************
 import java.util.ArrayList;
 import java.util.List;
 import methionine.AppException;
-import tryptophan.survey.baseform.ActionItemType;
+import tryptophan.survey.ActionItemType;
 import tryptophan.survey.publicview.PVCandidate;
 import tryptophan.survey.publicview.PublicViewLambda;
-import tryptophan.survey.responses.ResponseDB;
-import tryptophan.survey.responses.ResponseLambda;
-import tryptophan.survey.responses.ReactionDB;
+import tryptophan.survey.reaction.ResponseRecord;
+import tryptophan.survey.reaction.RectionLambda;
+import tryptophan.survey.reaction.ReactionItem;
 import tryptophan.survey.sampling.SampleLamda;
 import tryptophan.survey.sampling.SampleRecord;
 //***************************************************************************
-public class CenterTBN {
+public class SampleMetricMaker {
     //***********************************************************************
     SampleLamda samplelambda = null;
-    ResponseLambda resplamda = null;
+    RectionLambda resplamda = null;
     PublicViewLambda actionlambda = null;
     //-----------------------------------------------------------------------
     ResultVector resultvector = null;
     //=======================================================================
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
-    public void setResponseLambda (ResponseLambda resplambda) { this.resplamda = resplambda; }
+    public void setReactionLambda (RectionLambda resplambda) { this.resplamda = resplambda; }
     public void setActionLambda (PublicViewLambda actionlambda) { this.actionlambda = actionlambda; }
     //***********************************************************************
     public void prepareSampleVector (long sampleid) throws AppException, Exception {
@@ -32,14 +32,14 @@ public class CenterTBN {
         resultvector.setSampleRecord(samplerec);
         //===================================================================
         //We Load Up the reactions.
-        ResponseDB[] resprecords = resplamda.getResponseObjects(sampleid, true);
+        ResponseRecord[] resprecords = resplamda.getResponseObjects(sampleid, true);
         List<Response> respaddlist = new ArrayList<>();
         Response response;
-        for (ResponseDB resprec : resprecords) {
+        for (ResponseRecord resprec : resprecords) {
             //-------------------------------------------------------------
             response = new Response();
             response.setResponseRecord(resprec);
-            ReactionDB[] rows = resplamda.getResponseRows(resprec.getID());
+            ReactionItem[] rows = resplamda.getResponseRows(resprec.getID());
             response.setResponseRows(rows);
             respaddlist.add(response);
         }
@@ -52,12 +52,12 @@ public class CenterTBN {
     }
     //***********************************************************************
     private void loopResponseReactions (Response response) throws Exception {
-        ReactionDB[] reactions = response.getReactionRecords();
-        for (ReactionDB reaction : reactions)
+        ReactionItem[] reactions = response.getReactionRecords();
+        for (ReactionItem reaction : reactions)
             setReactionMetric(reaction);
     }
     //***********************************************************************
-    private void setReactionMetric (ReactionDB reactiondb) throws Exception {
+    private void setReactionMetric (ReactionItem reactiondb) throws Exception {
         ReactionMetric reactionmet;
         boolean ext = resultvector.checkReactionMetric(reactiondb.getType(), reactiondb.getItemid());
         if (!resultvector.checkReactionMetric(reactiondb.getType(), reactiondb.getItemid())) {
@@ -69,7 +69,7 @@ public class CenterTBN {
         }
     }
     //*****************************************************
-    private ReactionMetric createReactionMetric (ReactionDB reaction) throws Exception {
+    private ReactionMetric createReactionMetric (ReactionItem reaction) throws Exception {
         ReactionMetric reactionmet = null;
         //=================================================
         switch (reaction.getType()) {

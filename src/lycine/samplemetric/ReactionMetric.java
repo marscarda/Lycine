@@ -1,4 +1,4 @@
-package lycine.tobenamed;
+package lycine.samplemetric;
 //****************************************************************************
 public class ReactionMetric {
     //************************************************************

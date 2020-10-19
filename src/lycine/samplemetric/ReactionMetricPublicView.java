@@ -1,7 +1,7 @@
-package lycine.tobenamed;
+package lycine.samplemetric;
 //****************************************************************************
 
-import tryptophan.survey.baseform.ActionItemType;
+import tryptophan.survey.ActionItemType;
 
 public class ReactionMetricPublicView extends ReactionMetric {
     //*******************************************************************

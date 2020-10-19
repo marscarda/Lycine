@@ -1,11 +1,11 @@
 package lycine.epsilon;
 //***************************************************************************
-import tryptophan.survey.responses.ReactionDB;
+import tryptophan.survey.reaction.ReactionItem;
 import methionine.AppException;
-import tryptophan.survey.responses.ResponseLambda;
-import tryptophan.survey.responses.ResponseDB;
-import tryptophan.survey.baseform.BaseForm;
-import tryptophan.survey.baseform.VarClusterLambda;
+import tryptophan.survey.reaction.RectionLambda;
+import tryptophan.survey.reaction.ResponseRecord;
+import tryptophan.survey.action.BaseForm;
+import tryptophan.survey.action.VarClusterLambda;
 import tryptophan.survey.sampling.SampleRecord;
 import tryptophan.survey.sampling.SampleLamda;
 //***************************************************************************
@@ -13,11 +13,11 @@ public class FieldCollector {
     //***********************************************************************
     VarClusterLambda surveylambda = null;
     SampleLamda samplelambda = null;
-    ResponseLambda responselambda = null;
+    RectionLambda responselambda = null;
     //=======================================================================
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
     public void setSurveyLambda (VarClusterLambda surveylambda) { this.surveylambda = surveylambda; }
-    public void setResponseLambda (ResponseLambda responselambda) { this.responselambda = responselambda; }
+    public void setResponseLambda (RectionLambda responselambda) { this.responselambda = responselambda; }
     //***********************************************************************
     /**
      * Casts responses from a field intake.
@@ -33,9 +33,9 @@ public class FieldCollector {
         if (fieldcast.userID() != sample.getUserId())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         //-------------------------------------------------------------------
-        ReactionDB[] rows = fieldcast.getSingleOptionsRows();
+        ReactionItem[] rows = fieldcast.getSingleOptionsRows();
         //-------------------------------------------------------------------
-        ResponseDB response = new ResponseDB();
+        ResponseRecord response = new ResponseRecord();
         response.setTakeFormID(survey.getID());
         response.setSampleID(sample.getSampleId());
         response.setUserID(fieldcast.userid);

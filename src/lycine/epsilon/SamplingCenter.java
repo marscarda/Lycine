@@ -5,12 +5,12 @@ import java.util.List;
 import methionine.AppException;
 import methionine.auth.AuthLamda;
 import methionine.auth.User;
-import tryptophan.survey.BaseToBeNamed;
-import tryptophan.survey.baseform.BaseForm;
-import tryptophan.survey.baseform.VarPointer;
-import tryptophan.survey.baseform.VarClusterLambda;
+import tryptophan.survey.ActionItemBase;
+import tryptophan.survey.action.BaseForm;
+import tryptophan.survey.action.ActionItemPointer;
+import tryptophan.survey.action.VarClusterLambda;
 import tryptophan.survey.publicview.PublicViewLambda;
-import tryptophan.survey.responses.ResponseLambda;
+import tryptophan.survey.reaction.RectionLambda;
 import tryptophan.survey.sampling.SampleRecord;
 import tryptophan.survey.sampling.SampleLamda;
 //***************************************************************************
@@ -18,13 +18,13 @@ public class SamplingCenter {
     //***********************************************************************
     AuthLamda authlambda = null;
     SampleLamda samplelambda = null;
-    ResponseLambda responselambda = null;
+    RectionLambda responselambda = null;
     VarClusterLambda surveylambda = null;
     PublicViewLambda pubviewlambda = null;
     //=======================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
-    public void setResponseLambda (ResponseLambda responselambda) { this.responselambda = responselambda; }
+    public void setResponseLambda (RectionLambda responselambda) { this.responselambda = responselambda; }
     public void setSurveyLambda (VarClusterLambda surveylambda) { this.surveylambda = surveylambda; }
     public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
     //***********************************************************************
@@ -118,15 +118,15 @@ public class SamplingCenter {
         form.sampleid = sampleid;
         form.surveyid = survey.getID();
         //--------------------------------------------------------------
-        VarPointer[] pointers = surveylambda.getItemPointers(survey.getID());
-        BaseToBeNamed item;
-        for (VarPointer pointer : pointers) {
+        ActionItemPointer[] pointers = surveylambda.getItemPointers(survey.getID());
+        ActionItemBase item;
+        for (ActionItemPointer pointer : pointers) {
             switch (pointer.getType()) {
                 //------------------------------------------------------
-                case VarPointer.ITEMTYPE_PUBIMAGE:
+                case ActionItemPointer.ITEMTYPE_PUBIMAGE:
                     try { item = pubviewlambda.getCandidate(pointer.getItemId()); }
                     catch (AppException e) { continue; }
-                    form.addItem(VarPointer.ITEMTYPE_PUBIMAGE, pointer.getItemId(), item);
+                    form.addItem(ActionItemPointer.ITEMTYPE_PUBIMAGE, pointer.getItemId(), item);
                     continue;
                 //------------------------------------------------------
                 default: continue;
