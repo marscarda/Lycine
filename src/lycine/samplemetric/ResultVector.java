@@ -51,6 +51,17 @@ public class ResultVector {
         //========================================================
     }
     //***********************************************************************
+    public ReactionMetric getReactionMetric (int itemtype, long itemid) {
+        //========================================================
+        for (ReactionMetric reaction : reactionmetrics) {
+            if (reaction.itemType() == itemtype &&
+                reaction.getItemID() == itemid) return reaction;
+        }
+        //========================================================
+        return null;
+        //========================================================
+    }
+    //***********************************************************************
     public ReactionMetric[] getReactionMetrics () {
         if (reactionmetrics == null) return new ReactionMetric[0];
         return reactionmetrics;

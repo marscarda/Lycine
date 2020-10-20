@@ -12,7 +12,7 @@ import tryptophan.survey.reaction.ReactionItem;
 import tryptophan.survey.sampling.SampleLamda;
 import tryptophan.survey.sampling.SampleRecord;
 //***************************************************************************
-public class SampleMetricMaker {
+public class SampleMetricBuilder {
     //***********************************************************************
     SampleLamda samplelambda = null;
     RectionLambda resplamda = null;
@@ -59,14 +59,16 @@ public class SampleMetricMaker {
     //***********************************************************************
     private void setReactionMetric (ReactionItem reactiondb) throws Exception {
         ReactionMetric reactionmet;
-        boolean ext = resultvector.checkReactionMetric(reactiondb.getType(), reactiondb.getItemid());
+        //=================================================
         if (!resultvector.checkReactionMetric(reactiondb.getType(), reactiondb.getItemid())) {
             reactionmet = createReactionMetric(reactiondb);
             resultvector.addReactionMetric(reactionmet);
         }
-        else {
-            //Lets get the reaction met here.
-        }
+        else reactionmet = resultvector.getReactionMetric(reactiondb.getType(), reactiondb.getItemid());
+        //=================================================
+        if (reactionmet == null) return;
+        addMetricValue(reactionmet, reactiondb);
+        //=================================================
     }
     //*****************************************************
     private ReactionMetric createReactionMetric (ReactionItem reaction) throws Exception {
@@ -91,12 +93,22 @@ public class SampleMetricMaker {
         return reactionmet;
         //=================================================
     }
-    //*****************************************************
-
     //***********************************************************************
     public ResultVector getResultVector () {
         if (resultvector == null) return new ResultVector();
         return resultvector;
+    }
+    //***********************************************************************
+    private void addMetricValue (ReactionMetric reactionmet, ReactionItem reactionrec) {
+        //==========================================================
+        switch (reactionrec.getType()) {
+            case ActionItemType.PUBIMAGE: {
+                ReactionMetricPublicView met = (ReactionMetricPublicView)reactionmet;
+                met.addReactionValue(reactionrec.getValue());
+                break;
+            }
+        }
+        //==========================================================
     }
     //***********************************************************************
 }
