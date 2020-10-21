@@ -9,7 +9,7 @@ import tryptophan.survey.ActionItemType;
 import tryptophan.survey.publicview.PVCandidate;
 import tryptophan.survey.publicview.PublicViewLambda;
 import tryptophan.survey.reaction.ResponseRecord;
-import tryptophan.survey.reaction.RectionLambda;
+import tryptophan.survey.reaction.ReactionLambda;
 import tryptophan.survey.reaction.ReactionItem;
 import tryptophan.survey.sampling.SampleLamda;
 import tryptophan.survey.sampling.SampleRecord;
@@ -18,14 +18,14 @@ public class SampleMetricBuilder {
     //***********************************************************************
     AuthLamda authlambda = null;
     SampleLamda samplelambda = null;
-    RectionLambda resplamda = null;
+    ReactionLambda resplamda = null;
     PublicViewLambda actionlambda = null;
     //-----------------------------------------------------------------------
     ResultVector resultvector = null;
     //=======================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
-    public void setReactionLambda (RectionLambda resplambda) { this.resplamda = resplambda; }
+    public void setReactionLambda (ReactionLambda resplambda) { this.resplamda = resplambda; }
     public void setActionLambda (PublicViewLambda actionlambda) { this.actionlambda = actionlambda; }
     //***********************************************************************
     public void prepareSampleVector (long sampleid) throws AppException, Exception {

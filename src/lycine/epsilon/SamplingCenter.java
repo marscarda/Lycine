@@ -10,7 +10,7 @@ import tryptophan.survey.action.BaseForm;
 import tryptophan.survey.action.ActionItemPointer;
 import tryptophan.survey.action.VarClusterLambda;
 import tryptophan.survey.publicview.PublicViewLambda;
-import tryptophan.survey.reaction.RectionLambda;
+import tryptophan.survey.reaction.ReactionLambda;
 import tryptophan.survey.sampling.SampleRecord;
 import tryptophan.survey.sampling.SampleLamda;
 //***************************************************************************
@@ -18,13 +18,13 @@ public class SamplingCenter {
     //***********************************************************************
     AuthLamda authlambda = null;
     SampleLamda samplelambda = null;
-    RectionLambda responselambda = null;
+    ReactionLambda reactionslambda = null;
     VarClusterLambda surveylambda = null;
     PublicViewLambda pubviewlambda = null;
     //=======================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
-    public void setResponseLambda (RectionLambda responselambda) { this.responselambda = responselambda; }
+    public void setResponseLambda (ReactionLambda reactionslambda) { this.reactionslambda = reactionslambda; }
     public void setSurveyLambda (VarClusterLambda surveylambda) { this.surveylambda = surveylambda; }
     public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
     //***********************************************************************
@@ -66,7 +66,7 @@ public class SamplingCenter {
         for (SampleRecord sample : samples) {
             try { surveylambda.getVarCluster(sample.getSurveyId()); }
             catch (AppException e) { continue; }
-            sample.setRespCount(responselambda.getResponsesCount(sample.getSampleId()));
+            sample.setRespCount(reactionslambda.getResponsesCount(sample.getSampleId()));
             validsamples.add(sample);
         }
         return validsamples.toArray(new SampleRecord[0]);
@@ -89,7 +89,7 @@ public class SamplingCenter {
         for (SampleRecord sample : samples) {
             try { user = authlambda.getUser(sample.getUserId(), false); }
             catch (AppException e) { continue; }
-            sample.setRespCount(responselambda.getResponsesCount(sample.getSampleId()));
+            sample.setRespCount(reactionslambda.getResponsesCount(sample.getSampleId()));
             sample.setUserName(user.loginName());
         }
         return samples;
@@ -135,6 +135,24 @@ public class SamplingCenter {
         //--------------------------------------------------------------
         return form;
         //--------------------------------------------------------------
+    }
+    //***********************************************************************
+    /**
+     * Destroys a sample including responses and reactions.
+     * @param sampleid
+     * @throws Exception 
+     */
+    public void destroySample (long sampleid) throws Exception {
+        samplelambda.startTransaction();
+        try {
+            samplelambda.destroySample(sampleid);
+            reactionslambda.destroyResponse(sampleid);
+        }
+        catch (Exception e) {
+            samplelambda.rollbackTransaction();
+            throw e;
+        }
+        samplelambda.commitTransaction();
     }
     //***********************************************************************
 }

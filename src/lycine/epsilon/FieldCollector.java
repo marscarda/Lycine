@@ -2,7 +2,7 @@ package lycine.epsilon;
 //***************************************************************************
 import tryptophan.survey.reaction.ReactionItem;
 import methionine.AppException;
-import tryptophan.survey.reaction.RectionLambda;
+import tryptophan.survey.reaction.ReactionLambda;
 import tryptophan.survey.reaction.ResponseRecord;
 import tryptophan.survey.action.BaseForm;
 import tryptophan.survey.action.VarClusterLambda;
@@ -13,11 +13,11 @@ public class FieldCollector {
     //***********************************************************************
     VarClusterLambda surveylambda = null;
     SampleLamda samplelambda = null;
-    RectionLambda responselambda = null;
+    ReactionLambda responselambda = null;
     //=======================================================================
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
     public void setSurveyLambda (VarClusterLambda surveylambda) { this.surveylambda = surveylambda; }
-    public void setResponseLambda (RectionLambda responselambda) { this.responselambda = responselambda; }
+    public void setResponseLambda (ReactionLambda responselambda) { this.responselambda = responselambda; }
     //***********************************************************************
     /**
      * Casts responses from a field intake.
