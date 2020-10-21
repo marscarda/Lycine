@@ -3,6 +3,8 @@ package lycine.samplemetric;
 import java.util.ArrayList;
 import java.util.List;
 import methionine.AppException;
+import methionine.auth.AuthLamda;
+import methionine.auth.User;
 import tryptophan.survey.ActionItemType;
 import tryptophan.survey.publicview.PVCandidate;
 import tryptophan.survey.publicview.PublicViewLambda;
@@ -14,12 +16,14 @@ import tryptophan.survey.sampling.SampleRecord;
 //***************************************************************************
 public class SampleMetricBuilder {
     //***********************************************************************
+    AuthLamda authlambda = null;
     SampleLamda samplelambda = null;
     RectionLambda resplamda = null;
     PublicViewLambda actionlambda = null;
     //-----------------------------------------------------------------------
     ResultVector resultvector = null;
     //=======================================================================
+    public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
     public void setReactionLambda (RectionLambda resplambda) { this.resplamda = resplambda; }
     public void setActionLambda (PublicViewLambda actionlambda) { this.actionlambda = actionlambda; }
@@ -29,6 +33,11 @@ public class SampleMetricBuilder {
         resultvector = new ResultVector();
         //===================================================================
         SampleRecord samplerec = samplelambda.getSample(sampleid);
+        try { 
+            User user = authlambda.getUser(samplerec.getUserId(), false); 
+            samplerec.setUserName(user.loginName());
+        }
+        catch (AppException e) {}
         resultvector.setSampleRecord(samplerec);
         //===================================================================
         //We Load Up the reactions.
