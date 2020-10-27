@@ -39,8 +39,15 @@ public class VarClusterCenter {
             //--------------------------------------------------------------
             case ActionItemPointer.ITEMTYPE_PUBIMAGE: {
                 PVCandidate candidate = pubviewlambda.getCandidate(pointer.getItemId());
+                
+                
+                /*
                 if (userid != 0 && candidate.getOwner() != userid)
                     throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
+                */
+                
+                
+                
                 label = candidate.getLabel();
                 break;
             }
