@@ -6,9 +6,9 @@ import methionine.AppException;
 import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import tryptophan.survey.ActionItemBase;
-import tryptophan.survey.action.BaseForm;
+import tryptophan.survey.action.ActionSet;
 import tryptophan.survey.action.ActionItemPointer;
-import tryptophan.survey.action.VarClusterLambda;
+import tryptophan.survey.action.ActionSetLambda;
 import tryptophan.survey.publicview.PublicViewLambda;
 import tryptophan.survey.reaction.ReactionLambda;
 import tryptophan.survey.sampling.SampleRecord;
@@ -19,13 +19,13 @@ public class SamplingCenter {
     AuthLamda authlambda = null;
     SampleLamda samplelambda = null;
     ReactionLambda reactionslambda = null;
-    VarClusterLambda surveylambda = null;
+    ActionSetLambda surveylambda = null;
     PublicViewLambda pubviewlambda = null;
     //=======================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
     public void setResponseLambda (ReactionLambda reactionslambda) { this.reactionslambda = reactionslambda; }
-    public void setSurveyLambda (VarClusterLambda surveylambda) { this.surveylambda = surveylambda; }
+    public void setSurveyLambda (ActionSetLambda surveylambda) { this.surveylambda = surveylambda; }
     public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
     //***********************************************************************
     /**
@@ -40,10 +40,10 @@ public class SamplingCenter {
         if (!sample.checkValidData())
             throw new AppException("Invalid or incomplet data submited", AppException.INVALIDDATASUBMITED);
         //---------------------------------------------------------------------
-        BaseForm formdef = surveylambda.getVarCluster(sample.getSurveyId());
-        if (authuserid != formdef.getOwner())
+        ActionSet formdef = surveylambda.getVarCluster(sample.getSurveyId());
+        if (authuserid != formdef.projectID())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
-        sample.setOwner(formdef.getOwner());
+        sample.setOwner(formdef.projectID());
         sample.setFormDefTitle(formdef.getTitle());
         //---------------------------------------------------------------------
         long commituserid = authlambda.getUserIdByIdentifier(sample.getUserName());
@@ -113,7 +113,7 @@ public class SamplingCenter {
         form.title = sample.getTitle();
         form.brief = sample.getTask();
         //--------------------------------------------------------------
-        BaseForm survey = surveylambda.getVarCluster(sample.getSurveyId());
+        ActionSet survey = surveylambda.getVarCluster(sample.getSurveyId());
         //--------------------------------------------------------------
         form.sampleid = sampleid;
         form.surveyid = survey.getID();

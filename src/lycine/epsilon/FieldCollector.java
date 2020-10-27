@@ -4,19 +4,19 @@ import tryptophan.survey.reaction.ReactionItem;
 import methionine.AppException;
 import tryptophan.survey.reaction.ReactionLambda;
 import tryptophan.survey.reaction.ResponseRecord;
-import tryptophan.survey.action.BaseForm;
-import tryptophan.survey.action.VarClusterLambda;
+import tryptophan.survey.action.ActionSet;
+import tryptophan.survey.action.ActionSetLambda;
 import tryptophan.survey.sampling.SampleRecord;
 import tryptophan.survey.sampling.SampleLamda;
 //***************************************************************************
 public class FieldCollector {
     //***********************************************************************
-    VarClusterLambda surveylambda = null;
+    ActionSetLambda surveylambda = null;
     SampleLamda samplelambda = null;
     ReactionLambda responselambda = null;
     //=======================================================================
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
-    public void setSurveyLambda (VarClusterLambda surveylambda) { this.surveylambda = surveylambda; }
+    public void setSurveyLambda (ActionSetLambda surveylambda) { this.surveylambda = surveylambda; }
     public void setResponseLambda (ReactionLambda responselambda) { this.responselambda = responselambda; }
     //***********************************************************************
     /**
@@ -28,7 +28,7 @@ public class FieldCollector {
     public void castFieldResponses (FieldCast fieldcast) throws AppException, Exception {
         //===================================================================
         SampleRecord sample = samplelambda.getSample(fieldcast.sampleID());
-        BaseForm survey = surveylambda.getVarCluster(sample.getSurveyId());
+        ActionSet survey = surveylambda.getVarCluster(sample.getSurveyId());
         //-------------------------------------------------------------------
         if (fieldcast.userID() != sample.getUserId())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);

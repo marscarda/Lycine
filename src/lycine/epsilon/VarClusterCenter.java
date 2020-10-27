@@ -5,33 +5,34 @@ import java.util.List;
 import methionine.AppException;
 import tryptophan.survey.ActionItemBase;
 import tryptophan.survey.publicview.PVCandidate;
-import tryptophan.survey.action.VarClusterLambda;
+import tryptophan.survey.action.ActionSetLambda;
 import tryptophan.survey.publicview.PublicViewLambda;
-import tryptophan.survey.action.BaseForm;
+import tryptophan.survey.action.ActionSet;
 import tryptophan.survey.action.ActionItemPointer;
 //***************************************************************************
 public class VarClusterCenter {
     //***********************************************************************
-    VarClusterLambda clusterlambda = null;
+    ActionSetLambda clusterlambda = null;
     PublicViewLambda pubviewlambda = null;
     //***********************************************************************
-    public void setVarClusterLambda (VarClusterLambda varclusterlambda) { this.clusterlambda = varclusterlambda; }
+    public void setVarClusterLambda (ActionSetLambda varclusterlambda) { this.clusterlambda = varclusterlambda; }
     public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
     //***********************************************************************
     /**
-     * Creates a variable pointer for a given BaseForm
+     * Creates a variable pointer for a given ActionSet
      * @param pointer
+     * @param projectid
      * @return
      * @throws AppException UNAUTHORIZED SURVEYNOTFOUND CANDIDATENOTFOUND
      * @throws Exception 
      */
-    public String createVarPointer (ActionItemPointer pointer, long userid) throws AppException, Exception {
+    public String createVarPointer (ActionItemPointer pointer, long projectid) throws AppException, Exception {
         //==================================================================
         String label = null;
         //==================================================================
-        if (userid != 0) {
-            BaseForm varcluster = clusterlambda.getVarCluster(pointer.getClusterID());
-            if (varcluster.getOwner() != userid)
+        if (projectid != 0) {
+            ActionSet varcluster = clusterlambda.getVarCluster(pointer.getClusterID());
+            if (varcluster.projectID() != projectid)
                 throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         }
         //==================================================================
@@ -66,11 +67,11 @@ public class VarClusterCenter {
      * @param userid
      * @throws Exception 
      */
-    public void destroyVarPointer (long varclusterid, long variableid, long userid) throws Exception {
+    public void destroyVarPointer (long varclusterid, long variableid, long projectid) throws Exception {
         //==================================================================
-        if (userid != 0) {
-            BaseForm varcluster = clusterlambda.getVarCluster(varclusterid);
-            if (varcluster.getOwner() != userid)
+        if (projectid != 0) {
+            ActionSet varcluster = clusterlambda.getVarCluster(varclusterid);
+            if (varcluster.projectID() != projectid)
                 throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         }
         //==================================================================
@@ -79,7 +80,7 @@ public class VarClusterCenter {
     }
     //***********************************************************************
     /**
-     * Returns Variable items for a given BaseForm.
+     * Returns Variable items for a given ActionSet.
      * @param varclusterid
      * @return
      * @throws AppException
