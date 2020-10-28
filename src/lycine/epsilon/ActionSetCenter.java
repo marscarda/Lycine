@@ -3,6 +3,7 @@ package lycine.epsilon;
 import java.util.ArrayList;
 import java.util.List;
 import methionine.AppException;
+import methionine.project.WorkTeamLambda;
 import tryptophan.survey.ActionItemBase;
 import tryptophan.survey.publicview.PVCandidate;
 import tryptophan.survey.action.ActionSetLambda;
@@ -10,13 +11,15 @@ import tryptophan.survey.publicview.PublicViewLambda;
 import tryptophan.survey.action.ActionSet;
 import tryptophan.survey.action.ActionItemPointer;
 //***************************************************************************
-public class VarClusterCenter {
+public class ActionSetCenter {
     //***********************************************************************
-    ActionSetLambda clusterlambda = null;
+    ActionSetLambda actionsetlambda = null;
     PublicViewLambda pubviewlambda = null;
+    WorkTeamLambda projectlambda = null;
     //***********************************************************************
-    public void setVarClusterLambda (ActionSetLambda varclusterlambda) { this.clusterlambda = varclusterlambda; }
+    public void setActionSetLambda (ActionSetLambda actionsetlambda) { this.actionsetlambda = actionsetlambda; }
     public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
+    public void setProjectLambda (WorkTeamLambda projectlambda) { this.projectlambda = projectlambda; }
     //***********************************************************************
     /**
      * Creates a variable pointer for a given ActionSet
@@ -28,34 +31,24 @@ public class VarClusterCenter {
      */
     public String createVarPointer (ActionItemPointer pointer, long projectid) throws AppException, Exception {
         //==================================================================
+        //We check the Action set is in the stated project.
+        ActionSet actset = actionsetlambda.getVarCluster(pointer.getClusterID());
+        if (actset.projectID() != projectid)
+            throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
+        //==================================================================
         String label = null;
         //==================================================================
-        if (projectid != 0) {
-            ActionSet varcluster = clusterlambda.getVarCluster(pointer.getClusterID());
-            if (varcluster.projectID() != projectid)
-                throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
-        }
-        //==================================================================
         switch (pointer.getType()) {
-            //--------------------------------------------------------------
             case ActionItemPointer.ITEMTYPE_PUBIMAGE: {
                 PVCandidate candidate = pubviewlambda.getCandidate(pointer.getItemId());
-                
-                
-                /*
-                if (userid != 0 && candidate.getOwner() != userid)
+                if (candidate.projectID() != projectid)
                     throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
-                */
-                
-                
-                
                 label = candidate.getLabel();
                 break;
-            }
-            //--------------------------------------------------------------
+            }            
         }        
         //==================================================================
-        clusterlambda.createVarPointer(pointer);
+        actionsetlambda.createVarPointer(pointer);
         return label;
         //==================================================================
     }
@@ -64,18 +57,18 @@ public class VarClusterCenter {
      * Destroys a variable pointer
      * @param varclusterid
      * @param variableid
-     * @param userid
+     * @param projectid
      * @throws Exception 
      */
     public void destroyVarPointer (long varclusterid, long variableid, long projectid) throws Exception {
         //==================================================================
         if (projectid != 0) {
-            ActionSet varcluster = clusterlambda.getVarCluster(varclusterid);
+            ActionSet varcluster = actionsetlambda.getVarCluster(varclusterid);
             if (varcluster.projectID() != projectid)
                 throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         }
         //==================================================================
-        clusterlambda.destroyVarPointer(varclusterid, variableid);
+        actionsetlambda.destroyVarPointer(varclusterid, variableid);
         //==================================================================
     }
     //***********************************************************************
@@ -87,7 +80,7 @@ public class VarClusterCenter {
      * @throws Exception 
      */
     public VarItem[] getVariablesItems (long varclusterid) throws AppException, Exception {
-        ActionItemPointer[] pointers = clusterlambda.getItemPointers(varclusterid);
+        ActionItemPointer[] pointers = actionsetlambda.getItemPointers(varclusterid);
         List<VarItem> vars = new ArrayList<>();
         VarItem vitem;
         ActionItemBase item;
