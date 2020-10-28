@@ -28,7 +28,7 @@ public class FieldCollector {
     public void castFieldResponses (FieldCast fieldcast) throws AppException, Exception {
         //===================================================================
         SampleRecord sample = samplelambda.getSample(fieldcast.sampleID());
-        ActionSet survey = surveylambda.getActionSet(sample.getSurveyId(), 0);
+        ActionSet survey = surveylambda.getActionSet(sample.getSurveyId());
         //-------------------------------------------------------------------
         if (fieldcast.userID() != sample.getUserId())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);

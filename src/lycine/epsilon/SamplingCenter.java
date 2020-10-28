@@ -31,17 +31,17 @@ public class SamplingCenter {
     /**
      * Commits a sample for a survey to a particular user 
      * @param sample
-     * @param authuserid
+     * @param projectid
      * @throws AppException
      * @throws Exception 
      */
-    public void commitSampleTo (SampleRecord sample, long authuserid) throws AppException, Exception {
+    public void commitSampleTo (SampleRecord sample, long projectid) throws AppException, Exception {
         //---------------------------------------------------------------------
         if (!sample.checkValidData())
             throw new AppException("Invalid or incomplet data submited", AppException.INVALIDDATASUBMITED);
         //---------------------------------------------------------------------
-        ActionSet actionset = surveylambda.getActionSet(sample.getSurveyId(), authuserid);
-        if (authuserid != actionset.projectID())
+        ActionSet actionset = surveylambda.getActionSet(sample.getSurveyId());
+        if (projectid != actionset.projectID())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         sample.setProjectId(actionset.projectID());
         sample.setFormDefTitle(actionset.getTitle());
@@ -64,7 +64,7 @@ public class SamplingCenter {
         SampleRecord[] samples = samplelambda.getSamplesByUser(userid);
         List<SampleRecord> validsamples = new ArrayList<>();
         for (SampleRecord sample : samples) {
-            try { surveylambda.getActionSet(sample.getSurveyId(), 0); }
+            try { surveylambda.getActionSet(sample.getSurveyId()); }
             catch (AppException e) { continue; }
             sample.setRespCount(reactionslambda.getResponsesCount(sample.getSampleId()));
             validsamples.add(sample);
@@ -83,8 +83,8 @@ public class SamplingCenter {
         return samples;
     }
     //=======================================================================
-    public SampleRecord[] getSamplesByOwner (long userid) throws Exception {
-        SampleRecord[] samples = samplelambda.getSamplesByOwner(userid);
+    public SampleRecord[] getSamplesByProject (long projectid) throws Exception {
+        SampleRecord[] samples = samplelambda.getSamplesByProject(projectid);
         User user;
         for (SampleRecord sample : samples) {
             try { user = authlambda.getUser(sample.getUserId(), false); }
@@ -113,7 +113,7 @@ public class SamplingCenter {
         form.title = sample.getTitle();
         form.brief = sample.getTask();
         //--------------------------------------------------------------
-        ActionSet survey = surveylambda.getActionSet(sample.getSurveyId(), 0);
+        ActionSet survey = surveylambda.getActionSet(sample.getSurveyId());
         //--------------------------------------------------------------
         form.sampleid = sampleid;
         form.surveyid = survey.getID();

@@ -31,7 +31,7 @@ public class ActionSetCenter {
     public String createVarPointer (ActionItemPointer pointer, long projectid) throws AppException, Exception {
         //==================================================================
         //We check the Action set is in the stated project.
-        actionsetlambda.getActionSet(pointer.getClusterID(), projectid);
+        actionsetlambda.getActionSet(pointer.getClusterID());
         //==================================================================
         String label = null;
         //==================================================================
