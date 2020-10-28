@@ -8,7 +8,6 @@ import tryptophan.survey.ActionItemBase;
 import tryptophan.survey.publicview.PVCandidate;
 import tryptophan.survey.action.ActionSetLambda;
 import tryptophan.survey.publicview.PublicViewLambda;
-import tryptophan.survey.action.ActionSet;
 import tryptophan.survey.action.ActionItemPointer;
 //***************************************************************************
 public class ActionSetCenter {
@@ -32,9 +31,7 @@ public class ActionSetCenter {
     public String createVarPointer (ActionItemPointer pointer, long projectid) throws AppException, Exception {
         //==================================================================
         //We check the Action set is in the stated project.
-        ActionSet actset = actionsetlambda.getVarCluster(pointer.getClusterID());
-        if (actset.projectID() != projectid)
-            throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
+        actionsetlambda.getActionSet(pointer.getClusterID(), projectid);
         //==================================================================
         String label = null;
         //==================================================================
@@ -50,25 +47,6 @@ public class ActionSetCenter {
         //==================================================================
         actionsetlambda.createVarPointer(pointer);
         return label;
-        //==================================================================
-    }
-    //***********************************************************************
-    /**
-     * Destroys a variable pointer
-     * @param varclusterid
-     * @param variableid
-     * @param projectid
-     * @throws Exception 
-     */
-    public void destroyVarPointer (long varclusterid, long variableid, long projectid) throws Exception {
-        //==================================================================
-        if (projectid != 0) {
-            ActionSet varcluster = actionsetlambda.getVarCluster(varclusterid);
-            if (varcluster.projectID() != projectid)
-                throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
-        }
-        //==================================================================
-        actionsetlambda.destroyVarPointer(varclusterid, variableid);
         //==================================================================
     }
     //***********************************************************************

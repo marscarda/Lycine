@@ -40,7 +40,7 @@ public class SamplingCenter {
         if (!sample.checkValidData())
             throw new AppException("Invalid or incomplet data submited", AppException.INVALIDDATASUBMITED);
         //---------------------------------------------------------------------
-        ActionSet formdef = surveylambda.getVarCluster(sample.getSurveyId());
+        ActionSet formdef = surveylambda.getActionSet(sample.getSurveyId(), authuserid);
         if (authuserid != formdef.projectID())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         sample.setOwner(formdef.projectID());
@@ -64,7 +64,7 @@ public class SamplingCenter {
         SampleRecord[] samples = samplelambda.getSamplesByUser(userid);
         List<SampleRecord> validsamples = new ArrayList<>();
         for (SampleRecord sample : samples) {
-            try { surveylambda.getVarCluster(sample.getSurveyId()); }
+            try { surveylambda.getActionSet(sample.getSurveyId(), 0); }
             catch (AppException e) { continue; }
             sample.setRespCount(reactionslambda.getResponsesCount(sample.getSampleId()));
             validsamples.add(sample);
@@ -113,7 +113,7 @@ public class SamplingCenter {
         form.title = sample.getTitle();
         form.brief = sample.getTask();
         //--------------------------------------------------------------
-        ActionSet survey = surveylambda.getVarCluster(sample.getSurveyId());
+        ActionSet survey = surveylambda.getActionSet(sample.getSurveyId(), 0);
         //--------------------------------------------------------------
         form.sampleid = sampleid;
         form.surveyid = survey.getID();
