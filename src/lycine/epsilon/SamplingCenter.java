@@ -40,11 +40,11 @@ public class SamplingCenter {
         if (!sample.checkValidData())
             throw new AppException("Invalid or incomplet data submited", AppException.INVALIDDATASUBMITED);
         //---------------------------------------------------------------------
-        ActionSet formdef = surveylambda.getActionSet(sample.getSurveyId(), authuserid);
-        if (authuserid != formdef.projectID())
+        ActionSet actionset = surveylambda.getActionSet(sample.getSurveyId(), authuserid);
+        if (authuserid != actionset.projectID())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
-        sample.setOwner(formdef.projectID());
-        sample.setFormDefTitle(formdef.getTitle());
+        sample.setProjectId(actionset.projectID());
+        sample.setFormDefTitle(actionset.getTitle());
         //---------------------------------------------------------------------
         long commituserid = authlambda.getUserIdByIdentifier(sample.getUserName());
         sample.setUserId(commituserid);
