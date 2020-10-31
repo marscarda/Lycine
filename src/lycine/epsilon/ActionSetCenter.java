@@ -3,7 +3,7 @@ package lycine.epsilon;
 import java.util.ArrayList;
 import java.util.List;
 import methionine.AppException;
-import methionine.project.WorkTeamLambda;
+import methionine.project.ProjectLambda;
 import tryptophan.survey.ActionItemBase;
 import tryptophan.survey.publicview.PVCandidate;
 import tryptophan.survey.action.ActionSetLambda;
@@ -14,11 +14,11 @@ public class ActionSetCenter {
     //***********************************************************************
     ActionSetLambda actionsetlambda = null;
     PublicViewLambda pubviewlambda = null;
-    WorkTeamLambda projectlambda = null;
+    ProjectLambda projectlambda = null;
     //***********************************************************************
     public void setActionSetLambda (ActionSetLambda actionsetlambda) { this.actionsetlambda = actionsetlambda; }
     public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
-    public void setProjectLambda (WorkTeamLambda projectlambda) { this.projectlambda = projectlambda; }
+    public void setProjectLambda (ProjectLambda projectlambda) { this.projectlambda = projectlambda; }
     //***********************************************************************
     /**
      * Creates a variable pointer for a given ActionSet
