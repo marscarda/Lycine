@@ -20,7 +20,7 @@ public class ProjectCenter {
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
         //============================================================
-        Project[] ownedworkteams = workteamlambda.getWorkTeamByOwner(userid);
+        Project[] ownedworkteams = workteamlambda.getWorkTeamByOwner(userid, 0);
         int ownedcount = ownedworkteams.length;
         for (Project team : ownedworkteams) {
             team.setOwnerStatus();
@@ -107,13 +107,10 @@ public class ProjectCenter {
         workteamlambda.startTransaction();
         try {
             //-----------------------------------------------
-            
-            
             publicviewlambda.destroyCandidate(0, projectid);
-            
-            
             //-----------------------------------------------
             workteamlambda.deleteProject(projectid);
+            workteamlambda.deleteAccessesForProject(projectid); ;
             //-----------------------------------------------
         }
         catch (Exception e) {
