@@ -1,5 +1,7 @@
 package lycine.project;
 //************************************************************************
+import methinine.billing.BillingLambda;
+import methinine.billing.Expenditure;
 import methionine.AppException;
 import methionine.auth.AuthLamda;
 import methionine.auth.User;
@@ -11,30 +13,49 @@ import tryptophan.survey.publicview.PublicViewLambda;
 public class ProjectCenter {
     //********************************************************************
     AuthLamda authlambda = null;
-    ProjectLambda workteamlambda = null;
+    ProjectLambda projectlambda = null;
+    BillingLambda billinglambda = null;
     PublicViewLambda publicviewlambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
-    public void setWorkTeamLambda (ProjectLambda workteamlambda) { this.workteamlambda = workteamlambda; }
+    public void setWorkTeamLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
+    public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
     public void setPublicViewLambda (PublicViewLambda publicviewlambda) { this.publicviewlambda = publicviewlambda; }
+    //********************************************************************
+    /**
+     * 
+     * @param project
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void createProject (Project project) throws AppException, Exception {
+        Expenditure expnd = new Expenditure();
+        expnd.setDescription("Prject: " + project.getName() + " created");
+        expnd.setSize(Expenditure.PROJECTCREATE);
+        expnd.setUserID(project.getOwner());
+        projectlambda.startTransaction();
+        billinglambda.addExpenditure(expnd, true);
+        projectlambda.createProject(project);
+        projectlambda.commitTransaction();
+    }
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
         //============================================================
-        Project[] ownedworkteams = workteamlambda.getWorkTeamByOwner(userid, 0);
+        Project[] ownedworkteams = projectlambda.getWorkTeamByOwner(userid, 0);
         int ownedcount = ownedworkteams.length;
         for (Project team : ownedworkteams) {
             team.setOwnerStatus();
             team.setAccessLevel(3);
         }
         //============================================================
-        ProjectAccess[] accesslist = workteamlambda.getAccessList(0, userid);
+        ProjectAccess[] accesslist = projectlambda.getAccessList(0, userid);
         int accscount = accesslist.length;
         Project[] accecedteams = new Project[accscount];
         //============================================================
         User user;
         for (int n = 0; n < accscount; n++) {
             try {
-                accecedteams[n] = workteamlambda.getWorkTeam(accesslist[n].workTeamID(), 0);
+                accecedteams[n] = projectlambda.getWorkTeam(accesslist[n].workTeamID(), 0);
                 user = authlambda.getUser(accecedteams[n].getOwner(), false);
                 accecedteams[n].setOwnerName(user.loginName());
                 accecedteams[n].setAccessLevel(accesslist[n].accessLevel());
@@ -61,7 +82,7 @@ public class ProjectCenter {
     public void createWorkteamAccess (ProjectAccess workteamaccess, long behalfusrid) throws AppException, Exception {
         long userid = authlambda.getUserIdByIdentifier(workteamaccess.getUserName());
         workteamaccess.setUserID(userid);
-        workteamlambda.createAccess(workteamaccess, behalfusrid);
+        projectlambda.createAccess(workteamaccess, behalfusrid);
     }
     //********************************************************************
     /**
@@ -75,11 +96,11 @@ public class ProjectCenter {
     public ProjectAccess[] getAccessList (long projectid, long owner) throws AppException, Exception {
         //================================================================
         User user = authlambda.getUser(owner, false);
-        Project project = workteamlambda.getWorkTeam(projectid, 0);
+        Project project = projectlambda.getWorkTeam(projectid, 0);
         if (!user.isAdmin() && owner != project.getOwner())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         //================================================================
-        ProjectAccess[] accesslist = workteamlambda.getAccessList(projectid, 0);
+        ProjectAccess[] accesslist = projectlambda.getAccessList(projectid, 0);
         for (ProjectAccess access : accesslist) {
             try {
                 user = authlambda.getUser(access.userID(), false);
@@ -100,24 +121,24 @@ public class ProjectCenter {
      */
     public void destroyProject (long projectid, long userid) throws AppException, Exception {
         //-----------------------------------------------------------
-        Project project = workteamlambda.getWorkTeam(projectid, 0);
+        Project project = projectlambda.getWorkTeam(projectid, 0);
         if (project.getOwner() != userid) 
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         //-----------------------------------------------------------
-        workteamlambda.startTransaction();
+        projectlambda.startTransaction();
         try {
             //-----------------------------------------------
             publicviewlambda.destroyCandidate(0, projectid);
             //-----------------------------------------------
-            workteamlambda.deleteProject(projectid);
-            workteamlambda.deleteAccessesForProject(projectid); ;
+            projectlambda.deleteProject(projectid);
+            projectlambda.deleteAccessesForProject(projectid); ;
             //-----------------------------------------------
         }
         catch (Exception e) {
-            workteamlambda.rollbackTransaction();
+            projectlambda.rollbackTransaction();
             throw e;
         }
-        workteamlambda.commitTransaction();
+        projectlambda.commitTransaction();
     }
     //********************************************************************
 }
