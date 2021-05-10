@@ -1,8 +1,12 @@
 package lycine.project;
 //************************************************************************
+import java.util.Calendar;
+import java.util.TimeZone;
 import methinine.billing.BillingLambda;
 import methinine.billing.Expenditure;
+import methinine.billing.TimeBill;
 import methionine.AppException;
+import methionine.Celaeno;
 import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import methionine.project.Project;
@@ -36,6 +40,16 @@ public class ProjectCenter {
         projectlambda.startTransaction();
         billinglambda.addExpenditure(expnd, true);
         projectlambda.createProject(project);
+        //------------------------------------------------
+        TimeBill timebill = new TimeBill();
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        timebill.setDateStart(Celaeno.getDateString(calendar, true));
+        timebill.setItemType(TimeBill.PROJECT);
+        timebill.setItemID(project.workTeamID());
+        timebill.setSize(1);
+        timebill.setUserID(project.getOwner());
+        billinglambda.addTimeBill(timebill);
+        //------------------------------------------------
         projectlambda.commitTransaction();
     }
     //********************************************************************
