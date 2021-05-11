@@ -95,8 +95,23 @@ public class ProjectCenter {
      */
     public void createWorkteamAccess (ProjectAccess workteamaccess, long behalfusrid) throws AppException, Exception {
         long userid = authlambda.getUserIdByIdentifier(workteamaccess.getUserName());
+        Project project = projectlambda.getWorkTeam(workteamaccess.workTeamID(), behalfusrid);
         workteamaccess.setUserID(userid);
+        
+        
+        projectlambda.startTransaction();
+        
         projectlambda.createAccess(workteamaccess, behalfusrid);
+        
+        System.out.println("1");
+        
+        billinglambda.increaseTimeBillSize(TimeBill.PROJECT, project.workTeamID(), 1);
+        
+        System.out.println("2");
+        
+        projectlambda.commitTransaction();
+        
+        System.out.println("3");
     }
     //********************************************************************
     /**
