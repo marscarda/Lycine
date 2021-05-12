@@ -48,7 +48,7 @@ public class ProjectCenter {
         timebill.setItemID(project.workTeamID());
         timebill.setSize(1);
         timebill.setUserID(project.getOwner());
-        billinglambda.addTimeBill(timebill);
+        billinglambda.startTimeBill(timebill);
         //------------------------------------------------
         projectlambda.commitTransaction();
     }
@@ -145,11 +145,13 @@ public class ProjectCenter {
         //-----------------------------------------------------------
         projectlambda.startTransaction();
         try {
+            projectlambda.startTransaction();
             //-----------------------------------------------
             publicviewlambda.destroyCandidate(0, projectid);
             //-----------------------------------------------
             projectlambda.deleteProject(projectid);
             projectlambda.deleteAccessesForProject(projectid); ;
+            billinglambda.endBillingPeriod(BillingPeriod.PROJECT, project.workTeamID());
             //-----------------------------------------------
         }
         catch (Exception e) {
