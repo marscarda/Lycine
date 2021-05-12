@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import methinine.billing.BillingLambda;
 import methinine.billing.Expenditure;
-import methinine.billing.TimeBill;
+import methinine.billing.BillingPeriod;
 import methionine.AppException;
 import methionine.Celaeno;
 import methionine.auth.AuthLamda;
@@ -41,10 +41,10 @@ public class ProjectCenter {
         billinglambda.addExpenditure(expnd, true);
         projectlambda.createProject(project);
         //------------------------------------------------
-        TimeBill timebill = new TimeBill();
+        BillingPeriod timebill = new BillingPeriod();
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         timebill.setDateStart(Celaeno.getDateString(calendar, true));
-        timebill.setItemType(TimeBill.PROJECT);
+        timebill.setItemType(BillingPeriod.PROJECT);
         timebill.setItemID(project.workTeamID());
         timebill.setSize(1);
         timebill.setUserID(project.getOwner());
@@ -97,21 +97,10 @@ public class ProjectCenter {
         long userid = authlambda.getUserIdByIdentifier(workteamaccess.getUserName());
         Project project = projectlambda.getWorkTeam(workteamaccess.workTeamID(), behalfusrid);
         workteamaccess.setUserID(userid);
-        
-        
         projectlambda.startTransaction();
-        
         projectlambda.createAccess(workteamaccess, behalfusrid);
-        
-        System.out.println("1");
-        
-        billinglambda.increaseTimeBillSize(TimeBill.PROJECT, project.workTeamID(), 1);
-        
-        System.out.println("2");
-        
+        billinglambda.increaseTimeBillSize(BillingPeriod.PROJECT, project.workTeamID(), 1);
         projectlambda.commitTransaction();
-        
-        System.out.println("3");
     }
     //********************************************************************
     /**
