@@ -104,6 +104,21 @@ public class ProjectCenter {
     }
     //********************************************************************
     /**
+     * 
+     * @param projectid
+     * @param userid
+     * @param owner
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void revokeProjectAccess (long projectid, long userid, long owner) throws AppException, Exception {
+        billinglambda.startTransaction();
+        projectlambda.revokeAccess(projectid, userid, owner);
+        billinglambda.decreaseTimeBillSize(BillingPeriod.PROJECT, projectid, 1);
+        billinglambda.commitTransaction();
+    }
+    //********************************************************************
+    /**
      * Returns an array of Project Access given a project ID
      * @param projectid
      * @param owner
