@@ -33,12 +33,12 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void createProject (Project project) throws AppException, Exception {
-        Expenditure expnd = new Expenditure();
-        expnd.setDescription("Prject: " + project.getName() + " created");
-        expnd.setSize(Expenditure.PROJECTCREATE);
-        expnd.setUserID(project.getOwner());
+        //Expenditure expnd = new Expenditure();
+        //expnd.setDescription("Prject: " + project.getName() + " created");
+        //expnd.setSize(Expenditure.PROJECTCREATE);
+        //expnd.setUserID(project.getOwner());
         projectlambda.startTransaction();
-        billinglambda.addExpenditure(expnd, true);
+        //billinglambda.addExpenditure(expnd, true);
         projectlambda.createProject(project);
         //------------------------------------------------
         BillingPeriod timebill = new BillingPeriod();
@@ -46,6 +46,7 @@ public class ProjectCenter {
         timebill.setDateStart(Celaeno.getDateString(calendar, true));
         timebill.setItemType(BillingPeriod.PROJECT);
         timebill.setItemID(project.workTeamID());
+        timebill.setProjectID(project.workTeamID());
         timebill.setSize(1);
         timebill.setUserID(project.getOwner());
         billinglambda.startTimeBill(timebill);
