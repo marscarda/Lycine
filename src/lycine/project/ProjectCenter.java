@@ -2,6 +2,7 @@ package lycine.project;
 //************************************************************************
 import java.util.Calendar;
 import java.util.TimeZone;
+import methinine.billing.AlterUsage;
 import methinine.billing.BillingLambda;
 import methinine.billing.Expenditure;
 import methinine.billing.BillingPeriod;
@@ -53,13 +54,14 @@ public class ProjectCenter {
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
         //============================================================
-        Project[] ownedworkteams = projectlambda.getWorkTeamByOwner(userid, 0);
+        Project[] ownedworkteams = projectlambda.getWorkTeamByOwner(userid);
         int ownedcount = ownedworkteams.length;
         for (Project team : ownedworkteams) {
             team.setOwnerStatus();
             team.setAccessLevel(3);
         }
         //============================================================
+        
         ProjectAccess[] accesslist = projectlambda.getAccessList(0, userid);
         int accscount = accesslist.length;
         Project[] accecedteams = new Project[accscount];
@@ -67,14 +69,19 @@ public class ProjectCenter {
         User user;
         for (int n = 0; n < accscount; n++) {
             try {
-                accecedteams[n] = projectlambda.getWorkTeam(accesslist[n].workTeamID(), 0);
+                accecedteams[n] = projectlambda.getWorkTeam(accesslist[n].projectID(), 0);
                 user = authlambda.getUser(accecedteams[n].getOwner(), false);
                 accecedteams[n].setOwnerName(user.loginName());
                 accecedteams[n].setAccessLevel(accesslist[n].accessLevel());
             }
-            catch (AppException e) { }
+            catch (AppException e) { 
+                accecedteams[n] = new Project();
+            }
         }
         //============================================================
+        
+        
+        
         int totcount = accscount + ownedcount;
         Project[] finalteams = new Project[totcount];
         System.arraycopy(ownedworkteams, 0, finalteams, 0, ownedcount);
@@ -93,13 +100,16 @@ public class ProjectCenter {
      */
     public void createWorkteamAccess (ProjectAccess workteamaccess, long behalfusrid) throws AppException, Exception {
         long userid = authlambda.getUserIdByIdentifier(workteamaccess.getUserName());
-        Project project = projectlambda.getWorkTeam(workteamaccess.workTeamID(), behalfusrid);
+        Project project = projectlambda.getWorkTeam(workteamaccess.projectID(), behalfusrid);
         workteamaccess.setUserID(userid);
         projectlambda.startTransaction();
         projectlambda.createAccess(workteamaccess, behalfusrid);
-        
-        //billinglambda.increaseTimeBillSize(BillingPeriod.PROJECT, project.workTeamID(), 1);
-        
+        AlterUsage alter = new AlterUsage();
+        alter.setIncrease(BillingPeriod.COST_PROJECTUSER);
+        alter.setProjectId(project.workTeamID());
+        alter.setProjectName(project.getName());
+        alter.setStartingEvent("User Added to project");
+        billinglambda.alterUsage(alter);
         projectlambda.commitTransaction();
     }
     //********************************************************************
@@ -114,9 +124,13 @@ public class ProjectCenter {
     public void revokeProjectAccess (long projectid, long userid, long owner) throws AppException, Exception {
         billinglambda.startTransaction();
         projectlambda.revokeAccess(projectid, userid, owner);
-        
-        //billinglambda.decreaseTimeBillSize(BillingPeriod.PROJECT, projectid, 1);
-        
+        Project project = projectlambda.getWorkTeam(projectid, 0);
+        AlterUsage alter = new AlterUsage();
+        alter.setDecrease(BillingPeriod.COST_PROJECTUSER);
+        alter.setProjectId(project.workTeamID());
+        alter.setProjectName(project.getName());
+        alter.setStartingEvent("User Removed from project");
+        billinglambda.alterUsage(alter);
         billinglambda.commitTransaction();
     }
     //********************************************************************
