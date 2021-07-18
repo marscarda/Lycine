@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import methinine.billing.AlterUsage;
 import methinine.billing.BillingLambda;
-import methinine.billing.Expenditure;
 import methinine.billing.BillingPeriod;
 import methionine.AppException;
 import methionine.Celaeno;
@@ -69,7 +68,7 @@ public class ProjectCenter {
         User user;
         for (int n = 0; n < accscount; n++) {
             try {
-                accecedteams[n] = projectlambda.getWorkTeam(accesslist[n].projectID(), 0);
+                accecedteams[n] = projectlambda.getProject(accesslist[n].projectID(), 0);
                 user = authlambda.getUser(accecedteams[n].getOwner(), false);
                 accecedteams[n].setOwnerName(user.loginName());
                 accecedteams[n].setAccessLevel(accesslist[n].accessLevel());
@@ -100,7 +99,7 @@ public class ProjectCenter {
      */
     public void createWorkteamAccess (ProjectAccess workteamaccess, long behalfusrid) throws AppException, Exception {
         long userid = authlambda.getUserIdByIdentifier(workteamaccess.getUserName());
-        Project project = projectlambda.getWorkTeam(workteamaccess.projectID(), behalfusrid);
+        Project project = projectlambda.getProject(workteamaccess.projectID(), behalfusrid);
         workteamaccess.setUserID(userid);
         projectlambda.startTransaction();
         projectlambda.createAccess(workteamaccess, behalfusrid);
@@ -124,7 +123,7 @@ public class ProjectCenter {
     public void revokeProjectAccess (long projectid, long userid, long owner) throws AppException, Exception {
         billinglambda.startTransaction();
         projectlambda.revokeAccess(projectid, userid, owner);
-        Project project = projectlambda.getWorkTeam(projectid, 0);
+        Project project = projectlambda.getProject(projectid, 0);
         AlterUsage alter = new AlterUsage();
         alter.setDecrease(BillingPeriod.COST_PROJECTUSER);
         alter.setProjectId(project.workTeamID());
@@ -145,7 +144,7 @@ public class ProjectCenter {
     public ProjectAccess[] getAccessList (long projectid, long owner) throws AppException, Exception {
         //================================================================
         User user = authlambda.getUser(owner, false);
-        Project project = projectlambda.getWorkTeam(projectid, 0);
+        Project project = projectlambda.getProject(projectid, 0);
         if (!user.isAdmin() && owner != project.getOwner())
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         //================================================================
@@ -170,7 +169,7 @@ public class ProjectCenter {
      */
     public void destroyProject (long projectid, long userid) throws AppException, Exception {
         //-----------------------------------------------------------
-        Project project = projectlambda.getWorkTeam(projectid, 0);
+        Project project = projectlambda.getProject(projectid, 0);
         if (project.getOwner() != userid) 
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         //-----------------------------------------------------------

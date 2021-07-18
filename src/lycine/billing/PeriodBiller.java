@@ -39,7 +39,7 @@ public class PeriodBiller {
             //-------------------------------------------------
             case 1: {
                 try {
-                    Project project = projectlambda.getWorkTeam(period.itemID(), 0);
+                    Project project = projectlambda.getProject(period.itemID(), 0);
                     period.setItemType("Project: ");
                     period.setItemName(project.getName());
                     period.setCostPerDay(CPD_PROJECT);
