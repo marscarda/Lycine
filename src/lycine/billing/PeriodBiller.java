@@ -37,7 +37,7 @@ public class PeriodBiller {
     private void qqm (BillingPeriod period) throws Exception {
         switch (period.itemCode()) {
             //-------------------------------------------------
-            case BillingPeriod.PROJECT: {
+            case 1: {
                 try {
                     Project project = projectlambda.getWorkTeam(period.itemID(), 0);
                     period.setItemType("Project: ");

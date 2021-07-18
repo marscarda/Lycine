@@ -33,25 +33,22 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void createProject (Project project) throws AppException, Exception {
-        //Expenditure expnd = new Expenditure();
-        //expnd.setDescription("Prject: " + project.getName() + " created");
-        //expnd.setSize(Expenditure.PROJECTCREATE);
-        //expnd.setUserID(project.getOwner());
         projectlambda.startTransaction();
-        //billinglambda.addExpenditure(expnd, true);
         projectlambda.createProject(project);
         //------------------------------------------------
-        BillingPeriod timebill = new BillingPeriod();
+        BillingPeriod period = new BillingPeriod();
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        timebill.setDateStart(Celaeno.getDateString(calendar, true));
-        timebill.setItemType(BillingPeriod.PROJECT);
-        timebill.setItemID(project.workTeamID());
-        timebill.setProjectID(project.workTeamID());
-        timebill.setSize(1);
-        timebill.setUserID(project.getOwner());
-        billinglambda.startTimeBill(timebill);
+        period.setUserID(project.getOwner());
+        period.setProjectID(project.workTeamID());
+        period.setDateStart(Celaeno.getDateString(calendar, true));
+        period.setCostPerDay(BillingPeriod.COST_PROJECT);
+        period.setProjectName(project.getName());
+        period.setStartingEvent("Project created");
+        //------------------------------------------------
+        billinglambda.startUsage(period);
         //------------------------------------------------
         projectlambda.commitTransaction();
+        //------------------------------------------------
     }
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
@@ -100,7 +97,9 @@ public class ProjectCenter {
         workteamaccess.setUserID(userid);
         projectlambda.startTransaction();
         projectlambda.createAccess(workteamaccess, behalfusrid);
-        billinglambda.increaseTimeBillSize(BillingPeriod.PROJECT, project.workTeamID(), 1);
+        
+        //billinglambda.increaseTimeBillSize(BillingPeriod.PROJECT, project.workTeamID(), 1);
+        
         projectlambda.commitTransaction();
     }
     //********************************************************************
@@ -115,7 +114,9 @@ public class ProjectCenter {
     public void revokeProjectAccess (long projectid, long userid, long owner) throws AppException, Exception {
         billinglambda.startTransaction();
         projectlambda.revokeAccess(projectid, userid, owner);
-        billinglambda.decreaseTimeBillSize(BillingPeriod.PROJECT, projectid, 1);
+        
+        //billinglambda.decreaseTimeBillSize(BillingPeriod.PROJECT, projectid, 1);
+        
         billinglambda.commitTransaction();
     }
     //********************************************************************
@@ -167,7 +168,8 @@ public class ProjectCenter {
             //-----------------------------------------------
             projectlambda.deleteProject(projectid);
             projectlambda.deleteAccessesForProject(projectid); ;
-            billinglambda.endBillingPeriod(BillingPeriod.PROJECT, project.workTeamID());
+            
+            //billinglambda.endBillingPeriod(BillingPeriod.PROJECT, project.workTeamID());
             //-----------------------------------------------
         }
         catch (Exception e) {
