@@ -122,13 +122,26 @@ public class ProjectCenter {
      */
     public void revokeProjectAccess (long projectid, long userid, long owner) throws AppException, Exception {
         billinglambda.startTransaction();
-        projectlambda.revokeAccess(projectid, userid, owner);
+        projectlambda.revokeProjectAccess(projectid, userid, owner);
         Project project = projectlambda.getProject(projectid, 0);
         AlterUsage alter = new AlterUsage();
         alter.setDecrease(BillingPeriod.COST_PROJECTUSER);
         alter.setProjectId(project.workTeamID());
         alter.setProjectName(project.getName());
-        alter.setStartingEvent("User Removed from project");
+        alter.setStartingEvent("User Removed From Project");
+        billinglambda.alterUsage(alter);
+        billinglambda.commitTransaction();
+    }
+    //********************************************************************
+    public void leaveProject (long projectid, long userid) throws AppException, Exception {
+        billinglambda.startTransaction();
+        projectlambda.leaveProject(projectid, userid);
+        Project project = projectlambda.getProject(projectid, 0);
+        AlterUsage alter = new AlterUsage();
+        alter.setDecrease(BillingPeriod.COST_PROJECTUSER);
+        alter.setProjectId(project.workTeamID());
+        alter.setProjectName(project.getName());
+        alter.setStartingEvent("User Left Project");
         billinglambda.alterUsage(alter);
         billinglambda.commitTransaction();
     }
