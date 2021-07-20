@@ -2,6 +2,7 @@ package lycine.project;
 //************************************************************************
 import java.util.Calendar;
 import java.util.TimeZone;
+import lycine.billing.UsageCost;
 import methinine.billing.AlterUsage;
 import methinine.billing.BillingLambda;
 import methinine.billing.BillingPeriod;
@@ -34,7 +35,7 @@ public class ProjectCenter {
      */
     public void createProject (Project project) throws AppException, Exception {
         //------------------------------------------------
-        project.setDayCost(BillingPeriod.COST_PROJECT);
+        project.setDayCost(UsageCost.PROJECT);
         //------------------------------------------------
         projectlambda.startTransaction();
         projectlambda.createProject(project);
@@ -44,7 +45,7 @@ public class ProjectCenter {
         period.setUserID(project.getOwner());
         period.setProjectID(project.workTeamID());
         period.setDateStart(Celaeno.getDateString(calendar, true));
-        period.setCostPerDay(BillingPeriod.COST_PROJECT);
+        period.setCostPerDay(UsageCost.PROJECT);
         period.setProjectName(project.getName());
         period.setStartingEvent("Project created");
         //------------------------------------------------
@@ -98,13 +99,13 @@ public class ProjectCenter {
      */
     public void createWorkteamAccess (ProjectAccess access, long behalfusrid) throws AppException, Exception {
         long userid = authlambda.getUserIdByIdentifier(access.getUserName());
-        access.setDayCost(BillingPeriod.COST_PROJECTUSER);
+        access.setDayCost(UsageCost.PROJECTUSER);
         Project project = projectlambda.getProject(access.projectID(), behalfusrid);
         access.setUserID(userid);
         projectlambda.startTransaction();
         projectlambda.createAccess(access, behalfusrid);
         AlterUsage alter = new AlterUsage();
-        alter.setIncrease(BillingPeriod.COST_PROJECTUSER);
+        alter.setIncrease(UsageCost.PROJECTUSER);
         alter.setProjectId(project.workTeamID());
         alter.setProjectName(project.getName());
         alter.setStartingEvent("User Added to project");
