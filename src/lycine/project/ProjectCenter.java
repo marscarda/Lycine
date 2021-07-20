@@ -33,6 +33,9 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void createProject (Project project) throws AppException, Exception {
+        //------------------------------------------------
+        project.setDayCost(BillingPeriod.COST_PROJECT);
+        //------------------------------------------------
         projectlambda.startTransaction();
         projectlambda.createProject(project);
         //------------------------------------------------
@@ -60,7 +63,6 @@ public class ProjectCenter {
             team.setAccessLevel(3);
         }
         //============================================================
-        
         ProjectAccess[] accesslist = projectlambda.getAccessList(0, userid);
         int accscount = accesslist.length;
         Project[] accecedteams = new Project[accscount];
@@ -78,9 +80,6 @@ public class ProjectCenter {
             }
         }
         //============================================================
-        
-        
-        
         int totcount = accscount + ownedcount;
         Project[] finalteams = new Project[totcount];
         System.arraycopy(ownedworkteams, 0, finalteams, 0, ownedcount);
@@ -92,17 +91,18 @@ public class ProjectCenter {
     //********************************************************************
     /**
      * 
-     * @param workteamaccess
+     * @param access
      * @param behalfusrid
      * @throws AppException WORKTEAMNOTFOUND UNAUTHORIZED USERNOTFOUND
      * @throws Exception 
      */
-    public void createWorkteamAccess (ProjectAccess workteamaccess, long behalfusrid) throws AppException, Exception {
-        long userid = authlambda.getUserIdByIdentifier(workteamaccess.getUserName());
-        Project project = projectlambda.getProject(workteamaccess.projectID(), behalfusrid);
-        workteamaccess.setUserID(userid);
+    public void createWorkteamAccess (ProjectAccess access, long behalfusrid) throws AppException, Exception {
+        long userid = authlambda.getUserIdByIdentifier(access.getUserName());
+        access.setDayCost(BillingPeriod.COST_PROJECTUSER);
+        Project project = projectlambda.getProject(access.projectID(), behalfusrid);
+        access.setUserID(userid);
         projectlambda.startTransaction();
-        projectlambda.createAccess(workteamaccess, behalfusrid);
+        projectlambda.createAccess(access, behalfusrid);
         AlterUsage alter = new AlterUsage();
         alter.setIncrease(BillingPeriod.COST_PROJECTUSER);
         alter.setProjectId(project.workTeamID());
@@ -121,11 +121,12 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void revokeProjectAccess (long projectid, long userid, long owner) throws AppException, Exception {
+        ProjectAccess access = projectlambda.getAccess(projectid, userid);
         billinglambda.startTransaction();
         projectlambda.revokeProjectAccess(projectid, userid, owner);
         Project project = projectlambda.getProject(projectid, 0);
         AlterUsage alter = new AlterUsage();
-        alter.setDecrease(BillingPeriod.COST_PROJECTUSER);
+        alter.setDecrease(access.dayCost());
         alter.setProjectId(project.workTeamID());
         alter.setProjectName(project.getName());
         alter.setStartingEvent("User Removed From Project");
@@ -133,12 +134,20 @@ public class ProjectCenter {
         billinglambda.commitTransaction();
     }
     //********************************************************************
+    /**
+     * 
+     * @param projectid
+     * @param userid
+     * @throws AppException
+     * @throws Exception 
+     */
     public void leaveProject (long projectid, long userid) throws AppException, Exception {
+        ProjectAccess access = projectlambda.getAccess(projectid, userid);
         billinglambda.startTransaction();
         projectlambda.leaveProject(projectid, userid);
         Project project = projectlambda.getProject(projectid, 0);
         AlterUsage alter = new AlterUsage();
-        alter.setDecrease(BillingPeriod.COST_PROJECTUSER);
+        alter.setDecrease(access.dayCost());
         alter.setProjectId(project.workTeamID());
         alter.setProjectName(project.getName());
         alter.setStartingEvent("User Left Project");
