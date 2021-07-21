@@ -16,6 +16,7 @@ public class PeriodBiller {
     public void setBillingLambda (BillingLambda lambda) { billinglambda = lambda; }
     public void setProjectLambda (ProjectLambda lambda) { projectlambda = lambda; }
     //***********************************************************************
+    @Deprecated
     public void doBilling (int count) throws Exception {
         //---------------------------------------------------------------
         int c = billinglambda.getBillingPeriodsCountByStatus(0);
@@ -28,13 +29,15 @@ public class PeriodBiller {
         while (true){
             BillingPeriod period = billinglambda.startBillingPeriodStage2();
             if (period == null) break;
-            this.qqm(period);
+            //this.qqm(period);
             billinglambda.doBillingStage2(period);
         }
         //---------------------------------------------------------------
     }
     //***********************************************************************
+    @Deprecated
     private void qqm (BillingPeriod period) throws Exception {
+        /*
         switch (period.itemCode()) {
             //-------------------------------------------------
             case 1: {
@@ -50,6 +53,7 @@ public class PeriodBiller {
             break;
             //-------------------------------------------------
         }
+        */
     }
     //***********************************************************************
     
