@@ -3,9 +3,9 @@ package lycine.project;
 import java.util.Calendar;
 import java.util.TimeZone;
 import lycine.billing.UsageCost;
-import methinine.billing.AlterUsage;
-import methinine.billing.BillingLambda;
-import methinine.billing.BillingPeriod;
+import methionine.billing.AlterUsage;
+import methionine.billing.BillingLambda;
+import methionine.billing.UsagePeriod;
 import methionine.AppException;
 import methionine.Celaeno;
 import methionine.auth.AuthLamda;
@@ -40,7 +40,7 @@ public class ProjectCenter {
         projectlambda.startTransaction();
         projectlambda.createProject(project);
         //------------------------------------------------
-        BillingPeriod period = new BillingPeriod();
+        UsagePeriod period = new UsagePeriod();
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         period.setUserID(project.getOwner());
         period.setProjectID(project.workTeamID());

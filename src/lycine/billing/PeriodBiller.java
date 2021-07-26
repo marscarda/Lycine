@@ -1,7 +1,7 @@
 package lycine.billing;
 //***************************************************************************
-import methinine.billing.BillingLambda;
-import methinine.billing.BillingPeriod;
+import methionine.billing.BillingLambda;
+import methionine.billing.UsagePeriod;
 import methionine.AppException;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
@@ -26,17 +26,10 @@ public class PeriodBiller {
         for (int n = 0; n < count; n++)
             billinglambda.doBillingStage1();
         //---------------------------------------------------------------
-        while (true){
-            BillingPeriod period = billinglambda.startBillingPeriodStage2();
-            if (period == null) break;
-            //this.qqm(period);
-            billinglambda.doBillingStage2(period);
-        }
-        //---------------------------------------------------------------
     }
     //***********************************************************************
     @Deprecated
-    private void qqm (BillingPeriod period) throws Exception {
+    private void qqm (UsagePeriod period) throws Exception {
         /*
         switch (period.itemCode()) {
             //-------------------------------------------------
