@@ -6,6 +6,7 @@ import methionine.AppException;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
 //***************************************************************************
+@Deprecated
 public class PeriodBiller {
     //***********************************************************************
     private static final int CPD_PROJECT = 500;
@@ -23,8 +24,8 @@ public class PeriodBiller {
         if (count > c) count = c;
         //---------------------------------------------------------------
         //We close the number of open usage periods.
-        for (int n = 0; n < count; n++)
-            billinglambda.doBillingStage1();
+        //for (int n = 0; n < count; n++)
+        //    billinglambda.doBillingStage1();
         //---------------------------------------------------------------
     }
     //***********************************************************************
