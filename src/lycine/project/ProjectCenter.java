@@ -2,7 +2,7 @@ package lycine.project;
 //************************************************************************
 import java.util.Calendar;
 import java.util.TimeZone;
-import lycine.billing.UsageCost;
+import methionine.billing.UsageCost;
 import methionine.billing.AlterUsage;
 import methionine.billing.BillingLambda;
 import methionine.billing.UsagePeriod;
