@@ -8,6 +8,7 @@ import methionine.billing.BillingLambda;
 import methionine.billing.UsagePeriod;
 import methionine.AppException;
 import methionine.Celaeno;
+import methionine.TabList;
 import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import methionine.project.Project;
@@ -37,7 +38,7 @@ public class ProjectCenter {
         //------------------------------------------------
         project.setDayCost(UsageCost.PROJECT);
         //------------------------------------------------
-        projectlambda.startTransaction();
+        projectlambda.setAutoCommit(0);
         projectlambda.createProject(project);
         //------------------------------------------------
         UsagePeriod period = new UsagePeriod();
@@ -51,7 +52,7 @@ public class ProjectCenter {
         //------------------------------------------------
         billinglambda.startUsage(period);
         //------------------------------------------------
-        projectlambda.commitTransaction();
+        projectlambda.commit();
         //------------------------------------------------
     }
     //********************************************************************
@@ -93,24 +94,45 @@ public class ProjectCenter {
     /**
      * 
      * @param access
-     * @param behalfusrid
+     * @param userid //The user who is trying to perform this. Not the user to grant
      * @throws AppException WORKTEAMNOTFOUND UNAUTHORIZED USERNOTFOUND
      * @throws Exception 
      */
-    public void createWorkteamAccess (ProjectAccess access, long behalfusrid) throws AppException, Exception {
-        long userid = authlambda.getUserIdByIdentifier(access.getUserName());
+    public void createProjectAccess (ProjectAccess access, long userid) throws AppException, Exception {
+        //=============================================
+        //The user authorization to perform this is made 
+        //in projectlambda.createAccess(..)
+        //=============================================
+        //We recover the user we want to grant access.
+        long grantuserid = authlambda.getUserIdByIdentifier(access.getUserName());
+        //---------------------------------------------
+        //The access itself
         access.setDayCost(UsageCost.PROJECTUSER);
-        Project project = projectlambda.getProject(access.projectID(), behalfusrid);
-        access.setUserID(userid);
-        projectlambda.startTransaction();
-        projectlambda.createAccess(access, behalfusrid);
+        Project project = projectlambda.getProject(access.projectID(), userid);
+        access.setUserID(grantuserid);
+        //---------------------------------------------
+        //Create the access. And alter the billing cost
+        //of the project
+        //---------------------------------------------
+        //We create the usage alteration before lockin tables. Performance.
         AlterUsage alter = new AlterUsage();
         alter.setIncrease(UsageCost.PROJECTUSER);
-        alter.setProjectId(project.workTeamID());
+        alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
         alter.setStartingEvent("User Added to project");
+        //---------------------------------------------
+        //We lock the tables
+        TabList tablist = new TabList();
+        billinglambda.AddLockAlterUsage(tablist);
+        projectlambda.AddLockUserAccess(tablist);
+        projectlambda.lockTables(tablist);
+        projectlambda.setAutoCommit(0);
+        projectlambda.createAccess(access, userid);
         billinglambda.alterUsage(alter);
-        projectlambda.commitTransaction();
+        //---------------------------------------------
+        //We are done.
+        projectlambda.commit();
+        //---------------------------------------------
     }
     //********************************************************************
     /**
@@ -128,7 +150,7 @@ public class ProjectCenter {
         Project project = projectlambda.getProject(projectid, 0);
         AlterUsage alter = new AlterUsage();
         alter.setDecrease(access.dayCost());
-        alter.setProjectId(project.workTeamID());
+        alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
         alter.setStartingEvent("User Removed From Project");
         billinglambda.alterUsage(alter);
