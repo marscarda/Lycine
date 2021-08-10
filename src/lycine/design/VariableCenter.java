@@ -67,7 +67,16 @@ public class VariableCenter {
         //------------------------------------------------------------------
     }
     //********************************************************************
-    public Variable[] getVariables (long projectid, int type, long userid) throws AppException, Exception {
+    /**
+     * 
+     * @param projectid
+     * @param type
+     * @param userid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public String[] getCategories (long projectid, int type, long userid) throws AppException, Exception {
         //******************************************************************
         //We check the user has read acces to the project
         projectlambda.checkAccess(projectid, userid, 1);
@@ -75,7 +84,18 @@ public class VariableCenter {
         
         
         //******************************************************************
-        return variablelambda.getVariables(projectid, type);
+        return variablelambda.getVariableCategories(projectid, type);
+        //******************************************************************
+    }
+    //********************************************************************
+    public Variable[] getVariables (long projectid, int type, String category, long userid) throws AppException, Exception {
+        //******************************************************************
+        //We check the user has read acces to the project
+        projectlambda.checkAccess(projectid, userid, 1);
+        //------------------------------------------------------------------
+        if (category == null) category = "";
+        //******************************************************************
+        return variablelambda.getVariables(projectid, type, category);
         //******************************************************************
     }
     //********************************************************************
