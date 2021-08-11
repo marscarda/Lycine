@@ -8,8 +8,8 @@ import methionine.billing.BillingLambda;
 import methionine.billing.UsageCost;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
-import newfactor.survey.variable.Variable;
-import newfactor.survey.variable.VariableLambda;
+import newfactor.survey.design.Variable;
+import newfactor.survey.design.VariableLambda;
 //************************************************************************
 public class VariableCenter {
     //********************************************************************
