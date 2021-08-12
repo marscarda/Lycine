@@ -10,6 +10,7 @@ import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import newfactor.survey.design.Variable;
 import newfactor.survey.design.DesignLambda;
+import newfactor.survey.design.Questionary;
 //************************************************************************
 public class DesignCenter {
     //********************************************************************
@@ -97,6 +98,10 @@ public class DesignCenter {
         //******************************************************************
         return variablelambda.getVariables(projectid, type, category);
         //******************************************************************
+    }
+    //********************************************************************
+    public void createQuestionary (Questionary questionary, long userid) throws AppException, Exception {
+        //DO THE JOB HERE
     }
     //********************************************************************
 }
