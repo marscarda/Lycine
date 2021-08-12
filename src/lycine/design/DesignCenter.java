@@ -131,7 +131,7 @@ public class DesignCenter {
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
         alter.setIncrease(UsageCost.QUESTIONARY);
-        alter.setStartingEvent("Variable '" + questionary.getName() + "' Created");
+        alter.setStartingEvent("Questionary '" + questionary.getName() + "' Created");
         billinglambda.alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
