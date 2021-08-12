@@ -11,7 +11,7 @@ import methionine.project.ProjectLambda;
 import newfactor.survey.design.Variable;
 import newfactor.survey.design.VariableLambda;
 //************************************************************************
-public class VariableCenter {
+public class DesignCenter {
     //********************************************************************
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
