@@ -9,19 +9,19 @@ import methionine.billing.UsageCost;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import newfactor.survey.design.Variable;
-import newfactor.survey.design.VariableLambda;
+import newfactor.survey.design.DesignLambda;
 //************************************************************************
 public class DesignCenter {
     //********************************************************************
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     BillingLambda billinglambda = null;
-    VariableLambda variablelambda = null;
+    DesignLambda variablelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    public void setVariableLambda (VariableLambda variablelambda) { this.variablelambda = variablelambda; }
+    public void setVariableLambda (DesignLambda variablelambda) { this.variablelambda = variablelambda; }
     //********************************************************************
     public void createVariable (Variable variable, long userid) throws AppException, Exception {
         //----------------------------------------------------------------
