@@ -101,7 +101,43 @@ public class DesignCenter {
     }
     //********************************************************************
     public void createQuestionary (Questionary questionary, long userid) throws AppException, Exception {
-        //DO THE JOB HERE
+        if (questionary.getName().length() == 0)
+            throw new AppException("Variable Name cannot be empty", AppException.INVALIDDATASUBMITED);
+        //******************************************************************
+        //Reading Part
+        //******************************************************************
+        //We check the user has write acces to the project
+        projectlambda.checkAccess(questionary.projectID(), userid, 2);
+        //------------------------------------------------------------------
+        //We recover the project. Needed ahead when altering usage.
+        Project project = projectlambda.getProject(questionary.projectID(), 0);
+        //------------------------------------------------------------------
+        //We persist the cost of this particular variable.
+        questionary.cost = UsageCost.QUESTIONARY;
+        //******************************************************************
+        //Writing Part
+        //******************************************************************
+        //Lock All Tables
+        TabList tabs = new TabList();
+        variablelambda.addCreateQuestionaryLock(tabs);
+        billinglambda.AddLockAlterUsage(tabs);
+        variablelambda.setAutoCommit(0);
+        variablelambda.lockTables(tabs);
+        //------------------------------------------------------------------
+        variablelambda.createVariableReader(questionary);
+        //------------------------------------------------------------------
+        //We alter the usage cost.
+        AlterUsage alter = new AlterUsage();
+        alter.setProjectId(project.projectID());
+        alter.setProjectName(project.getName());
+        alter.setIncrease(UsageCost.QUESTIONARY);
+        alter.setStartingEvent("Variable '" + questionary.getName() + "' Created");
+        billinglambda.alterUsage(alter);
+        //------------------------------------------------------------------
+        //We are done.
+        variablelambda.commit();
+        variablelambda.unLockTables();
+        //------------------------------------------------------------------
     }
     //********************************************************************
 }
