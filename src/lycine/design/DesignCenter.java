@@ -24,6 +24,13 @@ public class DesignCenter {
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
     public void setVariableLambda (DesignLambda variablelambda) { this.variablelambda = variablelambda; }
     //********************************************************************
+    /**
+     * 
+     * @param variable
+     * @param userid
+     * @throws AppException
+     * @throws Exception 
+     */
     public void createVariable (Variable variable, long userid) throws AppException, Exception {
         //----------------------------------------------------------------
         if (variable.getName().length() == 0)
@@ -89,6 +96,16 @@ public class DesignCenter {
         //******************************************************************
     }
     //********************************************************************
+    /**
+     * 
+     * @param projectid
+     * @param type
+     * @param category
+     * @param userid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
     public Variable[] getVariables (long projectid, int type, String category, long userid) throws AppException, Exception {
         //******************************************************************
         //We check the user has read acces to the project
@@ -100,6 +117,13 @@ public class DesignCenter {
         //******************************************************************
     }
     //********************************************************************
+    /**
+     * Creates a new questionnaire.
+     * @param questionary
+     * @param userid The user that is creating it.
+     * @throws AppException
+     * @throws Exception 
+     */
     public void createQuestionary (Questionary questionary, long userid) throws AppException, Exception {
         if (questionary.getName().length() == 0)
             throw new AppException("Variable Name cannot be empty", AppException.INVALIDDATASUBMITED);
@@ -140,23 +164,59 @@ public class DesignCenter {
         //------------------------------------------------------------------
     }
     //********************************************************************
+    /**
+     * Returns a questionary given its ID
+     * @param questionnaireid
+     * @param userid The user in behalf of the quest is being requested.
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
     public Questionary getQuestionnaire (long questionnaireid, long userid) throws AppException, Exception {
-        
-        
-        return variablelambda.getQuestionnaire(questionnaireid);
-        
-        
-        
+        //****************************************************************
+        //We recover the quest.
+        Questionary questionnaire = variablelambda.getQuestionnaire(questionnaireid);
+        //****************************************************************
+        //We check the user has read acces to the project
+        projectlambda.checkAccess(questionnaire.projectID(), userid, 1);
+        //----------------------------------------------------------------
+        return questionnaire;
+        //****************************************************************
     }
     //********************************************************************
+    /**
+     * 
+     * @param projectid
+     * @param userid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
     public Questionary[] getQuestionaries (long projectid, long userid) throws AppException, Exception {
-
+        //****************************************************************
+        //We check the user has read acces to the project
+        projectlambda.checkAccess(projectid, userid, 1);
+        //----------------------------------------------------------------
         return variablelambda.getQuestionaries(projectid);
+        //****************************************************************
     }
     //********************************************************************
+    /**
+     * 
+     * @param questionnaireid
+     * @param questionnaire
+     * @param userid
+     * @throws AppException
+     * @throws Exception 
+     */
     public void updateQuestionnaire (long questionnaireid, Questionary questionnaire, long userid) throws AppException, Exception {
-        
+        //****************************************************************
+        //We check the user has read acces to the project
+        Questionary quest = variablelambda.getQuestionnaire(questionnaireid);
+        projectlambda.checkAccess(quest.projectID(), userid, 2);
+        //----------------------------------------------------------------
         variablelambda.updateQuestionnaire(questionnaireid, questionnaire);
+        //****************************************************************
     }
     //********************************************************************
 }
