@@ -140,6 +140,15 @@ public class DesignCenter {
         //------------------------------------------------------------------
     }
     //********************************************************************
+    public Questionary getQuestionnaire (long questionnaireid, long userid) throws AppException, Exception {
+        
+        
+        return variablelambda.getQuestionnaire(questionnaireid);
+        
+        
+        
+    }
+    //********************************************************************
     public Questionary[] getQuestionaries (long projectid, long userid) throws AppException, Exception {
 
 
