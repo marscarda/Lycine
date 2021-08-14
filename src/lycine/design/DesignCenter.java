@@ -11,7 +11,7 @@ import methionine.project.ProjectLambda;
 import newfactor.survey.design.Variable;
 import newfactor.survey.design.DesignLambda;
 import newfactor.survey.design.Questionary;
-import newfactor.survey.design.VarQLinkk;
+import newfactor.survey.design.FormQuestion;
 //************************************************************************
 public class DesignCenter {
     //********************************************************************
@@ -226,11 +226,11 @@ public class DesignCenter {
      * @param userid 
      * @throws methionine.AppException 
      */
-    public void addVariableToQuestionnaire (VarQLinkk link, long userid) throws AppException, Exception {
+    public void addVariableToQuestionnaire (FormQuestion question, long userid) throws AppException, Exception {
         //****************************************************************
         // We fetch the variable and questionnaire.
-        Variable variable = variablelambda.getVariable(link.variableid);
-        Questionary questionnaire = variablelambda.getQuestionnaire(link.questionnaireid);
+        Variable variable = variablelambda.getVariable(question.variableID());
+        Questionary questionnaire = variablelambda.getQuestionnaire(question.formID());
         //****************************************************************
         //We check the variable and questionnarie belongs to the same project.
         if (variable.projectID() != questionnaire.projectID())
@@ -247,7 +247,7 @@ public class DesignCenter {
         variablelambda.lockTables(tabs);
         //----------------------------------------------------------------
         //We Add The variable to questionnaire
-        variablelambda.addToQuestionnaire(link);
+        variablelambda.addToQuestionnaire(question);
         //----------------------------------------------------------------
         //We are done.
         variablelambda.commit();
