@@ -11,6 +11,7 @@ import methionine.project.ProjectLambda;
 import newfactor.survey.design.Variable;
 import newfactor.survey.design.DesignLambda;
 import newfactor.survey.design.Questionary;
+import newfactor.survey.design.VarQLinkk;
 //************************************************************************
 public class DesignCenter {
     //********************************************************************
@@ -216,6 +217,41 @@ public class DesignCenter {
         projectlambda.checkAccess(quest.projectID(), userid, 2);
         //----------------------------------------------------------------
         variablelambda.updateQuestionnaire(questionnaireid, questionnaire);
+        //****************************************************************
+    }
+    //********************************************************************
+    /**
+     * 
+     * @param link
+     * @param userid 
+     * @throws methionine.AppException 
+     */
+    public void addVariableToQuestionnaire (VarQLinkk link, long userid) throws AppException, Exception {
+        //****************************************************************
+        // We fetch the variable and questionnaire.
+        Variable variable = variablelambda.getVariable(link.variableid);
+        Questionary questionnaire = variablelambda.getQuestionnaire(link.questionnaireid);
+        //****************************************************************
+        //We check the variable and questionnarie belongs to the same project.
+        if (variable.projectID() != questionnaire.projectID())
+            throw new AppException("Questionnaire and Variable are from different projects", AppException.NOTTHESAMEPROJECT);
+        //****************************************************************
+        //We check the performing user has access to the project.
+        projectlambda.checkAccess(variable.projectID(), userid, 2);
+        //****************************************************************
+        // Writing part
+        //****************************************************************
+        TabList tabs = new TabList();
+        variablelambda.addAddToQuestionnaire(tabs);
+        variablelambda.setAutoCommit(0);
+        variablelambda.lockTables(tabs);
+        //----------------------------------------------------------------
+        //We Add The variable to questionnaire
+        variablelambda.addToQuestionnaire(link);
+        //----------------------------------------------------------------
+        //We are done.
+        variablelambda.commit();
+        variablelambda.unLockTables();
         //****************************************************************
     }
     //********************************************************************
