@@ -222,7 +222,7 @@ public class DesignCenter {
     //********************************************************************
     /**
      * 
-     * @param link
+     * @param question
      * @param userid 
      * @throws methionine.AppException 
      */
@@ -234,7 +234,7 @@ public class DesignCenter {
         //****************************************************************
         //We check the variable and questionnarie belongs to the same project.
         if (variable.projectID() != questionnaire.projectID())
-            throw new AppException("Questionnaire and Variable are from different projects", AppException.NOTTHESAMEPROJECT);
+            throw new AppException("Form and Variable are from different projects", AppException.NOTTHESAMEPROJECT);
         //****************************************************************
         //We check the performing user has access to the project.
         projectlambda.checkAccess(variable.projectID(), userid, 2);
@@ -252,6 +252,9 @@ public class DesignCenter {
         //We are done.
         variablelambda.commit();
         variablelambda.unLockTables();
+        //****************************************************************
+        //Last we add the variable to the question for display purpose.
+        question.fillVariable(variable);
         //****************************************************************
     }
     //********************************************************************
