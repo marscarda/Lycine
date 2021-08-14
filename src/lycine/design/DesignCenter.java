@@ -10,7 +10,7 @@ import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import newfactor.survey.design.Variable;
 import newfactor.survey.design.DesignLambda;
-import newfactor.survey.design.Questionary;
+import newfactor.survey.design.Form;
 import newfactor.survey.design.FormQuestion;
 //************************************************************************
 public class DesignCenter {
@@ -125,7 +125,7 @@ public class DesignCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public void createQuestionary (Questionary questionary, long userid) throws AppException, Exception {
+    public void createQuestionary (Form questionary, long userid) throws AppException, Exception {
         if (questionary.getName().length() == 0)
             throw new AppException("Variable Name cannot be empty", AppException.INVALIDDATASUBMITED);
         //******************************************************************
@@ -173,10 +173,10 @@ public class DesignCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public Questionary getQuestionnaire (long questionnaireid, long userid) throws AppException, Exception {
+    public Form getQuestionnaire (long questionnaireid, long userid) throws AppException, Exception {
         //****************************************************************
         //We recover the quest.
-        Questionary questionnaire = variablelambda.getQuestionnaire(questionnaireid);
+        Form questionnaire = variablelambda.getQuestionnaire(questionnaireid);
         //****************************************************************
         //We check the user has read acces to the project
         projectlambda.checkAccess(questionnaire.projectID(), userid, 1);
@@ -193,7 +193,7 @@ public class DesignCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public Questionary[] getQuestionaries (long projectid, long userid) throws AppException, Exception {
+    public Form[] getQuestionaries (long projectid, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has read acces to the project
         projectlambda.checkAccess(projectid, userid, 1);
@@ -210,10 +210,10 @@ public class DesignCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public void updateQuestionnaire (long questionnaireid, Questionary questionnaire, long userid) throws AppException, Exception {
+    public void updateQuestionnaire (long questionnaireid, Form questionnaire, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has read acces to the project
-        Questionary quest = variablelambda.getQuestionnaire(questionnaireid);
+        Form quest = variablelambda.getQuestionnaire(questionnaireid);
         projectlambda.checkAccess(quest.projectID(), userid, 2);
         //----------------------------------------------------------------
         variablelambda.updateQuestionnaire(questionnaireid, questionnaire);
@@ -230,7 +230,7 @@ public class DesignCenter {
         //****************************************************************
         // We fetch the variable and questionnaire.
         Variable variable = variablelambda.getVariable(question.variableID());
-        Questionary questionnaire = variablelambda.getQuestionnaire(question.formID());
+        Form questionnaire = variablelambda.getQuestionnaire(question.formID());
         //****************************************************************
         //We check the variable and questionnarie belongs to the same project.
         if (variable.projectID() != questionnaire.projectID())
