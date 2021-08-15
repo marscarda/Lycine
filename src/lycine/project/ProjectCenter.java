@@ -14,19 +14,19 @@ import methionine.auth.User;
 import methionine.project.Project;
 import methionine.project.ProjectAccess;
 import methionine.project.ProjectLambda;
-import tryptophan.survey.publicview.PublicViewLambda;
+//import tryptophan.survey.publicview.PublicViewLambda;
 //************************************************************************
 public class ProjectCenter {
     //********************************************************************
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     BillingLambda billinglambda = null;
-    PublicViewLambda publicviewlambda = null;
+    //PublicViewLambda publicviewlambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setWorkTeamLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    public void setPublicViewLambda (PublicViewLambda publicviewlambda) { this.publicviewlambda = publicviewlambda; }
+//    public void setPublicViewLambda (PublicViewLambda publicviewlambda) { this.publicviewlambda = publicviewlambda; }
     //********************************************************************
     /**
      * 
@@ -222,7 +222,7 @@ public class ProjectCenter {
         try {
             projectlambda.startTransaction();
             //-----------------------------------------------
-            publicviewlambda.destroyCandidate(0, projectid);
+            //publicviewlambda.destroyCandidate(0, projectid);
             //-----------------------------------------------
             projectlambda.deleteProject(projectid);
             projectlambda.deleteAccessesForProject(projectid); ;

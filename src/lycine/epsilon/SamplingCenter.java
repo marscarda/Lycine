@@ -9,7 +9,7 @@ import tryptophan.survey.ActionItemBase;
 import tryptophan.survey.action.ActionSet;
 import tryptophan.survey.action.ActionItemPointer;
 import tryptophan.survey.action.ActionSetLambda;
-import tryptophan.survey.publicview.PublicViewLambda;
+//import tryptophan.survey.publicview.PublicViewLambda;
 import tryptophan.survey.reaction.ReactionLambda;
 import tryptophan.survey.sampling.SampleRecord;
 import tryptophan.survey.sampling.SampleLamda;
@@ -20,13 +20,13 @@ public class SamplingCenter {
     SampleLamda samplelambda = null;
     ReactionLambda reactionslambda = null;
     ActionSetLambda surveylambda = null;
-    PublicViewLambda pubviewlambda = null;
+    //PublicViewLambda pubviewlambda = null;
     //=======================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
     public void setResponseLambda (ReactionLambda reactionslambda) { this.reactionslambda = reactionslambda; }
     public void setSurveyLambda (ActionSetLambda surveylambda) { this.surveylambda = surveylambda; }
-    public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
+    //public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
     //***********************************************************************
     /**
      * Commits a sample for a survey to a particular user 
@@ -124,9 +124,9 @@ public class SamplingCenter {
             switch (pointer.getType()) {
                 //------------------------------------------------------
                 case ActionItemPointer.ITEMTYPE_PUBIMAGE:
-                    try { item = pubviewlambda.getCandidate(pointer.getItemId()); }
-                    catch (AppException e) { continue; }
-                    form.addItem(ActionItemPointer.ITEMTYPE_PUBIMAGE, pointer.getItemId(), item);
+                    //try { item = pubviewlambda.getCandidate(pointer.getItemId()); }
+                    //catch (AppException e) { continue; }
+                    //form.addItem(ActionItemPointer.ITEMTYPE_PUBIMAGE, pointer.getItemId(), item);
                     continue;
                 //------------------------------------------------------
                 default: continue;

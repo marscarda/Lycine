@@ -7,7 +7,7 @@ import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import tryptophan.survey.ActionItemType;
 import tryptophan.survey.publicview.PVCandidate;
-import tryptophan.survey.publicview.PublicViewLambda;
+//import tryptophan.survey.publicview.PublicViewLambda;
 import tryptophan.survey.reaction.ResponseRecord;
 import tryptophan.survey.reaction.ReactionLambda;
 import tryptophan.survey.reaction.ReactionItem;
@@ -19,14 +19,14 @@ public class SampleMetricBuilder {
     AuthLamda authlambda = null;
     SampleLamda samplelambda = null;
     ReactionLambda resplamda = null;
-    PublicViewLambda actionlambda = null;
+    //PublicViewLambda actionlambda = null;
     //-----------------------------------------------------------------------
     ResultVector resultvector = null;
     //=======================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setSampleLambda (SampleLamda samplelambda) { this.samplelambda = samplelambda; }
     public void setReactionLambda (ReactionLambda resplambda) { this.resplamda = resplambda; }
-    public void setActionLambda (PublicViewLambda actionlambda) { this.actionlambda = actionlambda; }
+    //public void setActionLambda (PublicViewLambda actionlambda) { this.actionlambda = actionlambda; }
     //***********************************************************************
     public void prepareSampleVector (long sampleid) throws AppException, Exception {
         //===================================================================
@@ -90,12 +90,12 @@ public class SampleMetricBuilder {
         switch (reaction.getType()) {
             case ActionItemType.PUBIMAGE: 
                 try {
-                    PVCandidate candidate = actionlambda.getCandidate(reaction.getItemid());
+                    //PVCandidate candidate = actionlambda.getCandidate(reaction.getItemid());
                     reactionmet.setItemId(reaction.getItemid());
-                    reactionmet.setLabel(candidate.getLabel());
+                    //reactionmet.setLabel(candidate.getLabel());
                 }
-                catch (AppException e) {
-                    if (e.getErrorCode() != AppException.SURVEYNOTFOUND) return null;
+                catch (Exception e) {
+                    //if (e.getErrorCode() != AppException.SURVEYNOTFOUND) return null;
                 }
         }
         //=================================================

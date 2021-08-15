@@ -7,17 +7,17 @@ import methionine.project.ProjectLambda;
 import tryptophan.survey.ActionItemBase;
 import tryptophan.survey.publicview.PVCandidate;
 import tryptophan.survey.action.ActionSetLambda;
-import tryptophan.survey.publicview.PublicViewLambda;
+//import tryptophan.survey.publicview.PublicViewLambda;
 import tryptophan.survey.action.ActionItemPointer;
 //***************************************************************************
 public class ActionSetCenter {
     //***********************************************************************
     ActionSetLambda actionsetlambda = null;
-    PublicViewLambda pubviewlambda = null;
+    //PublicViewLambda pubviewlambda = null;
     ProjectLambda projectlambda = null;
     //***********************************************************************
     public void setActionSetLambda (ActionSetLambda actionsetlambda) { this.actionsetlambda = actionsetlambda; }
-    public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
+    //public void setPublicViewLambda (PublicViewLambda pubviewlambda) { this.pubviewlambda = pubviewlambda; }
     public void setProjectLambda (ProjectLambda projectlambda) { this.projectlambda = projectlambda; }
     //***********************************************************************
     /**
@@ -37,11 +37,11 @@ public class ActionSetCenter {
         //==================================================================
         switch (pointer.getType()) {
             case ActionItemPointer.ITEMTYPE_PUBIMAGE: {
-                PVCandidate candidate = pubviewlambda.getCandidate(pointer.getItemId());
-                if (candidate.projectID() != projectid)
+                //PVCandidate candidate = pubviewlambda.getCandidate(pointer.getItemId());
+                //if (candidate.projectID() != projectid)
                     throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
-                label = candidate.getLabel();
-                break;
+                //label = candidate.getLabel();
+                //break;
             }            
         }        
         //==================================================================
@@ -66,12 +66,12 @@ public class ActionSetCenter {
             switch (pointer.getType()) {
                 //------------------------------------------------------
                 case ActionItemPointer.ITEMTYPE_PUBIMAGE:
-                    try { item = pubviewlambda.getCandidate(pointer.getItemId()); }
-                    catch (AppException e) { continue; }
+                    //try { item = pubviewlambda.getCandidate(pointer.getItemId()); }
+                    //catch (AppException e) { continue; }
                     vitem = new VarItem();
                     vitem.itemtype = ActionItemPointer.ITEMTYPE_PUBIMAGE;
                     vitem.itemid = pointer.getItemId();
-                    vitem.item = item;
+                    //vitem.item = item;
                     vars.add(vitem);
                     continue;
                 //------------------------------------------------------
