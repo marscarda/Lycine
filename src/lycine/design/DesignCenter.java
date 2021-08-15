@@ -149,7 +149,7 @@ public class DesignCenter {
         variablelambda.setAutoCommit(0);
         variablelambda.lockTables(tabs);
         //------------------------------------------------------------------
-        variablelambda.createVariableReader(questionary);
+        variablelambda.createForm(questionary);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -218,6 +218,44 @@ public class DesignCenter {
         //----------------------------------------------------------------
         variablelambda.updateQuestionnaire(questionnaireid, questionnaire);
         //****************************************************************
+    }
+    //********************************************************************
+    /**
+     * Deletes a Form.
+     * @param formid
+     * @param userid
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void destroyForm (long formid, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We recover the form and check the user has delete acces to the project
+        Form form = variablelambda.getQuestionnaire(formid);
+        projectlambda.checkAccess(form.projectID(), userid, 3);
+        //----------------------------------------------------------------
+        //We recover the project. Needed ahead when altering usage.
+        Project project = projectlambda.getProject(form.projectID(), 0);
+        //------------------------------------------------------------------
+        TabList tabs = new TabList();
+        variablelambda.addDestroyFormLock(tabs);
+        billinglambda.AddLockAlterUsage(tabs);
+        variablelambda.setAutoCommit(0);
+        variablelambda.lockTables(tabs);
+        //------------------------------------------------------------------
+        variablelambda.destroyForm(formid);
+        //------------------------------------------------------------------
+        //We alter the usage cost.
+        AlterUsage alter = new AlterUsage();
+        alter.setProjectId(project.projectID());
+        alter.setProjectName(project.getName());
+        alter.setDecrease(form.cost);
+        alter.setStartingEvent("Form '" + form.getName() + "' Destroyed");
+        billinglambda.alterUsage(alter);
+        //------------------------------------------------------------------
+        //We are done.
+        variablelambda.commit();
+        variablelambda.unLockTables();
+        //----------------------------------------------------------------
     }
     //********************************************************************
     /**
