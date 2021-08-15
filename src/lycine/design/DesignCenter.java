@@ -261,14 +261,19 @@ public class DesignCenter {
     /**
      * 
      * @param formid
+     * @param userid
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public FormQuestion[] getFormQuestions (long formid) throws AppException, Exception {
-
-
+    public FormQuestion[] getFormQuestions (long formid, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We check the user has read acces to the project
+        Form quest = variablelambda.getQuestionnaire(formid);
+        projectlambda.checkAccess(quest.projectID(), userid, 1);
+        //----------------------------------------------------------------
         return variablelambda.getFormQuestions(formid);
+        //****************************************************************
     }
     //********************************************************************
 }
