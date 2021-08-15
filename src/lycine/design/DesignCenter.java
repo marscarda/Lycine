@@ -258,5 +258,18 @@ public class DesignCenter {
         //****************************************************************
     }
     //********************************************************************
+    /**
+     * 
+     * @param formid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public FormQuestion[] getFormQuestions (long formid) throws AppException, Exception {
+
+
+        return variablelambda.getFormQuestions(formid);
+    }
+    //********************************************************************
 }
 //************************************************************************
