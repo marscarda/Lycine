@@ -8,10 +8,10 @@ import methionine.billing.BillingLambda;
 import methionine.billing.UsageCost;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
-import newfactor.survey.design.Variable;
-import newfactor.survey.design.DesignLambda;
-import newfactor.survey.design.Form;
-import newfactor.survey.design.FormQuestion;
+import tryptophan.design.Variable;
+import tryptophan.design.DesignLambda;
+import tryptophan.design.Form;
+import tryptophan.design.FormQuestion;
 //************************************************************************
 public class DesignCenter {
     //********************************************************************
