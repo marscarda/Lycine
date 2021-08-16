@@ -125,9 +125,9 @@ public class DesignCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public void createQuestionary (Form questionary, long userid) throws AppException, Exception {
+    public void createForm (Form questionary, long userid) throws AppException, Exception {
         if (questionary.getName().length() == 0)
-            throw new AppException("Variable Name cannot be empty", AppException.INVALIDDATASUBMITED);
+            throw new AppException("Form Name cannot be empty", AppException.INVALIDDATASUBMITED);
         //******************************************************************
         //Reading Part
         //******************************************************************
