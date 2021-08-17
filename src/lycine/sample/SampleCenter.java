@@ -22,10 +22,15 @@ public class SampleCenter {
     public void setVariableLambda (DesignLambda variablelambda) { this.designlambda = variablelambda; }
     public void setSampleLambda (SampleLambda samplelambda) { this.samplelambda = samplelambda; }
     //********************************************************************
+    /**
+     * Creates a new sample.
+     * @param sample
+     * @param userid
+     * @throws AppException
+     * @throws Exception 
+     */
     public void createSample (Sample sample, long userid) throws AppException, Exception {
-        
-        System.out.println(sample.getName());
-        
+        samplelambda.createSample(sample);
     }
     //********************************************************************
 }
