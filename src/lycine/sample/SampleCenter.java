@@ -87,15 +87,76 @@ public class SampleCenter {
      * Returns a list of samples given a project
      * @param projectid
      * @param userid
+     * @param fillextras
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public Sample[] getSamples (long projectid, long userid) throws AppException, Exception {
-        
-        //A LOT OF WORK GOES HERE.
-        
-        return samplelambda.getSamples(projectid);
+    public Sample[] getSamples (long projectid, long userid, boolean  fillextras) throws AppException, Exception {
+        //****************************************************************
+        Sample[] samples = samplelambda.getSamples(projectid);
+        if (!fillextras) return samples;
+        //----------------------------------------------------------------
+        User user;
+        Form form;
+        for (Sample sample : samples) {
+            //------------------------------------------------------------
+            //Fill the user name
+            try { 
+                user = authlambda.getUser(sample.userID(), false); 
+                sample.setUserName(user.loginName());
+            }
+            catch (AppException e) {}
+            //------------------------------------------------------------
+            try {
+                form = designlambda.getQuestionnaire(sample.formID());
+                sample.setFormName(form.getName());
+            }
+            catch (AppException e) {}
+            //------------------------------------------------------------
+        }
+        //----------------------------------------------------------------
+        return samples;
+        //****************************************************************
+    }
+    //********************************************************************
+    //********************************************************************
+    /**
+     * Destroys a sample.
+     * @param sampleid
+     * @param userid
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void destroySample (long sampleid, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We fetch the sample and check the performing user has access to the project.
+        Sample sample = samplelambda.getSample(sampleid);
+        projectlambda.checkAccess(sample.projectID(), userid, 3);
+        //------------------------------------------------------------------
+        //We recover the project. Needed ahead when altering usage.
+        Project project = projectlambda.getProject(sample.projectID(), 0);
+        //****************************************************************
+        TabList tabs = new TabList();
+        samplelambda.addDestroySampleLock(tabs);
+        billinglambda.AddLockAlterUsage(tabs);
+        samplelambda.setAutoCommit(0);
+        samplelambda.lockTables(tabs);
+        //------------------------------------------------------------------
+        samplelambda.destroySample(sampleid);
+        //------------------------------------------------------------------
+        //We alter the usage cost.
+        AlterUsage alter = new AlterUsage();
+        alter.setProjectId(project.projectID());
+        alter.setProjectName(project.getName());
+        alter.setDecrease(sample.cost);
+        alter.setStartingEvent("Sample '" + sample.getName() + "' Destroyed");
+        billinglambda.alterUsage(alter);
+        //------------------------------------------------------------------
+        //We are done.
+        samplelambda.commit();
+        samplelambda.unLockTables();
+        //****************************************************************
     }
     //********************************************************************
 }
