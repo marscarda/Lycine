@@ -55,6 +55,9 @@ public class SampleCenter {
         //If a user name is entrusted we find the user id.
         if (sample.getUserName().length() != 0)
             sample.setUserId(authlambda.getUserIdByIdentifier(sample.getUserName()));
+        //----------------------------------------------------------------
+        //Set the form name in the sample for response sake
+        sample.setFormName(form.getName());
         //****************************************************************
         // Writing part
         //****************************************************************
