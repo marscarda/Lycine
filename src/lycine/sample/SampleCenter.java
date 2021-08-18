@@ -83,5 +83,20 @@ public class SampleCenter {
         //****************************************************************
     }
     //********************************************************************
+    /**
+     * Returns a list of samples given a project
+     * @param projectid
+     * @param userid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public Sample[] getSamples (long projectid, long userid) throws AppException, Exception {
+        
+        //A LOT OF WORK GOES HERE.
+        
+        return samplelambda.getSamples(projectid);
+    }
+    //********************************************************************
 }
 //************************************************************************
