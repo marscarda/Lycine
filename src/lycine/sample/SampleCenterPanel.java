@@ -14,7 +14,7 @@ import tryptophan.design.Form;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleLambda;
 //************************************************************************
-public class SampleCenter {
+public class SampleCenterPanel {
     //********************************************************************
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
@@ -97,7 +97,10 @@ public class SampleCenter {
      */
     public Sample[] getSamples (long projectid, long userid, boolean  fillextras) throws AppException, Exception {
         //****************************************************************
-        Sample[] samples = samplelambda.getSamples(projectid);
+        //We check the performing user has access to the project.
+        projectlambda.checkAccess(projectid, userid, 1);
+        //****************************************************************
+        Sample[] samples = samplelambda.getSamplesByProject(projectid);
         if (!fillextras) return samples;
         //----------------------------------------------------------------
         User user;
