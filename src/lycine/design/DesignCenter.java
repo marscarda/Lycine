@@ -268,10 +268,10 @@ public class DesignCenter {
         //****************************************************************
         // We fetch the variable and questionnaire.
         Variable variable = variablelambda.getVariable(question.variableID());
-        Form questionnaire = variablelambda.getQuestionnaire(question.formID());
+        Form form = variablelambda.getQuestionnaire(question.formID());
         //****************************************************************
         //We check the variable and questionnarie belongs to the same project.
-        if (variable.projectID() != questionnaire.projectID())
+        if (variable.projectID() != form.projectID())
             throw new AppException("Form and Variable are from different projects", AppException.NOTTHESAMEPROJECT);
         //****************************************************************
         //We check the performing user has access to the project.
