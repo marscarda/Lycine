@@ -66,8 +66,29 @@ public class SampleCenterField extends SampleCenterPanel {
         if (sample.userID() != userid)
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
         Form form = designlambda.getQuestionnaire(sample.formID());
-        FormQuestion[] questions = designlambda.getFormQuestions(form.questionaryID());
+        FormQuestion[] questions = designlambda.getFormQuestions(form.formID());
         return questions;
+    }
+    //********************************************************************
+    /**
+     * Returns the final form including questions and vars ready to start survey.
+     * Typically used to deliver the form to an app client.
+     * @param sampleid
+     * @param userid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public FinalForm getFinalFormBySample (long sampleid, long userid) throws AppException, Exception {
+        Sample sample = samplelambda.getSample(sampleid);
+        if (sample.userID() != userid)
+            throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
+        Form form = designlambda.getQuestionnaire(sample.formID());
+        FormQuestion[] questions = designlambda.getFormQuestions(form.formID());
+        FinalForm finalform = new FinalForm();
+        finalform.form = form;
+        finalform.questions = questions;
+        return finalform;
     }
     //********************************************************************
 }
