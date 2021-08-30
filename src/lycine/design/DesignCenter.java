@@ -315,6 +315,18 @@ public class DesignCenter {
         //****************************************************************
     }
     //********************************************************************
+    public void setCustomLabels (CustomLabel[] labels, long projectid, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We check the user has write acces to the project
+        projectlambda.checkAccess(projectid, userid, 2);
+        //----------------------------------------------------------------
+        for (CustomLabel label : labels)
+            label.setProjectId(projectid);
+        //----------------------------------------------------------------
+        designlambda.setCustomLabels(labels);
+        //****************************************************************
+    }
+    //====================================================================
     /**
      * 
      * @param projectid
