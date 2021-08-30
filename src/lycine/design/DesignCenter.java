@@ -8,6 +8,7 @@ import methionine.billing.BillingLambda;
 import methionine.billing.UsageCost;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
+import tryptophan.design.CustomLabel;
 import tryptophan.design.Variable;
 import tryptophan.design.DesignLambda;
 import tryptophan.design.Form;
@@ -18,12 +19,12 @@ public class DesignCenter {
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     BillingLambda billinglambda = null;
-    DesignLambda variablelambda = null;
+    DesignLambda designlambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    public void setVariableLambda (DesignLambda variablelambda) { this.variablelambda = variablelambda; }
+    public void setVariableLambda (DesignLambda designlambda) { this.designlambda = designlambda; }
     //********************************************************************
     /**
      * 
@@ -55,12 +56,12 @@ public class DesignCenter {
         //******************************************************************
         //Lock All Tables
         TabList tabs = new TabList();
-        variablelambda.addCreateVariableLock(tabs);
+        designlambda.addCreateVariableLock(tabs);
         billinglambda.AddLockAlterUsage(tabs);
-        variablelambda.setAutoCommit(0);
-        variablelambda.lockTables(tabs);
+        designlambda.setAutoCommit(0);
+        designlambda.lockTables(tabs);
         //------------------------------------------------------------------
-        variablelambda.createVariable(variable);
+        designlambda.createVariable(variable);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -71,8 +72,8 @@ public class DesignCenter {
         billinglambda.alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        variablelambda.commit();
-        variablelambda.unLockTables();
+        designlambda.commit();
+        designlambda.unLockTables();
         //------------------------------------------------------------------
     }
     //********************************************************************
@@ -93,7 +94,7 @@ public class DesignCenter {
         
         
         //******************************************************************
-        return variablelambda.getVariableCategories(projectid, type);
+        return designlambda.getVariableCategories(projectid, type);
         //******************************************************************
     }
     //********************************************************************
@@ -114,7 +115,7 @@ public class DesignCenter {
         //------------------------------------------------------------------
         if (category == null) category = "";
         //******************************************************************
-        return variablelambda.getVariables(projectid, type, category);
+        return designlambda.getVariables(projectid, type, category);
         //******************************************************************
     }
     //********************************************************************
@@ -144,12 +145,12 @@ public class DesignCenter {
         //******************************************************************
         //Lock All Tables
         TabList tabs = new TabList();
-        variablelambda.addCreateQuestionaryLock(tabs);
+        designlambda.addCreateQuestionaryLock(tabs);
         billinglambda.AddLockAlterUsage(tabs);
-        variablelambda.setAutoCommit(0);
-        variablelambda.lockTables(tabs);
+        designlambda.setAutoCommit(0);
+        designlambda.lockTables(tabs);
         //------------------------------------------------------------------
-        variablelambda.createForm(questionary);
+        designlambda.createForm(questionary);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -160,8 +161,8 @@ public class DesignCenter {
         billinglambda.alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        variablelambda.commit();
-        variablelambda.unLockTables();
+        designlambda.commit();
+        designlambda.unLockTables();
         //------------------------------------------------------------------
     }
     //********************************************************************
@@ -176,7 +177,7 @@ public class DesignCenter {
     public Form getQuestionnaire (long questionnaireid, long userid) throws AppException, Exception {
         //****************************************************************
         //We recover the quest.
-        Form questionnaire = variablelambda.getQuestionnaire(questionnaireid);
+        Form questionnaire = designlambda.getQuestionnaire(questionnaireid);
         //****************************************************************
         //We check the user has read acces to the project
         projectlambda.checkAccess(questionnaire.projectID(), userid, 1);
@@ -198,7 +199,7 @@ public class DesignCenter {
         //We check the user has read acces to the project
         projectlambda.checkAccess(projectid, userid, 1);
         //----------------------------------------------------------------
-        return variablelambda.getQuestionaries(projectid);
+        return designlambda.getQuestionaries(projectid);
         //****************************************************************
     }
     //********************************************************************
@@ -213,10 +214,10 @@ public class DesignCenter {
     public void updateQuestionnaire (long questionnaireid, Form questionnaire, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has read acces to the project
-        Form quest = variablelambda.getQuestionnaire(questionnaireid);
+        Form quest = designlambda.getQuestionnaire(questionnaireid);
         projectlambda.checkAccess(quest.projectID(), userid, 2);
         //----------------------------------------------------------------
-        variablelambda.updateQuestionnaire(questionnaireid, questionnaire);
+        designlambda.updateQuestionnaire(questionnaireid, questionnaire);
         //****************************************************************
     }
     //********************************************************************
@@ -230,19 +231,19 @@ public class DesignCenter {
     public void destroyForm (long formid, long userid) throws AppException, Exception {
         //****************************************************************
         //We recover the form and check the user has delete acces to the project
-        Form form = variablelambda.getQuestionnaire(formid);
+        Form form = designlambda.getQuestionnaire(formid);
         projectlambda.checkAccess(form.projectID(), userid, 3);
         //----------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
         Project project = projectlambda.getProject(form.projectID(), 0);
         //------------------------------------------------------------------
         TabList tabs = new TabList();
-        variablelambda.addDestroyFormLock(tabs);
+        designlambda.addDestroyFormLock(tabs);
         billinglambda.AddLockAlterUsage(tabs);
-        variablelambda.setAutoCommit(0);
-        variablelambda.lockTables(tabs);
+        designlambda.setAutoCommit(0);
+        designlambda.lockTables(tabs);
         //------------------------------------------------------------------
-        variablelambda.destroyForm(formid);
+        designlambda.destroyForm(formid);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -253,8 +254,8 @@ public class DesignCenter {
         billinglambda.alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        variablelambda.commit();
-        variablelambda.unLockTables();
+        designlambda.commit();
+        designlambda.unLockTables();
         //----------------------------------------------------------------
     }
     //********************************************************************
@@ -267,8 +268,8 @@ public class DesignCenter {
     public void addVariableToQuestionnaire (FormQuestion question, long userid) throws AppException, Exception {
         //****************************************************************
         // We fetch the variable and questionnaire.
-        Variable variable = variablelambda.getVariable(question.variableID());
-        Form form = variablelambda.getQuestionnaire(question.formID());
+        Variable variable = designlambda.getVariable(question.variableID());
+        Form form = designlambda.getQuestionnaire(question.formID());
         //****************************************************************
         //We check the variable and questionnarie belongs to the same project.
         if (variable.projectID() != form.projectID())
@@ -280,16 +281,16 @@ public class DesignCenter {
         // Writing part
         //****************************************************************
         TabList tabs = new TabList();
-        variablelambda.addAddToQuestionnaire(tabs);
-        variablelambda.setAutoCommit(0);
-        variablelambda.lockTables(tabs);
+        designlambda.addAddToQuestionnaire(tabs);
+        designlambda.setAutoCommit(0);
+        designlambda.lockTables(tabs);
         //----------------------------------------------------------------
         //We Add The variable to questionnaire
-        variablelambda.addToQuestionnaire(question);
+        designlambda.addToQuestionnaire(question);
         //----------------------------------------------------------------
         //We are done.
-        variablelambda.commit();
-        variablelambda.unLockTables();
+        designlambda.commit();
+        designlambda.unLockTables();
         //****************************************************************
         //Last we add the variable to the question for display purpose.
         question.fillVariable(variable);
@@ -307,11 +308,27 @@ public class DesignCenter {
     public FormQuestion[] getFormQuestions (long formid, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has read acces to the project
-        Form quest = variablelambda.getQuestionnaire(formid);
+        Form quest = designlambda.getQuestionnaire(formid);
         projectlambda.checkAccess(quest.projectID(), userid, 1);
         //----------------------------------------------------------------
-        return variablelambda.getFormQuestions(formid);
+        return designlambda.getFormQuestions(formid);
         //****************************************************************
+    }
+    //********************************************************************
+    /**
+     * 
+     * @param projectid
+     * @param groupcode
+     * @param userid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public CustomLabel[] getCustomLabels (long projectid, int groupcode, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We check the user has read acces to the project
+        projectlambda.checkAccess(projectid, userid, 1);
+        return designlambda.getCustomLabels(projectid, groupcode);
     }
     //********************************************************************
 }
