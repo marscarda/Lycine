@@ -5,6 +5,7 @@ import methionine.auth.AuthErrorCodes;
 import tryptophan.design.CustomLabel;
 import tryptophan.design.Form;
 import tryptophan.design.FormQuestion;
+import tryptophan.sample.Responder;
 import tryptophan.sample.Sample;
 //************************************************************************
 public class SampleCenterField extends SampleCenterPanel {
@@ -117,6 +118,22 @@ public class SampleCenterField extends SampleCenterPanel {
         //--------------------------------------------
         return finalform;
         //--------------------------------------------
+    }
+    //********************************************************************
+    /**
+     * Adds a new field response to a sample
+     * @param responder
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void AddResponse (Responder responder) throws AppException, Exception {
+        
+        
+        
+        
+        
+        
+        
     }
     //********************************************************************
 }
