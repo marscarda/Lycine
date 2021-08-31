@@ -2,6 +2,7 @@ package lycine.sample;
 //************************************************************************
 import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
+import methionine.project.Project;
 import tryptophan.design.CustomLabel;
 import tryptophan.design.Form;
 import tryptophan.design.FormQuestion;
@@ -126,14 +127,19 @@ public class SampleCenterField extends SampleCenterPanel {
      * @throws AppException
      * @throws Exception 
      */
-    public void AddResponse (Responder responder) throws AppException, Exception {
-        
-        
-        
-        
-        
-        
-        
+    public void AddResponse (Responder responder, long userid) throws AppException, Exception {
+        //---------------------------------------------------
+        Sample sample = samplelambda.getSample(responder.sampleID());
+        //---------------------------------------------------
+        if (sample.userID() != userid)
+            throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
+        //---------------------------------------------------
+        Project project = projectlambda.getProject(sample.projectID(), 0);
+        responder.setProjectId(userid);
+        responder.setUserId(userid);
+        //---------------------------------------------------
+        samplelambda.addFieldResponse(responder);
+        //---------------------------------------------------
     }
     //********************************************************************
 }
