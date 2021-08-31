@@ -4,10 +4,12 @@ import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
 import methionine.project.Project;
 import tryptophan.design.CustomLabel;
+import tryptophan.design.DesignErrorCodes;
 import tryptophan.design.Form;
 import tryptophan.design.FormQuestion;
 import tryptophan.sample.Responder;
 import tryptophan.sample.Sample;
+import tryptophan.sample.SampleErrorCodes;
 //************************************************************************
 public class SampleCenterField extends SampleCenterPanel {
     //********************************************************************
@@ -37,7 +39,15 @@ public class SampleCenterField extends SampleCenterPanel {
         Sample sample = samplelambda.getSample(sampleid);
         if (sample.userID() != userid)
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
+        //---------------------------------------------------------------
+        //Check if the form exists. If not the sample is invalid
+        try { designlambda.getQuestionnaire(sample.formID()); }
+        catch (AppException e) {
+            if (e.getErrorCode() == DesignErrorCodes.FORMNOTFOUND)
+                throw new AppException("Sample out of taking", SampleErrorCodes.SMPLEOUTOFTAKING);
+        }
         return sample;
+        //---------------------------------------------------------------
     }
     //********************************************************************
     /**
