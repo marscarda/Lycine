@@ -16,11 +16,11 @@ import tryptophan.sample.SampleLambda;
 //************************************************************************
 public class SampleCenterPanel {
     //********************************************************************
-    AuthLamda authlambda = null;
-    ProjectLambda projectlambda = null;
-    BillingLambda billinglambda = null;
-    DesignLambda designlambda = null;
-    SampleLambda samplelambda = null;
+    protected AuthLamda authlambda = null;
+    protected ProjectLambda projectlambda = null;
+    protected BillingLambda billinglambda = null;
+    protected DesignLambda designlambda = null;
+    protected SampleLambda samplelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
@@ -125,7 +125,6 @@ public class SampleCenterPanel {
         return samples;
         //****************************************************************
     }
-    //********************************************************************
     //********************************************************************
     /**
      * Destroys a sample.
