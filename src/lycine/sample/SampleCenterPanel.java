@@ -11,6 +11,8 @@ import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import tryptophan.design.DesignLambda;
 import tryptophan.design.Form;
+import tryptophan.sample.Responder;
+import tryptophan.sample.ResponseValue;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleLambda;
 //************************************************************************
@@ -162,6 +164,52 @@ public class SampleCenterPanel {
         samplelambda.commit();
         samplelambda.unLockTables();
         //****************************************************************
+    }
+    //********************************************************************
+    public SampleView getSampleView (long sampleid, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We recover the sample and check if the user has access to the project.
+        Sample sample = samplelambda.getSample(sampleid);
+        projectlambda.checkAccess(sample.projectID(), userid, 1);
+        //****************************************************************
+        //We create the sample view instance and set the sampleid.
+        SampleView sampleview = new SampleView();
+        sampleview.setSample(sample);
+        //****************************************************************
+        Responder[] response = samplelambda.getResponses(sampleid, true);
+        for (Responder r : response) {
+            
+            System.out.println("Sampleid: " + r.sampleID() + " ResponseID: " + r.responseID());
+            
+            for (ResponseValue v : r.getValues()) {
+                
+                System.out.println("   Response value - " + v.variableID() + " Type " + v.getType() + " value " + v.getValue());
+                
+                
+            }
+            
+            
+            
+        }
+        
+        
+        
+        
+        
+        //----------------------------------------------------------------
+        
+        //----------------------------------------------------------------
+        
+        
+        System.out.println("Sample name " + sample.getName());
+        System.out.println("Form name " + sample.getFormName());
+        
+        
+        
+        
+        
+        
+        return sampleview;
     }
     //********************************************************************
 }
