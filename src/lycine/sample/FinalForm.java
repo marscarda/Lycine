@@ -1,4 +1,4 @@
-package lycine.sample.field;
+package lycine.sample;
 //************************************************************************
 import tryptophan.design.Form;
 import tryptophan.design.FormQuestion;

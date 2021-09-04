@@ -12,7 +12,6 @@ import methionine.project.ProjectLambda;
 import tryptophan.design.DesignLambda;
 import tryptophan.design.Form;
 import tryptophan.sample.Responder;
-import tryptophan.sample.ResponseValue;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleLambda;
 //************************************************************************
@@ -166,50 +165,33 @@ public class SampleCenterPanel {
         //****************************************************************
     }
     //********************************************************************
-    public SampleView getSampleView (long sampleid, long userid) throws AppException, Exception {
+    /**
+     * Returns a sample payload given a sampleid.
+     * @param sampleid
+     * @param userid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public SamplePayLoad getSamplePayload (long sampleid, long userid) throws AppException, Exception {
         //****************************************************************
-        //We recover the sample and check if the user has access to the project.
+        //We recover the sample.
         Sample sample = samplelambda.getSample(sampleid);
-        projectlambda.checkAccess(sample.projectID(), userid, 1);
-        //****************************************************************
-        //We create the sample view instance and set the sampleid.
-        SampleView sampleview = new SampleView();
-        sampleview.setSample(sample);
-        //****************************************************************
-        Responder[] response = samplelambda.getResponses(sampleid, true);
-        for (Responder r : response) {
-            
-            System.out.println("Sampleid: " + r.sampleID() + " ResponseID: " + r.responseID());
-            
-            for (ResponseValue v : r.getValues()) {
-                
-                System.out.println("   Response value - " + v.variableID() + " Type " + v.getType() + " value " + v.getValue());
-                
-                
-            }
-            
-            
-            
-        }
-        
-        
-        
-        
-        
         //----------------------------------------------------------------
-        
+        //We check (If required) if the user has access to the project.
+        if (userid != 0)
+            projectlambda.checkAccess(sample.projectID(), userid, 1);
+        //****************************************************************
+        //We create the sample payload instance and set the sampleid.
+        SamplePayLoad samplepayload = new SamplePayLoad();
+        samplepayload.setSample(sample);
+        //****************************************************************
+        //We recover the responses and add them to the payload.
+        Responder[] responses = samplelambda.getResponses(sampleid, true);
+        samplepayload.setResponses(responses);
         //----------------------------------------------------------------
-        
-        
-        System.out.println("Sample name " + sample.getName());
-        System.out.println("Form name " + sample.getFormName());
-        
-        
-        
-        
-        
-        
-        return sampleview;
+        return samplepayload;
+        //****************************************************************
     }
     //********************************************************************
 }

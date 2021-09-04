@@ -1,6 +1,5 @@
-package lycine.sample.field;
+package lycine.sample;
 //************************************************************************
-import lycine.sample.SampleCenterPanel;
 import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
 import methionine.project.Project;
