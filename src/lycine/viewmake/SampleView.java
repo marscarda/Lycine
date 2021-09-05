@@ -1,6 +1,15 @@
 package lycine.viewmake;
 //************************************************************************
+import tryptophan.sample.Sample;
+//************************************************************************
 public class SampleView {
+    //********************************************************************
+    Sample sample = null;
+    void setSample (Sample sample) { this.sample = sample; }
+    public Sample getSample () { 
+        if (sample == null) return new Sample();
+        return sample; 
+    }
     //********************************************************************
     int varstatcount = 0;
     private VarStatAlpha[] varstats = new VarStatAlpha[0];

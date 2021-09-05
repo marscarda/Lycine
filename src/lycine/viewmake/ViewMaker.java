@@ -3,24 +3,30 @@ package lycine.viewmake;
 import lycine.sample.SampleCenterPanel;
 import lycine.sample.SamplePayLoad;
 import methionine.AppException;
+import methionine.auth.AuthErrorCodes;
+import methionine.auth.AuthLamda;
+import methionine.auth.User;
 import methionine.project.ProjectLambda;
 import tryptophan.design.DesignLambda;
 import tryptophan.design.Variable;
 import tryptophan.sample.Responder;
 import tryptophan.sample.ResponseValue;
+import tryptophan.sample.Sample;
 import tryptophan.sample.SampleLambda;
 //************************************************************************
 public class ViewMaker {
     //********************************************************************
     ProjectLambda projectlambda = null;
+    AuthLamda authlambda = null;
     DesignLambda designlambda = null;
     SampleLambda samplelambda = null;
     //====================================================================
     public void setSampleLambda (SampleLambda samplelambda) { this.samplelambda = samplelambda; }
     public void setVariableLambda (DesignLambda variablelambda) { this.designlambda = variablelambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
+    public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     //********************************************************************
-    public SampleView getSampleView (long sampleid, long userid) throws AppException, Exception {
+    public SampleView getSampleView (long sampleid, long userid, boolean setusername) throws AppException, Exception {
         //****************************************************************
         //We get the sample payload.
         //Wheter the user has access to the project is checked there.
@@ -31,7 +37,20 @@ public class ViewMaker {
         //****************************************************************
         //We create the SampleView Instance and get the needed data.
         SampleView sampleview = new SampleView();
+        Sample sample = samplepayload.getSample();
+        sampleview.setSample(sample);
         Responder[] responses = samplepayload.getResponses();
+        //================================================================
+        //If the user name is required we add it to the sample.
+        if (setusername) {
+            try {
+                User user = authlambda.getUser(sample.userID(), false);
+                sample.setUserName(user.loginName());
+            }
+            catch (AppException e) {
+                if (e.getErrorCode() != AuthErrorCodes.USERNOTFOUND) throw e;
+            }
+        }
         //****************************************************************
         ResponseValue[] values;
         for (Responder response : responses) {
