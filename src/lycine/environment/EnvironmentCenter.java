@@ -67,5 +67,28 @@ public class EnvironmentCenter {
         //------------------------------------------------------------------
     }
     //********************************************************************
+    /**
+     * Returns an array of environments given a project id
+     * @param projectid
+     * @param userid
+     * @param fillextras
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public Environment[] getEnvironments (long projectid, long userid, boolean fillextras) throws AppException, Exception {
+        //****************************************************************
+        //We check the performing user has access to the project.
+        projectlambda.checkAccess(projectid, userid, 1);
+        //****************************************************************
+        Environment[] environments = environmentlambda.getEnviromentsByProject(projectid);
+        if (!fillextras) return environments;
+        //----------------------------------------------------------------
+
+        //----------------------------------------------------------------
+        return environments;
+        //****************************************************************
+    }
+    //********************************************************************
 }
 //************************************************************************
