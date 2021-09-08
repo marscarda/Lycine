@@ -85,8 +85,48 @@ public class EnvironmentCenter {
         if (!fillextras) return environments;
         //----------------------------------------------------------------
 
+        
+        
         //----------------------------------------------------------------
         return environments;
+        //****************************************************************
+    }
+    //********************************************************************
+    /**
+     * Destroys an environment.
+     * @param environmentid
+     * @param userid
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void destroyEnvironments (long environmentid, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We fetch the environment and check the performing user has access to the project.
+        Environment environment = environmentlambda.getEnvironment(environmentid);
+        projectlambda.checkAccess(environment.projectID(), userid, 3);
+        //----------------------------------------------------------------
+        //We recover the project. Needed ahead when altering usage.
+        Project project = projectlambda.getProject(environment.projectID(), 0);
+        //****************************************************************
+        TabList tabs = new TabList();
+        environmentlambda.addDestroyEnvironment(tabs);
+        billinglambda.AddLockAlterUsage(tabs);
+        environmentlambda.setAutoCommit(0);
+        environmentlambda.lockTables(tabs);
+        //------------------------------------------------------------------
+        environmentlambda.destroyEnvironment(environmentid);
+        //------------------------------------------------------------------
+        //We alter the usage cost.
+        AlterUsage alter = new AlterUsage();
+        alter.setProjectId(project.projectID());
+        alter.setProjectName(project.getName());
+        alter.setDecrease(environment.cost);
+        alter.setStartingEvent("Environment '" + environment.getName() + "' Destroyed");
+        billinglambda.alterUsage(alter);
+        //------------------------------------------------------------------
+        //We are done.
+        environmentlambda.commit();
+        environmentlambda.unLockTables();
         //****************************************************************
     }
     //********************************************************************
