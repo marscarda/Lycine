@@ -10,7 +10,7 @@ import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import threonine.universe.Universe;
 import threonine.universe.UniverseLambda;
-import tryptophan.mixqwerty.Environment;
+import tryptophan.mixqwerty.TrialSpace;
 import tryptophan.mixqwerty.EnvironmentLambda;
 //************************************************************************
 public class EnvironmentCenter {
@@ -27,7 +27,7 @@ public class EnvironmentCenter {
     public void setEnvironmentLambda (EnvironmentLambda environmentlambda) { this.environmentlambda = environmentlambda; }
     public void setUniverseLambda (UniverseLambda universelambda) { this.universelambda = universelambda; }
     //********************************************************************
-    public void createEnvirnment (Environment environment, long userid) throws AppException, Exception {
+    public void createEnvirnment (TrialSpace environment, long userid) throws AppException, Exception {
         //****************************************************************
         if (environment.getName().length() == 0)
             throw new AppException("Environment Name cannot be empty", AppException.INVALIDDATASUBMITED);
@@ -84,16 +84,16 @@ public class EnvironmentCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public Environment[] getEnvironments (long projectid, long userid, boolean fillextras) throws AppException, Exception {
+    public TrialSpace[] getEnvironments (long projectid, long userid, boolean fillextras) throws AppException, Exception {
         //****************************************************************
         //We check the performing user has access to the project.
         projectlambda.checkAccess(projectid, userid, 1);
         //****************************************************************
-        Environment[] environments = environmentlambda.getEnviromentsByProject(projectid);
+        TrialSpace[] environments = environmentlambda.getEnviromentsByProject(projectid);
         if (!fillextras) return environments;
         //----------------------------------------------------------------
         Universe universe;
-        for (Environment environment : environments) {
+        for (TrialSpace environment : environments) {
             //----------------------------------------------
             try {
                 universe = universelambda.getUniverse(environment.universeID());
@@ -117,7 +117,7 @@ public class EnvironmentCenter {
     public void destroyEnvironments (long environmentid, long userid) throws AppException, Exception {
         //****************************************************************
         //We fetch the environment and check the performing user has access to the project.
-        Environment environment = environmentlambda.getEnvironment(environmentid);
+        TrialSpace environment = environmentlambda.getEnvironment(environmentid);
         projectlambda.checkAccess(environment.projectID(), userid, 3);
         //----------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
