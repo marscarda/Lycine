@@ -1,4 +1,4 @@
-package lycine.environment;
+package lycine.trial;
 //************************************************************************
 import methionine.AppException;
 import methionine.TabList;
@@ -13,7 +13,7 @@ import threonine.universe.UniverseLambda;
 import tryptophan.mixqwerty.TrialSpace;
 import tryptophan.mixqwerty.TrialLambda;
 //************************************************************************
-public class EnvironmentCenter {
+public class TrialCenter {
     //********************************************************************
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
