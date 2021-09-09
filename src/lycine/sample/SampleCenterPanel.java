@@ -99,7 +99,8 @@ public class SampleCenterPanel {
     public Sample[] getSamples (long projectid, long userid, boolean  fillextras) throws AppException, Exception {
         //****************************************************************
         //We check the performing user has access to the project.
-        projectlambda.checkAccess(projectid, userid, 1);
+        if (userid != 0)
+            projectlambda.checkAccess(projectid, userid, 1);
         //****************************************************************
         Sample[] samples = samplelambda.getSamplesByProject(projectid);
         if (!fillextras) return samples;
