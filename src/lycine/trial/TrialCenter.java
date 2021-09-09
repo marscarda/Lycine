@@ -8,24 +8,28 @@ import methionine.billing.BillingLambda;
 import methionine.billing.UsageCost;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
+import threonine.universe.SubSet;
 import threonine.universe.Universe;
 import threonine.universe.UniverseLambda;
 import tryptophan.mixqwerty.TrialSpace;
 import tryptophan.mixqwerty.TrialLambda;
+import tryptophan.sample.SampleLambda;
 //************************************************************************
 public class TrialCenter {
     //********************************************************************
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     BillingLambda billinglambda = null;
-    TrialLambda environmentlambda = null;
+    TrialLambda triallambda = null;
     UniverseLambda universelambda = null;
+    SampleLambda samplelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    public void setEnvironmentLambda (TrialLambda environmentlambda) { this.environmentlambda = environmentlambda; }
+    public void setEnvironmentLambda (TrialLambda environmentlambda) { this.triallambda = environmentlambda; }
     public void setUniverseLambda (UniverseLambda universelambda) { this.universelambda = universelambda; }
+    public void setSampleLambda (SampleLambda samplelambda) { this.samplelambda = samplelambda; }
     //********************************************************************
     public void createEnvirnment (TrialSpace environment, long userid) throws AppException, Exception {
         //****************************************************************
@@ -54,12 +58,12 @@ public class TrialCenter {
         //****************************************************************
         //Lock All Tables
         TabList tabs = new TabList();
-        environmentlambda.addCreateEnvironmentLock(tabs);
+        triallambda.addCreateEnvironmentLock(tabs);
         billinglambda.AddLockAlterUsage(tabs);
-        environmentlambda.setAutoCommit(0);
-        environmentlambda.lockTables(tabs);
+        triallambda.setAutoCommit(0);
+        triallambda.lockTables(tabs);
         //----------------------------------------------------------------
-        environmentlambda.createEnvironment(environment);
+        triallambda.createEnvironment(environment);
         //----------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -70,8 +74,8 @@ public class TrialCenter {
         billinglambda.alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        environmentlambda.commit();
-        environmentlambda.unLockTables();
+        triallambda.commit();
+        triallambda.unLockTables();
         //------------------------------------------------------------------
     }
     //********************************************************************
@@ -86,7 +90,7 @@ public class TrialCenter {
     public TrialSpace getTrialSpace (long trialspaceid, long userid) throws AppException, Exception {
         //****************************************************************
         //We recover the trial space.
-        TrialSpace trialspace = environmentlambda.getEnvironment(trialspaceid);
+        TrialSpace trialspace = triallambda.getEnvironment(trialspaceid);
         //****************************************************************
         //We check the performing user has access to the project.
         if (userid != 0)
@@ -108,12 +112,12 @@ public class TrialCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public TrialSpace[] getEnvironments (long projectid, long userid, boolean fillextras) throws AppException, Exception {
+    public TrialSpace[] getTrialSpaces (long projectid, long userid, boolean fillextras) throws AppException, Exception {
         //****************************************************************
         //We check the performing user has access to the project.
         projectlambda.checkAccess(projectid, userid, 1);
         //****************************************************************
-        TrialSpace[] environments = environmentlambda.getEnviromentsByProject(projectid);
+        TrialSpace[] environments = triallambda.getEnviromentsByProject(projectid);
         if (!fillextras) return environments;
         //----------------------------------------------------------------
         Universe universe;
@@ -141,19 +145,19 @@ public class TrialCenter {
     public void destroyEnvironments (long environmentid, long userid) throws AppException, Exception {
         //****************************************************************
         //We fetch the environment and check the performing user has access to the project.
-        TrialSpace environment = environmentlambda.getEnvironment(environmentid);
+        TrialSpace environment = triallambda.getEnvironment(environmentid);
         projectlambda.checkAccess(environment.projectID(), userid, 3);
         //----------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
         Project project = projectlambda.getProject(environment.projectID(), 0);
         //****************************************************************
         TabList tabs = new TabList();
-        environmentlambda.addDestroyEnvironment(tabs);
+        triallambda.addDestroyEnvironment(tabs);
         billinglambda.AddLockAlterUsage(tabs);
-        environmentlambda.setAutoCommit(0);
-        environmentlambda.lockTables(tabs);
+        triallambda.setAutoCommit(0);
+        triallambda.lockTables(tabs);
         //------------------------------------------------------------------
-        environmentlambda.destroyEnvironment(environmentid);
+        triallambda.destroyEnvironment(environmentid);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -164,8 +168,31 @@ public class TrialCenter {
         billinglambda.alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        environmentlambda.commit();
-        environmentlambda.unLockTables();
+        triallambda.commit();
+        triallambda.unLockTables();
+        //****************************************************************
+    }
+    //********************************************************************
+    //********************************************************************
+    public TrialSubset[] getTrialSubsets (long trialspaceid, long parentid, long userid) throws AppException, Exception {
+        //****************************************************************
+        TrialSpace trialspace = triallambda.getEnvironment(trialspaceid);
+        //****************************************************************
+        //We create the subsets array and fill them with the actual subsets
+        SubSet[] subsets = universelambda.getSubsets(trialspace.universeID(), parentid);
+        int subsetscount = subsets.length;
+        TrialSubset[] tsubsets = new TrialSubset[subsetscount];
+        for (int n = 0; n < subsetscount; n++) {
+            tsubsets[n] = new TrialSubset();
+            tsubsets[n].subset = subsets[n];
+        }
+        //****************************************************************
+        
+        
+        
+        
+        //****************************************************************
+        return tsubsets;
         //****************************************************************
     }
     //********************************************************************
