@@ -11,20 +11,20 @@ import methionine.project.ProjectLambda;
 import threonine.universe.Universe;
 import threonine.universe.UniverseLambda;
 import tryptophan.mixqwerty.TrialSpace;
-import tryptophan.mixqwerty.EnvironmentLambda;
+import tryptophan.mixqwerty.TrialLambda;
 //************************************************************************
 public class EnvironmentCenter {
     //********************************************************************
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     BillingLambda billinglambda = null;
-    EnvironmentLambda environmentlambda = null;
+    TrialLambda environmentlambda = null;
     UniverseLambda universelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    public void setEnvironmentLambda (EnvironmentLambda environmentlambda) { this.environmentlambda = environmentlambda; }
+    public void setEnvironmentLambda (TrialLambda environmentlambda) { this.environmentlambda = environmentlambda; }
     public void setUniverseLambda (UniverseLambda universelambda) { this.universelambda = universelambda; }
     //********************************************************************
     public void createEnvirnment (TrialSpace environment, long userid) throws AppException, Exception {
