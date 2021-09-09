@@ -76,6 +76,30 @@ public class EnvironmentCenter {
     }
     //********************************************************************
     /**
+     * Returns a trial space given its ID.
+     * @param trialspaceid
+     * @param userid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public TrialSpace getTrialSpace (long trialspaceid, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We recover the trial space.
+        TrialSpace trialspace = environmentlambda.getEnvironment(trialspaceid);
+        //****************************************************************
+        //We check the performing user has access to the project.
+        if (userid != 0)
+            projectlambda.checkAccess(trialspace.projectID(), userid, 1);
+        //****************************************************************
+        //We recover the universe so we can fill the data in the trial space.
+        Universe universe = universelambda.getUniverse(trialspace.universeID());
+        trialspace.setUniverseName(universe.getName());
+        //****************************************************************
+        return trialspace;
+    }
+    //********************************************************************
+    /**
      * Returns an array of environments given a project id
      * @param projectid
      * @param userid
