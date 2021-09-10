@@ -3,13 +3,13 @@ package lycine.trial;
 import threonine.universe.SubSet;
 //************************************************************************
 public class TrialSubset {
-    
-    public SubSet subset = null;
-    
-    
-    
-    
-    
-    
+    //=====================================================
+    SubSet subset = null;
+    //=====================================================
+    public SubSet getSubset () {
+        if (subset == null) return new SubSet();
+        return subset; 
+    }
+    //=====================================================
 }
 //************************************************************************
