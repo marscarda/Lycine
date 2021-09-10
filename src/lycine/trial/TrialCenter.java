@@ -11,8 +11,8 @@ import methionine.project.ProjectLambda;
 import threonine.universe.SubSet;
 import threonine.universe.Universe;
 import threonine.universe.UniverseLambda;
-import tryptophan.mixqwerty.TrialSpace;
-import tryptophan.mixqwerty.TrialLambda;
+import tryptophan.trial.TrialSpace;
+import tryptophan.trial.TrialLambda;
 import tryptophan.sample.SampleLambda;
 //************************************************************************
 public class TrialCenter {
