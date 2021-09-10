@@ -7,13 +7,16 @@ import methionine.billing.AlterUsage;
 import methionine.billing.BillingLambda;
 import methionine.billing.UsageCost;
 import methionine.project.Project;
+import methionine.project.ProjectErrorCodes;
 import methionine.project.ProjectLambda;
 import threonine.universe.SubSet;
 import threonine.universe.Universe;
 import threonine.universe.UniverseLambda;
+import tryptophan.sample.Sample;
 import tryptophan.trial.TrialSpace;
 import tryptophan.trial.TrialLambda;
 import tryptophan.sample.SampleLambda;
+import tryptophan.trial.SubsetSlotAllocation;
 //************************************************************************
 public class TrialCenter {
     //********************************************************************
@@ -193,6 +196,39 @@ public class TrialCenter {
         
         //****************************************************************
         return tsubsets;
+        //****************************************************************
+    }
+    //********************************************************************
+    /**
+     * 
+     * @param slotalloc
+     * @param userid
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void setSampleToSubset (SubsetSlotAllocation slotalloc, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We fetch the environment and check the performing user has access to the project.
+        TrialSpace tialspace = triallambda.getEnvironment(slotalloc.trialSpaceID());
+        long projectid = tialspace.projectID();
+        projectlambda.checkAccess(projectid, userid, 2);
+        //================================================================
+        //We check the universe belongs to the same project
+        Universe universe = universelambda.getUniverse(tialspace.universeID());
+        if (universe.projectID() != projectid)
+            throw new AppException("Objects from different projects", ProjectErrorCodes.OBJECTSFROMDIFETENTPROJECTS);
+        slotalloc.setUniverseId(universe.universeID());
+        //================================================================
+        //We check the subset exists
+        universelambda.getSubset(universe.universeID(), slotalloc.subsetID());
+        //================================================================
+        //We get the sample referenced.
+        Sample sample = samplelambda.getSample(slotalloc.sampleID());
+        if (sample.projectID() != projectid)
+            throw new AppException("Objects from different projects", ProjectErrorCodes.OBJECTSFROMDIFETENTPROJECTS);
+        slotalloc.setSampleName(sample.getName());
+        //****************************************************************
+        triallambda.addSampleToSlot(slotalloc);
         //****************************************************************
     }
     //********************************************************************
