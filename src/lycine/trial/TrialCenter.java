@@ -256,5 +256,16 @@ public class TrialCenter {
         //****************************************************************
     }
     //********************************************************************
+    public void removeSampleAllocation (SlotSelector selector, long userid) throws AppException, Exception {
+        //****************************************************************
+        //We fetch the environment and check the performing user has access to the project.
+        TrialSpace environment = triallambda.getEnvironment(selector.TRIALSPACEID);
+        if (userid != 0)
+            projectlambda.checkAccess(environment.projectID(), userid, 3);
+        //----------------------------------------------------------------
+        triallambda.removeSampleAllocation(selector);
+        //----------------------------------------------------------------
+    }
+    //********************************************************************
 }
 //************************************************************************
