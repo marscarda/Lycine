@@ -199,9 +199,9 @@ public class TrialCenter {
         Sample sample;
         for (TrialSubset tsubSubset : tsubsets) {
             //==========================================================
-            selector.TRIALSPACEID = trialspace.environmentID();
-            selector.UNIVERSEID = trialspace.universeID();
-            selector.SUBSETID = tsubSubset.subsetID();
+            selector.trialspaceid = trialspace.environmentID();
+            selector.universeid = trialspace.universeID();
+            selector.subsetid = tsubSubset.subsetID();
             //==========================================================
             try { slot = triallambda.getSampleSlotAllocation(selector); }
             catch (AppException e) {
@@ -259,7 +259,7 @@ public class TrialCenter {
     public void removeSampleAllocation (SlotSelector selector, long userid) throws AppException, Exception {
         //****************************************************************
         //We fetch the environment and check the performing user has access to the project.
-        TrialSpace environment = triallambda.getEnvironment(selector.TRIALSPACEID);
+        TrialSpace environment = triallambda.getEnvironment(selector.trialspaceid);
         if (userid != 0)
             projectlambda.checkAccess(environment.projectID(), userid, 3);
         //----------------------------------------------------------------
