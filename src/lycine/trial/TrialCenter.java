@@ -13,10 +13,13 @@ import threonine.universe.SubSet;
 import threonine.universe.Universe;
 import threonine.universe.UniverseLambda;
 import tryptophan.sample.Sample;
+import tryptophan.sample.SampleErrorCodes;
 import tryptophan.trial.TrialSpace;
 import tryptophan.trial.TrialLambda;
 import tryptophan.sample.SampleLambda;
-import tryptophan.trial.SubsetSlotAllocation;
+import tryptophan.trial.SampleSlotAlloc;
+import tryptophan.trial.SlotSelector;
+import tryptophan.trial.TrialErrorCodes;
 //************************************************************************
 public class TrialCenter {
     //********************************************************************
@@ -190,10 +193,31 @@ public class TrialCenter {
             tsubsets[n].subset = subsets[n];
         }
         //****************************************************************
-        
-        
-        
-        
+        //We set (Or at least we try) a sample in the subset where present.
+        SampleSlotAlloc slot;
+        SlotSelector selector = new SlotSelector();
+        Sample sample;
+        for (TrialSubset tsubSubset : tsubsets) {
+            //==========================================================
+            selector.TRIALSPACEID = trialspace.environmentID();
+            selector.UNIVERSEID = trialspace.universeID();
+            selector.SUBSETID = tsubSubset.subsetID();
+            //==========================================================
+            try { slot = triallambda.getSampleSlotAllocation(selector); }
+            catch (AppException e) {
+                if (e.getErrorCode() == TrialErrorCodes.SLOTALLOCATIONNOTFOUND) continue;
+                throw e;
+            }
+            //---------------------------------------------
+            try { sample = samplelambda.getSample(slot.sampleID()); }
+            catch (AppException e) {
+                if (e.getErrorCode() == SampleErrorCodes.SAMPLENOTFOUND) continue;
+                throw e;
+            }
+            //==========================================================
+            tsubSubset.sample = sample;
+            //==========================================================
+        }
         //****************************************************************
         return tsubsets;
         //****************************************************************
@@ -206,7 +230,7 @@ public class TrialCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public void setSampleToSubset (SubsetSlotAllocation slotalloc, long userid) throws AppException, Exception {
+    public void setSampleToSubset (SampleSlotAlloc slotalloc, long userid) throws AppException, Exception {
         //****************************************************************
         //We fetch the environment and check the performing user has access to the project.
         TrialSpace tialspace = triallambda.getEnvironment(slotalloc.trialSpaceID());
@@ -226,7 +250,7 @@ public class TrialCenter {
         Sample sample = samplelambda.getSample(slotalloc.sampleID());
         if (sample.projectID() != projectid)
             throw new AppException("Objects from different projects", ProjectErrorCodes.OBJECTSFROMDIFETENTPROJECTS);
-        slotalloc.setSampleName(sample.getName());
+        slotalloc.setSample(sample);
         //****************************************************************
         triallambda.addSampleToSlot(slotalloc);
         //****************************************************************
