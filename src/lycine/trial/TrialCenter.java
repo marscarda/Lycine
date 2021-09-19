@@ -19,6 +19,7 @@ import tryptophan.trial.TrialLambda;
 import tryptophan.sample.SampleLambda;
 import tryptophan.trial.SampleSlotAlloc;
 import tryptophan.trial.SlotSelector;
+import tryptophan.trial.Trial;
 import tryptophan.trial.TrialErrorCodes;
 //************************************************************************
 public class TrialCenter {
@@ -240,7 +241,7 @@ public class TrialCenter {
         //We check the universe belongs to the same project
         Universe universe = universelambda.getUniverse(tialspace.universeID());
         if (universe.projectID() != projectid)
-            throw new AppException("Objects from different projects", ProjectErrorCodes.OBJECTSFROMDIFETENTPROJECTS);
+            throw new AppException("Objects from different projects", ProjectErrorCodes.ENTITYPROJECTINCONCISTENCY);
         slotalloc.setUniverseId(universe.universeID());
         //================================================================
         //We check the subset exists
@@ -249,7 +250,7 @@ public class TrialCenter {
         //We get the sample referenced.
         Sample sample = samplelambda.getSample(slotalloc.sampleID());
         if (sample.projectID() != projectid)
-            throw new AppException("Objects from different projects", ProjectErrorCodes.OBJECTSFROMDIFETENTPROJECTS);
+            throw new AppException("Objects from different projects", ProjectErrorCodes.ENTITYPROJECTINCONCISTENCY);
         slotalloc.setSample(sample);
         //****************************************************************
         triallambda.addSampleToSlot(slotalloc);
@@ -266,6 +267,34 @@ public class TrialCenter {
         triallambda.removeSampleAllocation(selector);
         //----------------------------------------------------------------
     }
+    //********************************************************************
+    public void createTrial (Trial trial, long userid) throws AppException, Exception {
+        //****************************************************************
+        if ( trial.getName().length() == 0)
+            throw new AppException("Name cannot be empty", AppException.INVALIDDATASUBMITED);
+        //****************************************************************
+        //We check the user has access to the project.
+        projectlambda.checkAccess(trial.projectID(), userid, 2);
+        //****************************************************************
+        //Read and validation tests
+        TrialSpace trialspace = triallambda.getEnvironment(trial.trialSpaceID());
+        if (trialspace.projectID() != trial.projectID())
+            throw new AppException("Project inconcistency", ProjectErrorCodes.ENTITYPROJECTINCONCISTENCY);
+        //================================================================
+        Universe universe = universelambda.getUniverse(trialspace.universeID());
+        if (universe.projectID() != trial.projectID())
+            throw new AppException("Project inconcistency", ProjectErrorCodes.ENTITYPROJECTINCONCISTENCY);
+        //****************************************************************
+        triallambda.createTrial(trial);
+        //****************************************************************
+        
+        //We now have a trial with an ID.
+        //In this part we trigger the trial creation process.
+        
+        //****************************************************************
+    }
+    //********************************************************************
+    //********************************************************************
     //********************************************************************
 }
 //************************************************************************
