@@ -7,7 +7,7 @@ import methionine.project.ProjectLambda;
 import threonine.universe.UniverseLambda;
 import tryptophan.sample.SampleLambda;
 import tryptophan.trial.Trial;
-import tryptophan.trial.TrialLambda;
+import tryptophan.trial.TrialAtlas;
 //************************************************************************
 /**
  * This class is entrusted to carry out the task of completing the creation of a trial
@@ -25,7 +25,7 @@ public class TrialBuilder extends Thread {
     BillingLambda billingatlas = null;
     UniverseLambda universeatlas = null;
     SampleLambda sampleatlas = null;
-    TrialLambda trialatlas = null;
+    TrialAtlas trialatlas = null;
     //********************************************************************
     @Override
     public void run () {
@@ -83,7 +83,7 @@ public class TrialBuilder extends Thread {
         sampleatlas.setElectraObject(electra);
         sampleatlas.setDataBaseName(dbname.sample);
         //---------------------------------------------------
-        trialatlas = new TrialLambda();
+        trialatlas = new TrialAtlas();
         trialatlas.setElectraObject(electra);
         trialatlas.setDataBaseName(dbname.trial);
         //---------------------------------------------------
