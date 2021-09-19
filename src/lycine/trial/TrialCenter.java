@@ -1,6 +1,7 @@
 package lycine.trial;
 //************************************************************************
 import methionine.AppException;
+import methionine.DataBaseName;
 import methionine.TabList;
 import methionine.auth.AuthLamda;
 import methionine.billing.AlterUsage;
@@ -268,7 +269,7 @@ public class TrialCenter {
         //----------------------------------------------------------------
     }
     //********************************************************************
-    public void createTrial (Trial trial, long userid) throws AppException, Exception {
+    public void createTrial (Trial trial, long userid, DataBaseName dbname) throws AppException, Exception {
         //****************************************************************
         if ( trial.getName().length() == 0)
             throw new AppException("Name cannot be empty", AppException.INVALIDDATASUBMITED);
@@ -288,13 +289,17 @@ public class TrialCenter {
         triallambda.createTrial(trial);
         //****************************************************************
         
-        //We now have a trial with an ID.
-        //In this part we trigger the trial creation process.
+        
+        TrialBuilder builder = new TrialBuilder();
+        builder.setDataBaseName(dbname);
+        builder.setTrialID(trial.getID());
+        builder.start();
+                
+        
+        
         
         //****************************************************************
     }
-    //********************************************************************
-    //********************************************************************
     //********************************************************************
 }
 //************************************************************************
