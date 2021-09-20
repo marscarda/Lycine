@@ -12,13 +12,13 @@ import methionine.project.ProjectErrorCodes;
 import methionine.project.ProjectLambda;
 import threonine.universe.SubSet;
 import threonine.universe.Universe;
-import threonine.universe.UniverseLambda;
+import threonine.universe.UniverseAtlas;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleErrorCodes;
 import tryptophan.trial.TrialSpace;
 import tryptophan.trial.TrialAtlas;
 import tryptophan.sample.SampleLambda;
-import tryptophan.trial.SampleSlotAlloc;
+import tryptophan.trial.SampleSlot;
 import tryptophan.trial.SlotSelector;
 import tryptophan.trial.Trial;
 import tryptophan.trial.TrialErrorCodes;
@@ -29,20 +29,20 @@ public class TrialCenter {
     ProjectLambda projectlambda = null;
     BillingLambda billinglambda = null;
     TrialAtlas triallambda = null;
-    UniverseLambda universelambda = null;
+    UniverseAtlas universelambda = null;
     SampleLambda samplelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
     public void setEnvironmentLambda (TrialAtlas environmentlambda) { this.triallambda = environmentlambda; }
-    public void setUniverseLambda (UniverseLambda universelambda) { this.universelambda = universelambda; }
+    public void setUniverseLambda (UniverseAtlas universelambda) { this.universelambda = universelambda; }
     public void setSampleLambda (SampleLambda samplelambda) { this.samplelambda = samplelambda; }
     //********************************************************************
     public void createEnvirnment (TrialSpace environment, long userid) throws AppException, Exception {
         //****************************************************************
         if (environment.getName().length() == 0)
-            throw new AppException("Environment Name cannot be empty", AppException.INVALIDDATASUBMITED);
+            throw new AppException("Trial Space Name cannot be empty", AppException.INVALIDDATASUBMITED);
         //----------------------------------------------------------------
         if (environment.universeID() == 0)
             throw new AppException("A universe must be selected", AppException.INVALIDDATASUBMITED);
@@ -196,7 +196,7 @@ public class TrialCenter {
         }
         //****************************************************************
         //We set (Or at least we try) a sample in the subset where present.
-        SampleSlotAlloc slot;
+        SampleSlot slot;
         SlotSelector selector = new SlotSelector();
         Sample sample;
         for (TrialSubset tsubSubset : tsubsets) {
@@ -232,7 +232,7 @@ public class TrialCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public void setSampleToSubset (SampleSlotAlloc slotalloc, long userid) throws AppException, Exception {
+    public void setSampleToSubset (SampleSlot slotalloc, long userid) throws AppException, Exception {
         //****************************************************************
         //We fetch the environment and check the performing user has access to the project.
         TrialSpace tialspace = triallambda.getEnvironment(slotalloc.trialSpaceID());
@@ -285,19 +285,15 @@ public class TrialCenter {
         Universe universe = universelambda.getUniverse(trialspace.universeID());
         if (universe.projectID() != trial.projectID())
             throw new AppException("Project inconcistency", ProjectErrorCodes.ENTITYPROJECTINCONCISTENCY);
+        trial.setUniverseId(universe.universeID());
         //****************************************************************
         triallambda.createTrial(trial);
         //****************************************************************
-        
-        
+        //We trigger the building.
         TrialBuilder builder = new TrialBuilder();
         builder.setDataBaseName(dbname);
         builder.setTrialID(trial.getID());
         builder.start();
-                
-        
-        
-        
         //****************************************************************
     }
     //********************************************************************
