@@ -1,4 +1,4 @@
-package lycine.trial;
+package lycine.trialbuild;
 //************************************************************************
 import methionine.AppException;
 import methionine.DataBaseName;
@@ -58,13 +58,15 @@ public class TrialBuilder extends Thread {
             //============================================================
             Trial trial = trialatlas.getTrial(trialid);
             TrialSpace trialspace = trialatlas.getEnvironment(trial.trialSpaceID());
-            Universe universe = universeatlas.getUniverse(trialspace.universeID());
+            universeatlas.getUniverse(trialspace.universeID());
             //============================================================
             trialspaceid = trialspace.environmentID();
             universeid = trialspace.universeID();
             //============================================================
             SubSet subset = universeatlas.getRootSubset(universeid);
-            digSubset(subset);
+            DiginData digind = new DiginData();
+            digind.setSubset(subset);
+            digSubset(digind);
             //============================================================
         }
         catch (AppException e) {
@@ -75,42 +77,58 @@ public class TrialBuilder extends Thread {
         }
     }
     //********************************************************************
-    private void digSubset (SubSet subset) throws AppException, Exception {
-        //-----------------------------------------------
+    private void digSubset (DiginData digindin) throws AppException, Exception {
+        DiginData digindcall;
+        //*****************************************************
+        //Children Subsets loop.
+        SubSet[] childrensubsets = universeatlas.getSubsets(universeid, digindin.subsetID());
+        for (SubSet childsubset : childrensubsets) {
+            digindin.addChildrenPopulation(childsubset.getPopulation());
+            //=================================================
+            digindcall = new DiginData();
+            digindcall.setSubset(childsubset);
+            digSubset(digindcall);
+            //=================================================
+        }
+        //*****************************************************
+        //=====================================================
+        
+        
+        //*****************************************************
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
         sel.universeid = universeid;
-        sel.subsetid = subset.getSubsetID();
-        //-----------------------------------------------
+        sel.subsetid = digindin.subsetID();
+        //=====================================================
         SampleSlot slot = null;
         try { slot = trialatlas.getSampleSlotAllocation(sel); }
         catch (AppException e) {
             if (e.getErrorCode() != TrialErrorCodes.SLOTALLOCATIONNOTFOUND) throw e;
         }
         //-----------------------------------------------
-
-
-        System.out.println(subset.getName());
-        
-        
-        
-        //-----------------------------------------------
-        SubSet[] childrensubsets = universeatlas.getSubsets(universeid, subset.getSubsetID());
-        
-        
-        for (SubSet s : childrensubsets) {
-            digSubset(s);
+        if (slot != null) {
+            System.out.println(slot.sampleID());
         }
+        //*****************************************************
+
         
-        
-        
-        
-        //-----------------------------------------------
-        
-        
-        
-        
+//        System.out.println(digindin.sbusetPopulationChildren());
+        //*****************************************************
     }
+    //********************************************************************
+    
+    
+    
+    
+    //********************************************************************
+    //********************************************************************
+    //********************************************************************
+    //********************************************************************
+    //********************************************************************
+    //********************************************************************
+    //********************************************************************
+    //********************************************************************
+    //********************************************************************
     //********************************************************************
     /**
      * Prepares all the Atlas Objects to get them ready to start
@@ -140,10 +158,6 @@ public class TrialBuilder extends Thread {
         //---------------------------------------------------
     }
     //********************************************************************
-    
-    
-    
-
 
 
 

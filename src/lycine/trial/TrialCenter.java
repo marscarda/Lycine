@@ -1,5 +1,6 @@
 package lycine.trial;
 //************************************************************************
+import lycine.trialbuild.TrialBuilder;
 import methionine.AppException;
 import methionine.DataBaseName;
 import methionine.TabList;
