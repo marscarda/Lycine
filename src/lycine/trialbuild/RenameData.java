@@ -2,16 +2,16 @@ package lycine.trialbuild;
 //************************************************************************
 import threonine.universe.SubSet;
 //************************************************************************
-public class DiginData {
+public class RenameData {
     //=================================================
     private SubSet subset = null;
     void setSubset (SubSet subset) {
         this.subset = subset;
-        sbstpop = this.subset.getPopulation();
+        sbsetpop = this.subset.getPopulation();
     }
     //=================================================
-    int sbstpop = 0; //The population of the eval subset.
-    int sbstpopchlsum = 0; //The sum of the children subsets population
+    int sbsetpop = 0; //The population of the eval subset.
+    int chldsbsetpopsum = 0; //The sum of the children subsets population
     //=================================================
     long subsetID () {
         if (subset == null) return 0; 
@@ -19,17 +19,16 @@ public class DiginData {
     }
     //=================================================
     public void addChildrenPopulation (int pop) { 
-        sbstpopchlsum += pop;
-        if (sbstpopchlsum > sbstpop) sbstpop = sbstpopchlsum;
+        chldsbsetpopsum += pop;
+        if (chldsbsetpopsum > sbsetpop) sbsetpop = chldsbsetpopsum;
     }
     //=================================================
-    public int subsetPopulation () { return sbstpop; }
-    public int sbusetPopulationChildren () { return sbstpopchlsum; }
+    public int subsetPopulation () { return sbsetpop; }
+    public int sbusetPopulationChildren () { return chldsbsetpopsum; }
     public int populationGap () { 
-        if (sbstpopchlsum > sbstpop) return  0;
-        return sbstpop - sbstpopchlsum;
+        if (chldsbsetpopsum > sbsetpop) return  0;
+        return sbsetpop - chldsbsetpopsum;
     }
     //=================================================
-    
 }
 //************************************************************************

@@ -6,8 +6,9 @@ import methionine.Electra;
 import methionine.billing.BillingLambda;
 import methionine.project.ProjectLambda;
 import threonine.universe.SubSet;
-import threonine.universe.Universe;
 import threonine.universe.UniverseAtlas;
+import tryptophan.sample.Sample;
+import tryptophan.sample.SampleErrorCodes;
 import tryptophan.sample.SampleLambda;
 import tryptophan.trial.SampleSlot;
 import tryptophan.trial.SlotSelector;
@@ -43,7 +44,7 @@ public class TrialBuilder extends Thread {
     public void run () {
         //****************************************************
         electra = new Electra();
-        prepareAtlas();
+        initializeAtlas();
         //****************************************************
         
         doBuilding();
@@ -64,9 +65,9 @@ public class TrialBuilder extends Thread {
             universeid = trialspace.universeID();
             //============================================================
             SubSet subset = universeatlas.getRootSubset(universeid);
-            DiginData digind = new DiginData();
+            RenameData digind = new RenameData();
             digind.setSubset(subset);
-            digSubset(digind);
+            digSubset(digind, null);
             //============================================================
         }
         catch (AppException e) {
@@ -77,23 +78,29 @@ public class TrialBuilder extends Thread {
         }
     }
     //********************************************************************
-    private void digSubset (DiginData digindin) throws AppException, Exception {
-        DiginData digindcall;
+    private void digSubset (RenameData digindin, ChldAnalysis recanly) throws AppException, Exception {
+        RenameData digindcall;
+        //*****************************************************
+        ChldAnalysis qwerty = new ChldAnalysis();
         //*****************************************************
         //Children Subsets loop.
         SubSet[] childrensubsets = universeatlas.getSubsets(universeid, digindin.subsetID());
         for (SubSet childsubset : childrensubsets) {
             digindin.addChildrenPopulation(childsubset.getPopulation());
             //=================================================
-            digindcall = new DiginData();
+            digindcall = new RenameData();
             digindcall.setSubset(childsubset);
-            digSubset(digindcall);
+            digSubset(digindcall, qwerty);
             //=================================================
         }
         //*****************************************************
-        //=====================================================
         
         
+        
+        
+        
+        //*****************************************************
+        /*
         //*****************************************************
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
@@ -110,20 +117,53 @@ public class TrialBuilder extends Thread {
             System.out.println(slot.sampleID());
         }
         //*****************************************************
-
+        */
         
 //        System.out.println(digindin.sbusetPopulationChildren());
         //*****************************************************
     }
     //********************************************************************
-    
+    //********************************************************************
+    //********************************************************************
     
     
     
     //********************************************************************
+    private void qqm (RenameData rendata) throws AppException, Exception {
+        //********************************************************
+        SlotSelector sel = new SlotSelector();
+        sel.trialspaceid = trialspaceid;
+        sel.universeid = universeid;
+        sel.subsetid = rendata.subsetID();
+        //========================================================
+        SampleSlot slot = null;
+        Sample sample = null;
+        try { 
+            slot = trialatlas.getSampleSlotAllocation(sel);
+            sample = sampleatlas.getSample(slot.sampleID());
+        }
+        catch (AppException e) {
+            switch(e.getErrorCode()) {
+                case TrialErrorCodes.SLOTALLOCATIONNOTFOUND:
+                case SampleErrorCodes.SAMPLENOTFOUND:
+                    break;
+                default: throw e;
+            }
+        }
+        //========================================================
+        if (sample == null) return;
+        //********************************************************
+        
+
+
+
+
+        //********************************************************
+    }
     //********************************************************************
-    //********************************************************************
-    //********************************************************************
+    
+    
+    
     //********************************************************************
     //********************************************************************
     //********************************************************************
@@ -134,7 +174,7 @@ public class TrialBuilder extends Thread {
      * Prepares all the Atlas Objects to get them ready to start
      * querying the db.
      */
-    private void prepareAtlas () {
+    private void initializeAtlas () {
         //---------------------------------------------------
         projectatlas = new ProjectLambda();
         projectatlas.setElectraObject(electra);
@@ -158,9 +198,7 @@ public class TrialBuilder extends Thread {
         //---------------------------------------------------
     }
     //********************************************************************
-
-
-
+    private void cleanUp () { electra.disposeDBConnection(); }
     //********************************************************************
 }
 //************************************************************************
