@@ -1,11 +1,8 @@
-package lycine.trialbuild;
+package lycine.sample;
 //************************************************************************
 
 //************************************************************************
-public class VarSubsetStatPublicView {
-    int positive = 0;
-    int neutral = 0;
-    int negative = 0;
-    int unknowun = 0;
+public class SampleCenterBack extends SampleCenterPanel {
+    
 }
 //************************************************************************

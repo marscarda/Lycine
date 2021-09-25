@@ -15,7 +15,7 @@ public class VarStatPublicView extends VarStatAlpha {
     int propunknown = 0;
     int propknowledge = 0;
     //***********************************
-    void setValue (int value) {
+    public void setValue (int value) {
         switch (value) {
             case ConstVarValues.PUBVIEW_POSITIVE: positives++; break;
             case ConstVarValues.PUBVIEW_NEUTRAL: neutrals++; break;

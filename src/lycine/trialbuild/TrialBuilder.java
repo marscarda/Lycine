@@ -1,5 +1,9 @@
 package lycine.trialbuild;
 //************************************************************************
+import lycine.sample.SampleCenterBack;
+import lycine.sample.SamplePayLoad;
+import lycine.viewmake.VarStatAlpha;
+import lycine.viewmake.VarStatPublicView;
 import methionine.AppException;
 import methionine.DataBaseName;
 import methionine.Electra;
@@ -7,7 +11,10 @@ import methionine.billing.BillingLambda;
 import methionine.project.ProjectLambda;
 import threonine.universe.SubSet;
 import threonine.universe.UniverseAtlas;
-import tryptophan.sample.Sample;
+import tryptophan.design.DesignLambda;
+import tryptophan.design.Variable;
+import tryptophan.sample.Responder;
+import tryptophan.sample.ResponseValue;
 import tryptophan.sample.SampleErrorCodes;
 import tryptophan.sample.SampleLambda;
 import tryptophan.trial.SampleSlot;
@@ -38,7 +45,9 @@ public class TrialBuilder extends Thread {
     UniverseAtlas universeatlas = null;
     SampleLambda sampleatlas = null;
     TrialAtlas trialatlas = null;
+    DesignLambda designatlas = null;
     //====================================================================
+    SampleCenterBack samplecenter = null;
     //********************************************************************
     @Override
     public void run () {
@@ -56,6 +65,9 @@ public class TrialBuilder extends Thread {
     //********************************************************************
     private void doBuilding () {
         try {
+            
+            System.out.println("A");
+            
             //============================================================
             Trial trial = trialatlas.getTrial(trialid);
             TrialSpace trialspace = trialatlas.getEnvironment(trial.trialSpaceID());
@@ -71,17 +83,29 @@ public class TrialBuilder extends Thread {
             //============================================================
         }
         catch (AppException e) {
+            
+            System.out.println(e.getMessage());
+            
             return;
         }
         catch (Exception e) {
+            
+            
+            System.out.println(e.getMessage());
+            
             return;
         }
+        cleanUp();
     }
     //********************************************************************
-    private void digSubset (RenameData digindin, ChldAnalysis recanly) throws AppException, Exception {
+    private void digSubset (RenameData digindin, ChildContQQ recanly) throws AppException, Exception {
         RenameData digindcall;
         //*****************************************************
-        ChldAnalysis qwerty = new ChldAnalysis();
+        
+        
+        System.out.println("Dig 1");
+        
+        ChildContQQ qwerty = new ChildContQQ();
         //*****************************************************
         //Children Subsets loop.
         SubSet[] childrensubsets = universeatlas.getSubsets(universeid, digindin.subsetID());
@@ -92,33 +116,11 @@ public class TrialBuilder extends Thread {
             digindcall.setSubset(childsubset);
             digSubset(digindcall, qwerty);
             //=================================================
+            metobenamed(digindcall);
         }
+        
+        System.out.println("Dig fin");
         //*****************************************************
-        
-        
-        
-        
-        
-        //*****************************************************
-        /*
-        //*****************************************************
-        SlotSelector sel = new SlotSelector();
-        sel.trialspaceid = trialspaceid;
-        sel.universeid = universeid;
-        sel.subsetid = digindin.subsetID();
-        //=====================================================
-        SampleSlot slot = null;
-        try { slot = trialatlas.getSampleSlotAllocation(sel); }
-        catch (AppException e) {
-            if (e.getErrorCode() != TrialErrorCodes.SLOTALLOCATIONNOTFOUND) throw e;
-        }
-        //-----------------------------------------------
-        if (slot != null) {
-            System.out.println(slot.sampleID());
-        }
-        //*****************************************************
-        */
-        
 //        System.out.println(digindin.sbusetPopulationChildren());
         //*****************************************************
     }
@@ -129,18 +131,22 @@ public class TrialBuilder extends Thread {
     
     
     //********************************************************************
-    private void qqm (RenameData rendata) throws AppException, Exception {
+    private void metobenamed (RenameData rendata) throws AppException, Exception {
         //********************************************************
+        
+        
+        System.out.println("Be named 1");
+        
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
         sel.universeid = universeid;
         sel.subsetid = rendata.subsetID();
         //========================================================
         SampleSlot slot = null;
-        Sample sample = null;
+        SamplePayLoad samplepayload = null;
         try { 
             slot = trialatlas.getSampleSlotAllocation(sel);
-            sample = sampleatlas.getSample(slot.sampleID());
+            samplepayload = samplecenter.getSamplePayload(slot.sampleID(), 0);
         }
         catch (AppException e) {
             switch(e.getErrorCode()) {
@@ -150,23 +156,103 @@ public class TrialBuilder extends Thread {
                 default: throw e;
             }
         }
+        
+        System.out.println("Be named 2");
+        
         //========================================================
-        if (sample == null) return;
+        if (samplepayload == null) return;
+        
+        
+        
+        System.out.println("Be named 3");
+        //********************************************************
+        ChildContQQ qwerty = new ChildContQQ();
+        Responder[] responses = samplepayload.getResponses();
+        ResponseValue[] values;
+        VarStatAlpha varstat;
+        for (Responder response : responses) {
+            //****************************************************
+            //If for some reason we need to filter out this response
+            //This is the time. Or shut up forever.
+            //****************************************************
+            values = response.getValues();
+
+            for (ResponseValue value : values) {
+                if (!qwerty.checkVariable(value.variableID())) {
+                    varstat = createVariable(value);
+                    qwerty.addVariableStat(varstat);
+                }
+                else varstat = qwerty.getVariable(value.variableID());
+                addResponseToVarSat(varstat, value);
+                
+            }
+            
+        }
         //********************************************************
         
-
-
-
-
+        
+        VarStatAlpha[] varstats = qwerty.getVarStatistics();
+        
+        for (VarStatAlpha var : varstats) {
+            VarStatPublicView vpv = (VarStatPublicView)var;
+            
+            System.out.println(vpv.variableID());
+            
+            System.out.println("Positives: " + vpv.getPositives());
+            System.out.println("Negatives" + vpv.getNegatives());
+            
+        }
+        
+        
+        
+        
         //********************************************************
     }
     //********************************************************************
-    
-    
-    
+    VarStatAlpha createVariable (ResponseValue value) throws AppException, Exception {
+        //***********************************************************
+        //We first recover the variable in question.
+        Variable var = designatlas.getVariable(value.variableID());
+        /*
+        if (value.getType() != var.variableType()) {
+            //It should happen NEVER. 
+            //But if it happens we should not go further.
+            System.out.println("Inconcistent type variable/value");
+            return new VarStatAlpha();
+        }
+        */
+        //***********************************************************
+        VarStatAlpha varstat = null;
+        //-----------------------------------------------------------
+        switch (value.getType()) {
+            case Variable.VARTYPE_PUBVIEW:
+                varstat = new VarStatPublicView();
+                varstat.variableid = var.variableID();
+                varstat.variabletype= Variable.VARTYPE_PUBVIEW;
+                //varstat.label = var.getLabel();
+                return varstat;
+        }
+        return null;
+        
+    }
     //********************************************************************
     //********************************************************************
+    
     //********************************************************************
+    private void addResponseToVarSat (VarStatAlpha varstat, ResponseValue value) {
+        //***********************************************************
+        //If the value we intend to add is of a diferent type
+        //Than the stat. We just leave.
+        if (varstat.variabletype != value.getType()) return;
+        //***********************************************************
+        switch (varstat.variabletype) {
+            case Variable.VARTYPE_PUBVIEW: {
+                VarStatPublicView varst = (VarStatPublicView)varstat;
+                varst.setValue(value.getValue());
+            } break;
+        }
+        //***********************************************************
+    }
     //********************************************************************
     //********************************************************************
     //********************************************************************
@@ -175,7 +261,7 @@ public class TrialBuilder extends Thread {
      * querying the db.
      */
     private void initializeAtlas () {
-        //---------------------------------------------------
+        //***************************************************
         projectatlas = new ProjectLambda();
         projectatlas.setElectraObject(electra);
         projectatlas.setDataBaseName(dbname.project);
@@ -196,6 +282,13 @@ public class TrialBuilder extends Thread {
         trialatlas.setElectraObject(electra);
         trialatlas.setDataBaseName(dbname.trial);
         //---------------------------------------------------
+        designatlas = new DesignLambda();
+        designatlas.setElectraObject(electra);
+        designatlas.setDataBaseName(dbname.design);
+        //***************************************************
+        samplecenter = new SampleCenterBack();
+        samplecenter.setSampleLambda(sampleatlas);
+        //***************************************************
     }
     //********************************************************************
     private void cleanUp () { electra.disposeDBConnection(); }

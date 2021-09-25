@@ -4,8 +4,8 @@ package lycine.viewmake;
 //************************************************************************
 public class VarStatAlpha {
     //*******************************************
-    long variableid = 0;
-    int variabletype = 0;
+    public long variableid = 0;
+    public int variabletype = 0;
     String label = null;
     //*******************************************
     public long variableID () { return variableid; }
