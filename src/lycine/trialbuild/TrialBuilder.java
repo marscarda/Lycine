@@ -2,8 +2,8 @@ package lycine.trialbuild;
 //************************************************************************
 import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
-import lycine.viewmake.VarStatAlpha;
-import lycine.viewmake.VarStatPublicView;
+import lycine.stats.VarStatAlpha;
+import lycine.stats.VarStatPublicView;
 import methionine.AppException;
 import methionine.DataBaseName;
 import methionine.Electra;

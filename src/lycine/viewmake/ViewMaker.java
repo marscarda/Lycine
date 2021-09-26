@@ -1,5 +1,7 @@
 package lycine.viewmake;
 //************************************************************************
+import lycine.stats.VarStatPublicView;
+import lycine.stats.VarStatAlpha;
 import lycine.stats.SampleView;
 import lycine.sample.SampleCenterPanel;
 import lycine.sample.SamplePayLoad;
@@ -95,7 +97,7 @@ public class ViewMaker {
                 varstat = new VarStatPublicView();
                 varstat.variableid = var.variableID();
                 varstat.variabletype = Variable.VARTYPE_PUBVIEW;
-                varstat.label = var.getLabel();
+                varstat.setLabel(var.getLabel());
                 return varstat;
         }
         return null;

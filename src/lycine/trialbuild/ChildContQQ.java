@@ -1,6 +1,6 @@
 package lycine.trialbuild;
 //************************************************************************
-import lycine.viewmake.VarStatAlpha;
+import lycine.stats.VarStatAlpha;
 //************************************************************************
 public class ChildContQQ {
     //********************************************************************

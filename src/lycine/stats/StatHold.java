@@ -1,7 +1,5 @@
 package lycine.stats;
 //************************************************************************
-import lycine.viewmake.VarStatAlpha;
-//************************************************************************
 /**
  *
  * @author marianoscardaccione

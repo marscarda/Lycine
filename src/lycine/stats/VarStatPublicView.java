@@ -1,5 +1,6 @@
-package lycine.viewmake;
+package lycine.stats;
 //************************************************************************
+import lycine.stats.VarStatAlpha;
 import lycine.sample.ConstVarValues;
 //************************************************************************
 public class VarStatPublicView extends VarStatAlpha {
