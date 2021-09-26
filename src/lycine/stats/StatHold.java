@@ -1,25 +1,22 @@
-package lycine.viewmake;
+package lycine.stats;
 //************************************************************************
-import tryptophan.sample.Sample;
+import lycine.viewmake.VarStatAlpha;
 //************************************************************************
-public class SampleView {
-    //********************************************************************
-    Sample sample = null;
-    void setSample (Sample sample) { this.sample = sample; }
-    public Sample getSample () { 
-        if (sample == null) return new Sample();
-        return sample; 
-    }
+/**
+ *
+ * @author marianoscardaccione
+ */
+public class StatHold {
     //********************************************************************
     int varstatcount = 0;
-    private VarStatAlpha[] varstats = new VarStatAlpha[0];
+    protected VarStatAlpha[] varstats = new VarStatAlpha[0];
     //********************************************************************
     /**
      * Checks if a variable exists in the view.
      * @param variableid
      * @return 
      */
-    boolean checkVariable (long variableid) {
+    public boolean checkVariable (long variableid) {
         //========================================================
         for (VarStatAlpha var : varstats) {
             if (var.variableid == variableid)
@@ -36,7 +33,7 @@ public class SampleView {
      * @param variableid
      * @return 
      */
-    VarStatAlpha getVariable (long variableid) {
+    public VarStatAlpha getVariable (long variableid) {
         //========================================================
         for (VarStatAlpha var : varstats) {
             if (var.variableid == variableid)
@@ -50,7 +47,7 @@ public class SampleView {
      * Adds a new variable stat to the view.
      * @param var 
      */
-    void addVariableStat (VarStatAlpha var) {
+    public void addVariableStat (VarStatAlpha var) {
         VarStatAlpha[] newarr = new VarStatAlpha[varstatcount + 1];
         System.arraycopy(varstats, 0, newarr, 0, varstatcount);
         newarr[varstatcount] = var;

@@ -1,5 +1,6 @@
 package lycine.viewmake;
 //************************************************************************
+import lycine.stats.SampleView;
 import lycine.sample.SampleCenterPanel;
 import lycine.sample.SamplePayLoad;
 import methionine.AppException;
