@@ -1,9 +1,10 @@
 package lycine.trialbuild;
 //************************************************************************
+import lycine.stats.StatHold;
 import threonine.universe.SubSet;
 //************************************************************************
-public class RenameData {
-    //=================================================
+public class DigData {
+    //*************************************************
     private SubSet subset = null;
     void setSubset (SubSet subset) {
         this.subset = subset;
@@ -29,6 +30,17 @@ public class RenameData {
         if (chldsbsetpopsum > sbsetpop) return  0;
         return sbsetpop - chldsbsetpopsum;
     }
-    //=================================================
+    //*************************************************
+    private int statsholdcount = 0;
+    private StatHold[] statholds = new StatHold[0];
+    void addStatHold (StatHold stathold) {
+        if (stathold == null) return;
+        StatHold[] newarr = new StatHold[statsholdcount + 1];
+        System.arraycopy(statholds, 0, newarr, 0, statsholdcount);
+        newarr[statsholdcount] = stathold;
+        statholds = newarr;
+        statsholdcount++;
+    }
+    //*************************************************
 }
 //************************************************************************

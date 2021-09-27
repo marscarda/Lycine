@@ -8,6 +8,13 @@ public class StatHold {
     //********************************************************************
     int varstatcount = 0;
     protected VarStatAlpha[] varstats = new VarStatAlpha[0];
+    //====================================================================
+    /*
+    int population = 0;
+    //********************************************************************
+    public void setPopulation (int population) { this.population = population; }
+    public int getPopulation () { return population; }
+    */
     //********************************************************************
     /**
      * Checks if a variable exists in the view.

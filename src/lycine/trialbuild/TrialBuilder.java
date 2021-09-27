@@ -2,6 +2,7 @@ package lycine.trialbuild;
 //************************************************************************
 import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
+import lycine.stats.StatHold;
 import lycine.stats.VarStatAlpha;
 import lycine.stats.VarStatPublicView;
 import methionine.AppException;
@@ -65,85 +66,61 @@ public class TrialBuilder extends Thread {
     //********************************************************************
     private void doBuilding () {
         try {
-            
-            System.out.println("A");
-            
-            //============================================================
+            //************************************************************
             Trial trial = trialatlas.getTrial(trialid);
             TrialSpace trialspace = trialatlas.getEnvironment(trial.trialSpaceID());
             universeatlas.getUniverse(trialspace.universeID());
             //============================================================
             trialspaceid = trialspace.environmentID();
             universeid = trialspace.universeID();
-            //============================================================
+            //************************************************************
             SubSet subset = universeatlas.getRootSubset(universeid);
-            RenameData digind = new RenameData();
+            DigData digind = new DigData();
             digind.setSubset(subset);
-            digSubset(digind, null);
-            //============================================================
+            doSubset(digind);
+            //************************************************************
         }
         catch (AppException e) {
-            
-            System.out.println(e.getMessage());
-            
             return;
         }
         catch (Exception e) {
-            
-            
-            System.out.println(e.getMessage());
-            
             return;
         }
         cleanUp();
     }
     //********************************************************************
-    private void digSubset (RenameData digindin, ChildContQQ recanly) throws AppException, Exception {
-        RenameData digindcall;
+    private void doSubset (DigData digdatain) throws AppException, Exception {
         //*****************************************************
-        
-        
-        System.out.println("Dig 1");
-        
-        ChildContQQ qwerty = new ChildContQQ();
+        DigData digindcall;
+        //*****************************************************
+        //StatHold stathold = new StatHold();
         //*****************************************************
         //Children Subsets loop.
-        SubSet[] childrensubsets = universeatlas.getSubsets(universeid, digindin.subsetID());
+        SubSet[] childrensubsets = universeatlas.getSubsets(universeid, digdatain.subsetID());
         for (SubSet childsubset : childrensubsets) {
-            digindin.addChildrenPopulation(childsubset.getPopulation());
+            digdatain.addChildrenPopulation(childsubset.getPopulation());
             //=================================================
-            digindcall = new RenameData();
+            digindcall = new DigData();
             digindcall.setSubset(childsubset);
-            digSubset(digindcall, qwerty);
+            doSubset(digindcall);
             //=================================================
-            metobenamed(digindcall);
+            fillSampleStat(digindcall);
         }
-        
-        System.out.println("Dig fin");
-        //*****************************************************
-//        System.out.println(digindin.sbusetPopulationChildren());
         //*****************************************************
     }
     //********************************************************************
     //********************************************************************
     //********************************************************************
-    
-    
-    
-    //********************************************************************
-    private void metobenamed (RenameData rendata) throws AppException, Exception {
+    private void fillSampleStat (DigData digdata) throws AppException, Exception {
         //********************************************************
-        
-        
-        System.out.println("Be named 1");
-        
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
         sel.universeid = universeid;
-        sel.subsetid = rendata.subsetID();
+        sel.subsetid = digdata.subsetID();
         //========================================================
         SampleSlot slot = null;
         SamplePayLoad samplepayload = null;
+        //********************************************************
         try { 
             slot = trialatlas.getSampleSlotAllocation(sel);
             samplepayload = samplecenter.getSamplePayload(slot.sampleID(), 0);
@@ -156,17 +133,10 @@ public class TrialBuilder extends Thread {
                 default: throw e;
             }
         }
-        
-        System.out.println("Be named 2");
-        
         //========================================================
         if (samplepayload == null) return;
-        
-        
-        
-        System.out.println("Be named 3");
         //********************************************************
-        ChildContQQ qwerty = new ChildContQQ();
+        StatHold stathold = new StatHold();
         Responder[] responses = samplepayload.getResponses();
         ResponseValue[] values;
         VarStatAlpha varstat;
@@ -176,36 +146,17 @@ public class TrialBuilder extends Thread {
             //This is the time. Or shut up forever.
             //****************************************************
             values = response.getValues();
-
             for (ResponseValue value : values) {
-                if (!qwerty.checkVariable(value.variableID())) {
+                if (!stathold.checkVariable(value.variableID())) {
                     varstat = createVariable(value);
-                    qwerty.addVariableStat(varstat);
+                    stathold.addVariableStat(varstat);
                 }
-                else varstat = qwerty.getVariable(value.variableID());
+                else varstat = stathold.getVariable(value.variableID());
                 addResponseToVarSat(varstat, value);
-                
             }
-            
         }
         //********************************************************
-        
-        
-        VarStatAlpha[] varstats = qwerty.getVarStatistics();
-        
-        for (VarStatAlpha var : varstats) {
-            VarStatPublicView vpv = (VarStatPublicView)var;
-            
-            System.out.println(vpv.variableID());
-            
-            System.out.println("Positives: " + vpv.getPositives());
-            System.out.println("Negatives" + vpv.getNegatives());
-            
-        }
-        
-        
-        
-        
+        digdata.addStatHold(stathold);
         //********************************************************
     }
     //********************************************************************
@@ -237,7 +188,11 @@ public class TrialBuilder extends Thread {
     }
     //********************************************************************
     //********************************************************************
+    //********************************************************************
+    //********************************************************************
+    //********************************************************************
     
+    //********************************************************************
     //********************************************************************
     private void addResponseToVarSat (VarStatAlpha varstat, ResponseValue value) {
         //***********************************************************
