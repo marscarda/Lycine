@@ -90,28 +90,30 @@ public class TrialBuilder extends Thread {
     }
     //********************************************************************
     private void doSubset (DigData digdatain) throws AppException, Exception {
-        //*****************************************************
+        //************************************************************
         DigData digindcall;
-        //*****************************************************
-        //StatHold stathold = new StatHold();
-        //*****************************************************
+        SubsetStat subsetstat = new SubsetStat();
+        //************************************************************
+        subsetstat.setThisPopulation(digdatain.getSubset().getPopulation());
+        //************************************************************
         //Children Subsets loop.
         SubSet[] childrensubsets = universeatlas.getSubsets(universeid, digdatain.subsetID());
         for (SubSet childsubset : childrensubsets) {
-            digdatain.addChildrenPopulation(childsubset.getPopulation());
+            subsetstat.addChildPopulation(childsubset.getPopulation());
             //=================================================
             digindcall = new DigData();
             digindcall.setSubset(childsubset);
             doSubset(digindcall);
             //=================================================
-            fillSampleStat(digindcall);
+            doSampleStat(digindcall, subsetstat);
+            //=================================================
         }
-        //*****************************************************
+        //************************************************************
+        
+        //************************************************************
     }
     //********************************************************************
-    //********************************************************************
-    //********************************************************************
-    private void fillSampleStat (DigData digdata) throws AppException, Exception {
+    private void doSampleStat (DigData digdata, SubsetStat subsetstat) throws AppException, Exception {
         //********************************************************
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
@@ -148,7 +150,7 @@ public class TrialBuilder extends Thread {
             values = response.getValues();
             for (ResponseValue value : values) {
                 if (!stathold.checkVariable(value.variableID())) {
-                    varstat = createVariable(value);
+                    varstat = createVariableStat(value);
                     stathold.addVariableStat(varstat);
                 }
                 else varstat = stathold.getVariable(value.variableID());
@@ -156,11 +158,11 @@ public class TrialBuilder extends Thread {
             }
         }
         //********************************************************
-        digdata.addStatHold(stathold);
+        subsetstat.addStatHold(stathold);
         //********************************************************
     }
     //********************************************************************
-    VarStatAlpha createVariable (ResponseValue value) throws AppException, Exception {
+    VarStatAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designatlas.getVariable(value.variableID());
