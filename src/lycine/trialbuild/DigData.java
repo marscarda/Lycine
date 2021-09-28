@@ -1,6 +1,6 @@
 package lycine.trialbuild;
 //************************************************************************
-import lycine.stats.StatHold;
+import lycine.stats.StatAlpha;
 import threonine.universe.SubSet;
 //************************************************************************
 public class DigData {
@@ -17,7 +17,7 @@ public class DigData {
     }
     //*************************************************
     private SubSet[] childrensubset = null;
-    void setChildrenSubsets (SubSet[] subsets) { childrensubset = subsets; }
+    public void setChildrenSubsets (SubSet[] subsets) { childrensubset = subsets; }
     public SubSet[] getChildrenSubsets () {
         if (childrensubset == null) return new SubSet[0];
         return childrensubset;

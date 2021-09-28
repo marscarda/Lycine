@@ -2,7 +2,7 @@ package lycine.stats;
 //************************************************************************
 import tryptophan.sample.Sample;
 //************************************************************************
-public class SampleView extends StatHold {
+public class SampleView extends StatAlpha {
     //********************************************************************
     Sample sample = null;
     public void setSample (Sample sample) { this.sample = sample; }

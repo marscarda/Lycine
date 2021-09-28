@@ -2,7 +2,7 @@ package lycine.trialbuild;
 //************************************************************************
 import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
-import lycine.stats.StatHold;
+import lycine.stats.StatSubset;
 import lycine.stats.VarStatAlpha;
 import lycine.stats.VarStatPublicView;
 import methionine.AppException;
@@ -92,28 +92,49 @@ public class TrialBuilder extends Thread {
     private void doSubset (DigData digdatain) throws AppException, Exception {
         //************************************************************
         DigData digindcall;
-        SubsetStat subsetstat = new SubsetStat();
+        ObjectStats objstat = new ObjectStats();
         //************************************************************
-        subsetstat.setThisPopulation(digdatain.getSubset().getPopulation());
+        objstat.setThisPopulation(digdatain.getSubset().getPopulation());
         //************************************************************
         //Children Subsets loop.
         SubSet[] childrensubsets = universeatlas.getSubsets(universeid, digdatain.subsetID());
+        digdatain.setChildrenSubsets(childrensubsets);
         for (SubSet childsubset : childrensubsets) {
-            subsetstat.addChildPopulation(childsubset.getPopulation());
+            objstat.addChildPopulation(childsubset.getPopulation());
             //=================================================
             digindcall = new DigData();
             digindcall.setSubset(childsubset);
             doSubset(digindcall);
             //=================================================
-            doSampleStat(digindcall, subsetstat);
+            doSampleStat(digindcall, objstat);
             //=================================================
         }
         //************************************************************
         
+        
+        
+        SubSet[] chld = digdatain.getChildrenSubsets();
+        System.out.println("Subset id " + digdatain.subsetID() + " children " + chld.length + 
+                " Stats " + objstat.getStatHolds().length);
+        StatSubset stat;
+        for (SubSet s : chld) {
+            System.out.println("  Child: " + s.getSubsetID() + " " + objstat.findStat(s.getSubsetID()));
+            if (objstat.findStat(s.getSubsetID())) {
+                stat = objstat.getStat();
+                VarStatAlpha[] vars = stat.getVarStatistics();
+                for (VarStatAlpha var : vars) {
+                    VarStatPublicView pv = (VarStatPublicView)var;
+                    System.out.println("Positives: " + pv.getPositives());
+                    System.out.println("Negatives: " + pv.getNegatives());
+                }
+            }
+        }
+        
+        
         //************************************************************
     }
     //********************************************************************
-    private void doSampleStat (DigData digdata, SubsetStat subsetstat) throws AppException, Exception {
+    private void doSampleStat (DigData digdata, ObjectStats subsetstat) throws AppException, Exception {
         //********************************************************
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
@@ -138,7 +159,8 @@ public class TrialBuilder extends Thread {
         //========================================================
         if (samplepayload == null) return;
         //********************************************************
-        StatHold stathold = new StatHold();
+        StatSubset statsubset = new StatSubset();
+        statsubset.setSubsetId(digdata.subsetID());
         Responder[] responses = samplepayload.getResponses();
         ResponseValue[] values;
         VarStatAlpha varstat;
@@ -149,16 +171,16 @@ public class TrialBuilder extends Thread {
             //****************************************************
             values = response.getValues();
             for (ResponseValue value : values) {
-                if (!stathold.checkVariable(value.variableID())) {
+                if (!statsubset.checkVariable(value.variableID())) {
                     varstat = createVariableStat(value);
-                    stathold.addVariableStat(varstat);
+                    statsubset.addVariableStat(varstat);
                 }
-                else varstat = stathold.getVariable(value.variableID());
+                else varstat = statsubset.getVariable(value.variableID());
                 addResponseToVarSat(varstat, value);
             }
         }
         //********************************************************
-        subsetstat.addStatHold(stathold);
+        subsetstat.addStatHold(statsubset);
         //********************************************************
     }
     //********************************************************************
@@ -190,12 +212,6 @@ public class TrialBuilder extends Thread {
     }
     //********************************************************************
     //********************************************************************
-    //********************************************************************
-    //********************************************************************
-    //********************************************************************
-    
-    //********************************************************************
-    //********************************************************************
     private void addResponseToVarSat (VarStatAlpha varstat, ResponseValue value) {
         //***********************************************************
         //If the value we intend to add is of a diferent type
@@ -210,7 +226,6 @@ public class TrialBuilder extends Thread {
         }
         //***********************************************************
     }
-    //********************************************************************
     //********************************************************************
     //********************************************************************
     /**

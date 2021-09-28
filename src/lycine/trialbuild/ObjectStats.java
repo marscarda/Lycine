@@ -1,15 +1,8 @@
 package lycine.trialbuild;
 //************************************************************************
-
-import lycine.stats.StatHold;
-
-
-/**
- *
- * @author marianoscardaccione
- */
+import lycine.stats.StatSubset;
 //************************************************************************
-public class SubsetStat {
+public class ObjectStats {
     //**********************************************************
     int thispopulation = 0; //The population of the eval subset.
     int childrenpopulation = 0; //The sum of the children subsets population
@@ -28,15 +21,29 @@ public class SubsetStat {
     }
     //**********************************************************
     private int statsholdcount = 0;
-    private StatHold[] statholds = new StatHold[0];
-    void addStatHold (StatHold stathold) {
+    private StatSubset[] statholds = new StatSubset[0];
+    private StatSubset foundstat = null;
+    void addStatHold (StatSubset stathold) {
         if (stathold == null) return;
-        StatHold[] newarr = new StatHold[statsholdcount + 1];
+        StatSubset[] newarr = new StatSubset[statsholdcount + 1];
         System.arraycopy(statholds, 0, newarr, 0, statsholdcount);
         newarr[statsholdcount] = stathold;
         statholds = newarr;
         statsholdcount++;
     }
+    public StatSubset[] getStatHolds () { return statholds; }
+    //=========================================================
+    public boolean findStat (long subsetid) {
+        for (StatSubset stat : statholds) {
+            if (stat.subsetID() == subsetid) {
+                foundstat = stat;
+                return true;
+            }
+        }
+        return false;
+    }
+    //=========================================================
+    public StatSubset getStat () { return foundstat; }
     //**********************************************************
 }
 //************************************************************************
