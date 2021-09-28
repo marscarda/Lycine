@@ -1,10 +1,10 @@
-package lycine.trialbuild;
+package lycine.trial.build;
 //************************************************************************
 import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
 import lycine.stats.StatSubset;
-import lycine.stats.VarStatAlpha;
-import lycine.stats.VarStatPublicView;
+import lycine.stats.sample.VarStatAlpha;
+import lycine.stats.sample.VarStatPublicView;
 import methionine.AppException;
 import methionine.DataBaseName;
 import methionine.Electra;
@@ -111,8 +111,9 @@ public class TrialBuilder extends Thread {
         }
         //************************************************************
         
+        calculateByPopulation(digdatain, objstat);
         
-        
+        /*
         SubSet[] chld = digdatain.getChildrenSubsets();
         System.out.println("Subset id " + digdatain.subsetID() + " children " + chld.length + 
                 " Stats " + objstat.getStatHolds().length);
@@ -129,7 +130,7 @@ public class TrialBuilder extends Thread {
                 }
             }
         }
-        
+        */
         
         //************************************************************
     }
@@ -184,6 +185,32 @@ public class TrialBuilder extends Thread {
         //********************************************************
     }
     //********************************************************************
+    /**
+     * 
+     * @param digdata
+     * @param objstats 
+     */
+    private void calculateByPopulation (DigData digdata, ObjectStats objstats) {
+       
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    }
+    //********************************************************************
+    //********************************************************************
     VarStatAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
@@ -210,6 +237,8 @@ public class TrialBuilder extends Thread {
         return null;
         
     }
+    //********************************************************************
+    //********************************************************************
     //********************************************************************
     //********************************************************************
     private void addResponseToVarSat (VarStatAlpha varstat, ResponseValue value) {

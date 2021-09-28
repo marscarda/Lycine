@@ -1,6 +1,6 @@
-package lycine.stats;
+package lycine.stats.sample;
 //************************************************************************
-import lycine.stats.VarStatAlpha;
+import lycine.stats.sample.VarStatAlpha;
 import lycine.sample.ConstVarValues;
 //************************************************************************
 public class VarStatPublicView extends VarStatAlpha {

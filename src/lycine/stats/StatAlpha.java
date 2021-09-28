@@ -1,5 +1,8 @@
 package lycine.stats;
 //************************************************************************
+
+import lycine.stats.sample.VarStatAlpha;
+
 public class StatAlpha {
     //********************************************************************
     int varstatcount = 0;

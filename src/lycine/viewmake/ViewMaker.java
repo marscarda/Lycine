@@ -1,7 +1,7 @@
 package lycine.viewmake;
 //************************************************************************
-import lycine.stats.VarStatPublicView;
-import lycine.stats.VarStatAlpha;
+import lycine.stats.sample.VarStatPublicView;
+import lycine.stats.sample.VarStatAlpha;
 import lycine.stats.SampleView;
 import lycine.sample.SampleCenterPanel;
 import lycine.sample.SamplePayLoad;

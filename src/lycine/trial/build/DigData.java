@@ -1,4 +1,4 @@
-package lycine.trialbuild;
+package lycine.trial.build;
 //************************************************************************
 import lycine.stats.StatAlpha;
 import threonine.universe.SubSet;
