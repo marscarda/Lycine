@@ -3,7 +3,7 @@ package lycine.trial.build;
 import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
 import lycine.stats.StatSubset;
-import lycine.stats.sample.VStSmplAlpha;
+import lycine.stats.sample.VStSmplAlphaFix;
 import lycine.stats.sample.VStSmplPubView;
 import methionine.AppException;
 import methionine.DataBaseName;
@@ -122,8 +122,8 @@ public class TrialBuilder extends Thread {
             System.out.println("  Child: " + s.getSubsetID() + " " + objstat.findStat(s.getSubsetID()));
             if (objstat.findStat(s.getSubsetID())) {
                 stat = objstat.getStat();
-                VStSmplAlpha[] vars = stat.getVarStatistics();
-                for (VStSmplAlpha var : vars) {
+                VStSmplAlphaFix[] vars = stat.getVarStatistics();
+                for (VStSmplAlphaFix var : vars) {
                     VStSmplPubView pv = (VStSmplPubView)var;
                     System.out.println("Positives: " + pv.getPositives());
                     System.out.println("Negatives: " + pv.getNegatives());
@@ -164,7 +164,7 @@ public class TrialBuilder extends Thread {
         statsubset.setSubsetId(digdata.subsetID());
         Responder[] responses = samplepayload.getResponses();
         ResponseValue[] values;
-        VStSmplAlpha varstat;
+        VStSmplAlphaFix varstat;
         for (Responder response : responses) {
             //****************************************************
             //If for some reason we need to filter out this response
@@ -211,7 +211,7 @@ public class TrialBuilder extends Thread {
     }
     //********************************************************************
     //********************************************************************
-    VStSmplAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
+    VStSmplAlphaFix createVariableStat (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designatlas.getVariable(value.variableID());
@@ -220,11 +220,11 @@ public class TrialBuilder extends Thread {
             //It should happen NEVER. 
             //But if it happens we should not go further.
             System.out.println("Inconcistent type variable/value");
-            return new VStSmplAlpha();
+            return new VStSmplAlphaFix();
         }
         */
         //***********************************************************
-        VStSmplAlpha varstat = null;
+        VStSmplAlphaFix varstat = null;
         //-----------------------------------------------------------
         switch (value.getType()) {
             case Variable.VARTYPE_PUBVIEW:
@@ -241,7 +241,7 @@ public class TrialBuilder extends Thread {
     //********************************************************************
     //********************************************************************
     //********************************************************************
-    private void addResponseToVarSat (VStSmplAlpha varstat, ResponseValue value) {
+    private void addResponseToVarSat (VStSmplAlphaFix varstat, ResponseValue value) {
         //***********************************************************
         //If the value we intend to add is of a diferent type
         //Than the stat. We just leave.
