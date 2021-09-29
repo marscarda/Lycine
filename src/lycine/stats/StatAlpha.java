@@ -1,12 +1,12 @@
 package lycine.stats;
 //************************************************************************
 
-import lycine.stats.sample.VarStatAlpha;
+import lycine.stats.sample.VStSmplAlpha;
 
 public class StatAlpha {
     //********************************************************************
     int varstatcount = 0;
-    protected VarStatAlpha[] varstats = new VarStatAlpha[0];
+    protected VStSmplAlpha[] varstats = new VStSmplAlpha[0];
     //********************************************************************
     /**
      * Checks if a variable exists in the view.
@@ -15,7 +15,7 @@ public class StatAlpha {
      */
     public boolean checkVariable (long variableid) {
         //========================================================
-        for (VarStatAlpha var : varstats) {
+        for (VStSmplAlpha var : varstats) {
             if (var.variableid == variableid)
                 return true;
         }
@@ -30,9 +30,9 @@ public class StatAlpha {
      * @param variableid
      * @return 
      */
-    public VarStatAlpha getVariable (long variableid) {
+    public VStSmplAlpha getVariable (long variableid) {
         //========================================================
-        for (VarStatAlpha var : varstats) {
+        for (VStSmplAlpha var : varstats) {
             if (var.variableid == variableid)
                 return var;
         }
@@ -44,8 +44,8 @@ public class StatAlpha {
      * Adds a new variable stat to the view.
      * @param var 
      */
-    public void addVariableStat (VarStatAlpha var) {
-        VarStatAlpha[] newarr = new VarStatAlpha[varstatcount + 1];
+    public void addVariableStat (VStSmplAlpha var) {
+        VStSmplAlpha[] newarr = new VStSmplAlpha[varstatcount + 1];
         System.arraycopy(varstats, 0, newarr, 0, varstatcount);
         newarr[varstatcount] = var;
         varstats = newarr;
@@ -53,7 +53,7 @@ public class StatAlpha {
     }
     //********************************************************************
     public int varstatscount () { return varstatcount; }
-    public VarStatAlpha[] getVarStatistics () { return varstats; }
+    public VStSmplAlpha[] getVarStatistics () { return varstats; }
     //********************************************************************
 }
 //************************************************************************

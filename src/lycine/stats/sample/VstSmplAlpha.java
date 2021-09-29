@@ -2,7 +2,7 @@ package lycine.stats.sample;
 //************************************************************************
 
 //************************************************************************
-public class VarStatAlpha {
+public class VStSmplAlpha {
     //*******************************************
     public long variableid = 0;
     public int variabletype = 0;

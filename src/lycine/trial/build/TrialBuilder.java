@@ -3,8 +3,8 @@ package lycine.trial.build;
 import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
 import lycine.stats.StatSubset;
-import lycine.stats.sample.VarStatAlpha;
-import lycine.stats.sample.VarStatPublicView;
+import lycine.stats.sample.VStSmplAlpha;
+import lycine.stats.sample.VStSmplPubView;
 import methionine.AppException;
 import methionine.DataBaseName;
 import methionine.Electra;
@@ -122,9 +122,9 @@ public class TrialBuilder extends Thread {
             System.out.println("  Child: " + s.getSubsetID() + " " + objstat.findStat(s.getSubsetID()));
             if (objstat.findStat(s.getSubsetID())) {
                 stat = objstat.getStat();
-                VarStatAlpha[] vars = stat.getVarStatistics();
-                for (VarStatAlpha var : vars) {
-                    VarStatPublicView pv = (VarStatPublicView)var;
+                VStSmplAlpha[] vars = stat.getVarStatistics();
+                for (VStSmplAlpha var : vars) {
+                    VStSmplPubView pv = (VStSmplPubView)var;
                     System.out.println("Positives: " + pv.getPositives());
                     System.out.println("Negatives: " + pv.getNegatives());
                 }
@@ -164,7 +164,7 @@ public class TrialBuilder extends Thread {
         statsubset.setSubsetId(digdata.subsetID());
         Responder[] responses = samplepayload.getResponses();
         ResponseValue[] values;
-        VarStatAlpha varstat;
+        VStSmplAlpha varstat;
         for (Responder response : responses) {
             //****************************************************
             //If for some reason we need to filter out this response
@@ -211,7 +211,7 @@ public class TrialBuilder extends Thread {
     }
     //********************************************************************
     //********************************************************************
-    VarStatAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
+    VStSmplAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designatlas.getVariable(value.variableID());
@@ -220,15 +220,15 @@ public class TrialBuilder extends Thread {
             //It should happen NEVER. 
             //But if it happens we should not go further.
             System.out.println("Inconcistent type variable/value");
-            return new VarStatAlpha();
+            return new VStSmplAlpha();
         }
         */
         //***********************************************************
-        VarStatAlpha varstat = null;
+        VStSmplAlpha varstat = null;
         //-----------------------------------------------------------
         switch (value.getType()) {
             case Variable.VARTYPE_PUBVIEW:
-                varstat = new VarStatPublicView();
+                varstat = new VStSmplPubView();
                 varstat.variableid = var.variableID();
                 varstat.variabletype= Variable.VARTYPE_PUBVIEW;
                 //varstat.label = var.getLabel();
@@ -241,7 +241,7 @@ public class TrialBuilder extends Thread {
     //********************************************************************
     //********************************************************************
     //********************************************************************
-    private void addResponseToVarSat (VarStatAlpha varstat, ResponseValue value) {
+    private void addResponseToVarSat (VStSmplAlpha varstat, ResponseValue value) {
         //***********************************************************
         //If the value we intend to add is of a diferent type
         //Than the stat. We just leave.
@@ -249,7 +249,7 @@ public class TrialBuilder extends Thread {
         //***********************************************************
         switch (varstat.variabletype) {
             case Variable.VARTYPE_PUBVIEW: {
-                VarStatPublicView varst = (VarStatPublicView)varstat;
+                VStSmplPubView varst = (VStSmplPubView)varstat;
                 varst.setValue(value.getValue());
             } break;
         }

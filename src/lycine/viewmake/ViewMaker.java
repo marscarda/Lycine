@@ -1,7 +1,7 @@
 package lycine.viewmake;
 //************************************************************************
-import lycine.stats.sample.VarStatPublicView;
-import lycine.stats.sample.VarStatAlpha;
+import lycine.stats.sample.VStSmplPubView;
+import lycine.stats.sample.VStSmplAlpha;
 import lycine.stats.SampleView;
 import lycine.sample.SampleCenterPanel;
 import lycine.sample.SamplePayLoad;
@@ -63,7 +63,7 @@ public class ViewMaker {
             //******************************************************
             //We get the values in the response and start looping them.
             values = response.getValues();
-            VarStatAlpha varstat;
+            VStSmplAlpha varstat;
             for (ResponseValue value : values) {
                 if (!sampleview.checkVariable(value.variableID())) {
                     varstat = createVariable(value);
@@ -79,7 +79,7 @@ public class ViewMaker {
         //****************************************************************
     }
     //********************************************************************
-    private VarStatAlpha createVariable (ResponseValue value) throws AppException, Exception {
+    private VStSmplAlpha createVariable (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designlambda.getVariable(value.variableID());
@@ -87,14 +87,14 @@ public class ViewMaker {
             //It should happen NEVER. 
             //But if it happens we should not go further.
             System.out.println("Inconcistent type variable/value");
-            return new VarStatAlpha();
+            return new VStSmplAlpha();
         }
         //***********************************************************
-        VarStatAlpha varstat = null;
+        VStSmplAlpha varstat = null;
         //-----------------------------------------------------------
         switch (value.getType()) {
             case Variable.VARTYPE_PUBVIEW:
-                varstat = new VarStatPublicView();
+                varstat = new VStSmplPubView();
                 varstat.variableid = var.variableID();
                 varstat.variabletype = Variable.VARTYPE_PUBVIEW;
                 varstat.setLabel(var.getLabel());
@@ -103,7 +103,7 @@ public class ViewMaker {
         return null;
     }
     //********************************************************************
-    private void addResponseToVarSat (VarStatAlpha varstat, ResponseValue value) {
+    private void addResponseToVarSat (VStSmplAlpha varstat, ResponseValue value) {
         //***********************************************************
         //If the value we intend to add is of a diferent type
         //Than the stat. We just leave.
@@ -111,7 +111,7 @@ public class ViewMaker {
         //***********************************************************
         switch (varstat.variabletype) {
             case Variable.VARTYPE_PUBVIEW: {
-                VarStatPublicView varst = (VarStatPublicView)varstat;
+                VStSmplPubView varst = (VStSmplPubView)varstat;
                 varst.setValue(value.getValue());
             } break;
         }
