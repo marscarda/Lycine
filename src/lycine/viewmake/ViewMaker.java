@@ -1,7 +1,7 @@
 package lycine.viewmake;
 //************************************************************************
 import lycine.stats.sample.VStSmplPubView;
-import lycine.stats.sample.VStSmplAlphaFix;
+import lycine.stats.sample.VStSmplAlpha;
 import lycine.stats.SampleView;
 import lycine.sample.SampleCenterPanel;
 import lycine.sample.SamplePayLoad;
@@ -63,7 +63,7 @@ public class ViewMaker {
             //******************************************************
             //We get the values in the response and start looping them.
             values = response.getValues();
-            VStSmplAlphaFix varstat;
+            VStSmplAlpha varstat;
             for (ResponseValue value : values) {
                 if (!sampleview.checkVariable(value.variableID())) {
                     varstat = createVariable(value);
@@ -79,7 +79,7 @@ public class ViewMaker {
         //****************************************************************
     }
     //********************************************************************
-    private VStSmplAlphaFix createVariable (ResponseValue value) throws AppException, Exception {
+    private VStSmplAlpha createVariable (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designlambda.getVariable(value.variableID());
@@ -87,10 +87,10 @@ public class ViewMaker {
             //It should happen NEVER. 
             //But if it happens we should not go further.
             System.out.println("Inconcistent type variable/value");
-            return new VStSmplAlphaFix();
+            return new VStSmplAlpha();
         }
         //***********************************************************
-        VStSmplAlphaFix varstat = null;
+        VStSmplAlpha varstat = null;
         //-----------------------------------------------------------
         switch (value.getType()) {
             case Variable.VARTYPE_PUBVIEW:
@@ -103,7 +103,7 @@ public class ViewMaker {
         return null;
     }
     //********************************************************************
-    private void addResponseToVarSat (VStSmplAlphaFix varstat, ResponseValue value) {
+    private void addResponseToVarSat (VStSmplAlpha varstat, ResponseValue value) {
         //***********************************************************
         //If the value we intend to add is of a diferent type
         //Than the stat. We just leave.
