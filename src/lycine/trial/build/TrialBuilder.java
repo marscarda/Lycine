@@ -83,9 +83,9 @@ public class TrialBuilder extends Thread {
             //We recover the ROOT subset for the universe related.
             //We start the digging into the children subsets and calculate.
             SubSet subset = universeatlas.getRootSubset(universeid);
-            SubsetDigging digdata = new SubsetDigging();
-            digdata.setSubset(subset);
-            doSubset(digdata);
+            SubsetDigging digging = new SubsetDigging();
+            digging.setSubset(subset);
+            doSubset(digging);
             //************************************************************
         }
         catch (AppException e) {
@@ -97,28 +97,32 @@ public class TrialBuilder extends Thread {
         cleanUp();
     }
     //********************************************************************
-    private void doSubset (SubsetDigging digdatain) throws AppException, Exception {
+    private void doSubset (SubsetDigging diggingthis) throws AppException, Exception {
         //************************************************************
-        SubsetDigging digindcall;
-        StatsHolder objstat = new StatsHolder();
+        SubsetDigging digindchild;
+        StatsHolder statholder = new StatsHolder();
         //************************************************************
-        objstat.setThisPopulation(digdatain.getSubset().getPopulation());
+        statholder.setThisPopulation(diggingthis.getSubset().getPopulation());
         //************************************************************
         //Children Subsets loop.
-        SubSet[] childrensubsets = universeatlas.getSubsets(universeid, digdatain.subsetID());
-        digdatain.setChildrenSubsets(childrensubsets);
+        //------------------------------------------------------------
+        //We recover the children subsets and add them to the "this digging".
+        SubSet[] childrensubsets = universeatlas.getSubsets(universeid, diggingthis.subsetID());
+        diggingthis.setChildrenSubsets(childrensubsets);
+        //------------------------------------------------------------
+        //The loop itself.
         for (SubSet childsubset : childrensubsets) {
-            objstat.addChildPopulation(childsubset.getPopulation());
+            statholder.addChildPopulation(childsubset.getPopulation());
             //=================================================
-            digindcall = new SubsetDigging();
-            digindcall.setSubset(childsubset);
-            doSubset(digindcall);
+            digindchild = new SubsetDigging();
+            digindchild.setSubset(childsubset);
+            doSubset(digindchild);
             //=================================================
-            doSampleStat(digindcall, objstat);
+            doSampleStat(digindchild, statholder);
             //=================================================
         }
         //************************************************************
-        calculateByPopulation(digdatain, objstat);
+        calculateByPopulation(diggingthis, statholder);
         //************************************************************
 
 
@@ -146,16 +150,26 @@ public class TrialBuilder extends Thread {
         //************************************************************
     }
     //********************************************************************
-    private void doSampleStat (SubsetDigging digdata, StatsHolder subsetstat) throws AppException, Exception {
+    /**
+     * 
+     * @param digdata
+     * @param subsetstat
+     * @throws AppException
+     * @throws Exception 
+     */
+    private void doSampleStat (SubsetDigging digging, StatsHolder subsetstat) throws AppException, Exception {
         //********************************************************
+        //We prepare the land for recovering a sample slot
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
         sel.universeid = universeid;
-        sel.subsetid = digdata.subsetID();
+        sel.subsetid = digging.subsetID();
         //========================================================
-        SampleSlot slot = null;
-        SamplePayLoad samplepayload = null;
+        SampleSlot slot;
+        SamplePayLoad samplepayload;
         //********************************************************
+        //We try to recover the payload of a sample.
+        //If we fail. We check the cause and throw an e or simply return
         try { 
             slot = trialatlas.getSampleSlotAllocation(sel);
             samplepayload = samplecenter.getSamplePayload(slot.sampleID(), 0);
@@ -164,22 +178,21 @@ public class TrialBuilder extends Thread {
             switch(e.getErrorCode()) {
                 case TrialErrorCodes.SLOTALLOCATIONNOTFOUND:
                 case SampleErrorCodes.SAMPLENOTFOUND:
-                    break;
+                    return;
                 default: throw e;
             }
         }
-        //========================================================
-        if (samplepayload == null) return;
+        //********************************************************
+        //At this point we have a sample payload.
         //********************************************************
         StatSubset statsubset = new StatSubset();
-        statsubset.setSubsetId(digdata.subsetID());
+        statsubset.setSubsetId(digging.subsetID());
         Responder[] responses = samplepayload.getResponses();
         ResponseValue[] values;
+        
+        
         VStSmplAlpha varstat;
         for (Responder response : responses) {
-            //****************************************************
-            //If for some reason we need to filter out this response
-            //This is the time. Or shut up forever.
             //****************************************************
             values = response.getValues();
             for (ResponseValue value : values) {
@@ -191,6 +204,8 @@ public class TrialBuilder extends Thread {
                 addResponseToVarSat(varstat, value);
             }
         }
+        
+        
         //********************************************************
         subsetstat.addStat(statsubset);
         //********************************************************
@@ -229,7 +244,14 @@ public class TrialBuilder extends Thread {
     }
     //********************************************************************
     //********************************************************************
-    VStSmplAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
+    /**
+     * This method creates and return a VStat
+     * @param value
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    private VStSmplAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designatlas.getVariable(value.variableID());
