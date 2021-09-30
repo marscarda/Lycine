@@ -2,7 +2,13 @@ package lycine.trial.build;
 //************************************************************************
 import lycine.stats.StatSubset;
 //************************************************************************
-public class ObjectStats {
+/**
+ * This class holds the stats for a given subset's children. Meaning....
+ * holds the StatSubsets for every child according to the sample assigned to that child subset.
+ * StatSubsets are the hol
+ * @author marianoscardaccione
+ */
+public class StatsHolder {
     //**********************************************************
     int thispopulation = 0; //The population of the eval subset.
     int childrenpopulation = 0; //The sum of the children subsets population
@@ -21,20 +27,20 @@ public class ObjectStats {
     }
     //**********************************************************
     private int statsholdcount = 0;
-    private StatSubset[] statholds = new StatSubset[0];
+    private StatSubset[] statsubsets = new StatSubset[0];
     private StatSubset foundstat = null;
     void addStatHold (StatSubset stathold) {
         if (stathold == null) return;
         StatSubset[] newarr = new StatSubset[statsholdcount + 1];
-        System.arraycopy(statholds, 0, newarr, 0, statsholdcount);
+        System.arraycopy(statsubsets, 0, newarr, 0, statsholdcount);
         newarr[statsholdcount] = stathold;
-        statholds = newarr;
+        statsubsets = newarr;
         statsholdcount++;
     }
-    public StatSubset[] getStatHolds () { return statholds; }
+    public StatSubset[] getStatHolds () { return statsubsets; }
     //=========================================================
     public boolean findStat (long subsetid) {
-        for (StatSubset stat : statholds) {
+        for (StatSubset stat : statsubsets) {
             if (stat.subsetID() == subsetid) {
                 foundstat = stat;
                 return true;

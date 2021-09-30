@@ -1,6 +1,5 @@
 package lycine.trial.build;
 //************************************************************************
-import lycine.stats.StatAlpha;
 import threonine.universe.SubSet;
 //************************************************************************
 public class DigData {

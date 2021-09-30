@@ -87,7 +87,7 @@ public class ViewMaker {
             //It should happen NEVER. 
             //But if it happens we should not go further.
             System.out.println("Inconcistent type variable/value");
-            return new VStSmplAlpha();
+            return null;
         }
         //***********************************************************
         VStSmplAlpha varstat = null;

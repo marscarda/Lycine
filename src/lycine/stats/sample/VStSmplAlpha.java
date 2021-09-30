@@ -3,7 +3,7 @@ package lycine.stats.sample;
 
 
 //************************************************************************
-public class VStSmplAlpha {
+public abstract class VStSmplAlpha {
     //*******************************************
     public long variableid = 0;
     public int variabletype = 0;

@@ -11,5 +11,8 @@ public abstract class VStUnivAlpha {
     public void setVariableId (long variableid) { this.variableid = variableid; }
     public long variableID () { return variableid; }
     //*************************************************************
+    public abstract void calculateLocal ();
+    public abstract void calculateGlobal ();
+    //*************************************************************
 }
 //************************************************************************

@@ -75,9 +75,9 @@ public class TrialBuilder extends Thread {
             universeid = trialspace.universeID();
             //************************************************************
             SubSet subset = universeatlas.getRootSubset(universeid);
-            DigData digind = new DigData();
-            digind.setSubset(subset);
-            doSubset(digind);
+            DigData digdata = new DigData();
+            digdata.setSubset(subset);
+            doSubset(digdata);
             //************************************************************
         }
         catch (AppException e) {
@@ -92,7 +92,7 @@ public class TrialBuilder extends Thread {
     private void doSubset (DigData digdatain) throws AppException, Exception {
         //************************************************************
         DigData digindcall;
-        ObjectStats objstat = new ObjectStats();
+        StatsHolder objstat = new StatsHolder();
         //************************************************************
         objstat.setThisPopulation(digdatain.getSubset().getPopulation());
         //************************************************************
@@ -110,8 +110,11 @@ public class TrialBuilder extends Thread {
             //=================================================
         }
         //************************************************************
-        
         calculateByPopulation(digdatain, objstat);
+        //************************************************************
+
+
+
         
         /*
         SubSet[] chld = digdatain.getChildrenSubsets();
@@ -135,7 +138,7 @@ public class TrialBuilder extends Thread {
         //************************************************************
     }
     //********************************************************************
-    private void doSampleStat (DigData digdata, ObjectStats subsetstat) throws AppException, Exception {
+    private void doSampleStat (DigData digdata, StatsHolder subsetstat) throws AppException, Exception {
         //********************************************************
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
@@ -190,24 +193,31 @@ public class TrialBuilder extends Thread {
      * @param digdata
      * @param objstats 
      */
-    private void calculateByPopulation (DigData digdata, ObjectStats objstats) {
-       
+    private void calculateByPopulation (DigData digdata, StatsHolder objstats) {
+
         
         
         
+        SubSet[] chld = digdata.getChildrenSubsets();
         
         
+
         
+        System.out.println(objstats.childrenPopulation());
+
+
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
     }
     //********************************************************************
     //********************************************************************
