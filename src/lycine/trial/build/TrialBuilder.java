@@ -184,7 +184,7 @@ public class TrialBuilder extends Thread {
             }
         }
         //********************************************************
-        subsetstat.addStatHold(statsubset);
+        subsetstat.addStat(statsubset);
         //********************************************************
     }
     //********************************************************************

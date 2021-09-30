@@ -4,14 +4,14 @@ import lycine.stats.StatSubset;
 //************************************************************************
 /**
  * This class holds the stats for a given subset's children. Meaning....
- * holds the StatSubsets for every child according to the sample assigned to that child subset.
- * StatSubsets are the hol
+ * holds the StatSubsets for every child subset having a sample assigned.
+ * It also holds the population of the subset. The population "declared" and the sum of its children as well.
  * @author marianoscardaccione
  */
 public class StatsHolder {
     //**********************************************************
-    int thispopulation = 0; //The population of the eval subset.
-    int childrenpopulation = 0; //The sum of the children subsets population
+    private int thispopulation = 0; //The population of declared for the current subset.
+    private int childrenpopulation = 0; //The sum of the children subsets population
     //**********************************************************
     public void addChildPopulation (int pop) { 
         childrenpopulation += pop;
@@ -29,16 +29,31 @@ public class StatsHolder {
     private int statsholdcount = 0;
     private StatSubset[] statsubsets = new StatSubset[0];
     private StatSubset foundstat = null;
-    void addStatHold (StatSubset stathold) {
-        if (stathold == null) return;
+    //=========================================================
+    /**
+     * Adds a stat subset to hold. 
+     * @param statsubset
+     */
+    public void addStat (StatSubset statsubset) {
+        if (statsubset == null) return;
         StatSubset[] newarr = new StatSubset[statsholdcount + 1];
         System.arraycopy(statsubsets, 0, newarr, 0, statsholdcount);
-        newarr[statsholdcount] = stathold;
+        newarr[statsholdcount] = statsubset;
         statsubsets = newarr;
         statsholdcount++;
     }
-    public StatSubset[] getStatHolds () { return statsubsets; }
     //=========================================================
+    /**
+     * Returns the stat subsets that are held.
+     * @return 
+     */
+    public StatSubset[] getStats () { return statsubsets; }
+    //=========================================================
+    /**
+     * Finds a stat subset by subset id and if found leaves it available to retrieve.
+     * @param subsetid
+     * @return 
+     */
     public boolean findStat (long subsetid) {
         for (StatSubset stat : statsubsets) {
             if (stat.subsetID() == subsetid) {
@@ -49,6 +64,11 @@ public class StatsHolder {
         return false;
     }
     //=========================================================
+    /**
+     * Returns the found subset.
+     * findStats must be called first.
+     * @return 
+     */
     public StatSubset getStat () { return foundstat; }
     //**********************************************************
 }
