@@ -1,8 +1,15 @@
 package lycine.stats;
 //************************************************************************
-
 import lycine.stats.sample.VStSmplAlpha;
-
+//************************************************************************
+/**
+ * ROOT Class. 
+ * Holds variable stats.
+ * Variable stats can be added and retrieved by variable id.
+ * Does not calculate stats. It simply holds the stats.
+ * Stats are calculated outside this class.
+ * @author marianoscardaccione
+ */
 public class StatAlpha {
     //********************************************************************
     int varstatcount = 0;
@@ -52,7 +59,7 @@ public class StatAlpha {
         varstatcount++;
     }
     //********************************************************************
-    public int varstatscount () { return varstatcount; }
+    public int varStatsCount () { return varstatcount; }
     public VStSmplAlpha[] getVarStatistics () { return varstats; }
     //********************************************************************
 }
