@@ -2,7 +2,11 @@ package lycine.trial.build;
 //************************************************************************
 import threonine.universe.SubSet;
 //************************************************************************
-public class DigData {
+/**
+ * Transports the digging data throw recursive calls.
+ * @author marianoscardaccione
+ */
+public class SubsetDigging {
     //*************************************************
     private SubSet subset = null;
     void setSubset (SubSet subset) { this.subset = subset; }

@@ -50,6 +50,9 @@ public class TrialBuilder extends Thread {
     //====================================================================
     SampleCenterBack samplecenter = null;
     //********************************************************************
+    /**
+     * This is where the building thread starts.
+     */
     @Override
     public void run () {
         //****************************************************
@@ -64,18 +67,23 @@ public class TrialBuilder extends Thread {
         //****************************************************
     }
     //********************************************************************
+    /**
+     * The entry point to do the building.
+     */
     private void doBuilding () {
         try {
             //************************************************************
+            //We recover the trial and the universe related to it.
             Trial trial = trialatlas.getTrial(trialid);
             TrialSpace trialspace = trialatlas.getEnvironment(trial.trialSpaceID());
-            universeatlas.getUniverse(trialspace.universeID());
-            //============================================================
-            trialspaceid = trialspace.environmentID();
-            universeid = trialspace.universeID();
+            universeatlas.getUniverse(trialspace.universeID()); // check if the universe exists.
+            trialspaceid = trialspace.environmentID(); // Sets the trial id
+            universeid = trialspace.universeID(); // Sets the universe id
             //************************************************************
+            //We recover the ROOT subset for the universe related.
+            //We start the digging into the children subsets and calculate.
             SubSet subset = universeatlas.getRootSubset(universeid);
-            DigData digdata = new DigData();
+            SubsetDigging digdata = new SubsetDigging();
             digdata.setSubset(subset);
             doSubset(digdata);
             //************************************************************
@@ -89,9 +97,9 @@ public class TrialBuilder extends Thread {
         cleanUp();
     }
     //********************************************************************
-    private void doSubset (DigData digdatain) throws AppException, Exception {
+    private void doSubset (SubsetDigging digdatain) throws AppException, Exception {
         //************************************************************
-        DigData digindcall;
+        SubsetDigging digindcall;
         StatsHolder objstat = new StatsHolder();
         //************************************************************
         objstat.setThisPopulation(digdatain.getSubset().getPopulation());
@@ -102,7 +110,7 @@ public class TrialBuilder extends Thread {
         for (SubSet childsubset : childrensubsets) {
             objstat.addChildPopulation(childsubset.getPopulation());
             //=================================================
-            digindcall = new DigData();
+            digindcall = new SubsetDigging();
             digindcall.setSubset(childsubset);
             doSubset(digindcall);
             //=================================================
@@ -138,7 +146,7 @@ public class TrialBuilder extends Thread {
         //************************************************************
     }
     //********************************************************************
-    private void doSampleStat (DigData digdata, StatsHolder subsetstat) throws AppException, Exception {
+    private void doSampleStat (SubsetDigging digdata, StatsHolder subsetstat) throws AppException, Exception {
         //********************************************************
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
@@ -193,7 +201,7 @@ public class TrialBuilder extends Thread {
      * @param digdata
      * @param objstats 
      */
-    private void calculateByPopulation (DigData digdata, StatsHolder objstats) {
+    private void calculateByPopulation (SubsetDigging digdata, StatsHolder objstats) {
 
         
         
