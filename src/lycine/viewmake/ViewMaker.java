@@ -5,6 +5,7 @@ import lycine.stats.sample.VStSmplAlpha;
 import lycine.stats.SampleView;
 import lycine.sample.SampleCenterPanel;
 import lycine.sample.SamplePayLoad;
+import lycine.stats.VStAlpha;
 import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
 import methionine.auth.AuthLamda;
@@ -63,7 +64,7 @@ public class ViewMaker {
             //******************************************************
             //We get the values in the response and start looping them.
             values = response.getValues();
-            VStSmplAlpha varstat;
+            VStAlpha varstat;
             for (ResponseValue value : values) {
                 if (!sampleview.checkVariable(value.variableID())) {
                     varstat = createVariable(value);
@@ -103,7 +104,7 @@ public class ViewMaker {
         return null;
     }
     //********************************************************************
-    private void addResponseToVarSat (VStSmplAlpha varstat, ResponseValue value) {
+    private void addResponseToVarSat (VStAlpha varstat, ResponseValue value) {
         //***********************************************************
         //If the value we intend to add is of a diferent type
         //Than the stat. We just leave.

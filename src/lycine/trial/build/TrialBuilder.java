@@ -3,7 +3,7 @@ package lycine.trial.build;
 import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
 import lycine.stats.StatSubset;
-import lycine.stats.sample.VStSmplAlpha;
+import lycine.stats.VStAlpha;
 import lycine.stats.sample.VStSmplPubView;
 import methionine.AppException;
 import methionine.DataBaseName;
@@ -203,7 +203,7 @@ public class TrialBuilder extends Thread {
         
         
         
-        VStSmplAlpha varstat;
+        VStAlpha varstat;
         for (Responder response : responses) {
             //****************************************************
             values = response.getValues();
@@ -272,7 +272,7 @@ public class TrialBuilder extends Thread {
      * @throws AppException
      * @throws Exception 
      */
-    private VStSmplAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
+    private VStAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designatlas.getVariable(value.variableID());
@@ -285,7 +285,7 @@ public class TrialBuilder extends Thread {
         }
         */
         //***********************************************************
-        VStSmplAlpha varstat = null;
+        VStAlpha varstat = null;
         //-----------------------------------------------------------
         switch (value.getType()) {
             case Variable.VARTYPE_PUBVIEW:
@@ -302,7 +302,7 @@ public class TrialBuilder extends Thread {
     //********************************************************************
     //********************************************************************
     //********************************************************************
-    private void addResponseToVarSat (VStSmplAlpha varstat, ResponseValue value) {
+    private void addResponseToVarSat (VStAlpha varstat, ResponseValue value) {
         //***********************************************************
         //If the value we intend to add is of a diferent type
         //Than the stat. We just leave.

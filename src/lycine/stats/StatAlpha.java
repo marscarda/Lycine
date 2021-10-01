@@ -13,7 +13,7 @@ import lycine.stats.sample.VStSmplAlpha;
 public class StatAlpha {
     //********************************************************************
     int varstatcount = 0;
-    protected VStSmplAlpha[] varstats = new VStSmplAlpha[0];
+    protected VStAlpha[] varstats = new VStAlpha[0];
     //********************************************************************
     /**
      * Checks if a variable exists in the view.
@@ -22,7 +22,7 @@ public class StatAlpha {
      */
     public boolean checkVariable (long variableid) {
         //========================================================
-        for (VStSmplAlpha var : varstats) {
+        for (VStAlpha var : varstats) {
             if (var.variableid == variableid)
                 return true;
         }
@@ -37,9 +37,9 @@ public class StatAlpha {
      * @param variableid
      * @return 
      */
-    public VStSmplAlpha getVariable (long variableid) {
+    public VStAlpha getVariable (long variableid) {
         //========================================================
-        for (VStSmplAlpha var : varstats) {
+        for (VStAlpha var : varstats) {
             if (var.variableid == variableid)
                 return var;
         }
@@ -51,8 +51,8 @@ public class StatAlpha {
      * Adds a new variable stat to the view.
      * @param var 
      */
-    public void addVariableStat (VStSmplAlpha var) {
-        VStSmplAlpha[] newarr = new VStSmplAlpha[varstatcount + 1];
+    public void addVariableStat (VStAlpha var) {
+        VStAlpha[] newarr = new VStSmplAlpha[varstatcount + 1];
         System.arraycopy(varstats, 0, newarr, 0, varstatcount);
         newarr[varstatcount] = var;
         varstats = newarr;
@@ -60,7 +60,7 @@ public class StatAlpha {
     }
     //********************************************************************
     public int varStatsCount () { return varstatcount; }
-    public VStSmplAlpha[] getVarStatistics () { return varstats; }
+    public VStAlpha[] getVarStatistics () { return varstats; }
     //********************************************************************
 }
 //************************************************************************
