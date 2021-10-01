@@ -97,6 +97,12 @@ public class TrialBuilder extends Thread {
         cleanUp();
     }
     //********************************************************************
+    /**
+     * This is the recursive method that dig deep into the universe.
+     * @param diggingthis
+     * @throws AppException
+     * @throws Exception 
+     */
     private void doSubset (SubsetDigging diggingthis) throws AppException, Exception {
         //************************************************************
         SubsetDigging digindchild;
@@ -191,6 +197,12 @@ public class TrialBuilder extends Thread {
         ResponseValue[] values;
         
         
+        
+        
+        
+        
+        
+        
         VStSmplAlpha varstat;
         for (Responder response : responses) {
             //****************************************************
@@ -204,6 +216,15 @@ public class TrialBuilder extends Thread {
                 addResponseToVarSat(varstat, value);
             }
         }
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         //********************************************************

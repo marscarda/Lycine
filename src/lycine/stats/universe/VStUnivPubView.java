@@ -37,6 +37,7 @@ public class VStUnivPubView extends VStUnivAlpha {
     //=========================================================
     @Override
     public void calculateGlobal () {
+        System.out.println("Calculate global");
         
     }
     //**********************************************************
