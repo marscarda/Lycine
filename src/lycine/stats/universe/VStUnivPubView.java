@@ -1,6 +1,9 @@
 package lycine.stats.universe;
 //************************************************************************
 //************************************************************************
+
+import lycine.sample.ConstVarValues;
+
 /**
  * Statistic component for variables kind of Public View Candidates.
  * Name stands for Variable Statistic Universe Public View
@@ -13,6 +16,18 @@ public class VStUnivPubView extends VStUnivAlpha {
     int negatives = 0;
     int unknowns = 0;
     //**********************************************************
+    
+    public void setValue (int value) {
+        switch (value) {
+            case ConstVarValues.PUBVIEW_POSITIVE: positives++; break;
+            case ConstVarValues.PUBVIEW_NEUTRAL: neutrals++; break;
+            case ConstVarValues.PUBVIEW_NEGATIVE: negatives++; break;
+            case ConstVarValues.PUBVIEW_UNKNOWN: unknowns++; break;
+        }
+    }
+    
+    
+    
     public void setPositives(int p) { positives = p; }
     public void setNeutrals (int n) { neutrals = n; }
     public void setNegatives (int n) { negatives = n; }

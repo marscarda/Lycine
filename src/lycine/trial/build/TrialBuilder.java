@@ -3,8 +3,8 @@ package lycine.trial.build;
 import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
 import lycine.stats.StatSubset;
-import lycine.stats.VStAlpha;
-import lycine.stats.sample.VStSmplPubView;
+import lycine.stats.universe.VStUnivAlpha;
+import lycine.stats.universe.VStUnivPubView;
 import methionine.AppException;
 import methionine.DataBaseName;
 import methionine.Electra;
@@ -195,15 +195,7 @@ public class TrialBuilder extends Thread {
         statsubset.setSubsetId(digging.subsetID());
         Responder[] responses = samplepayload.getResponses();
         ResponseValue[] values;
-        
-        
-        
-        
-        
-        
-        
-        
-        VStAlpha varstat;
+        VStUnivAlpha varstat;
         for (Responder response : responses) {
             //****************************************************
             values = response.getValues();
@@ -212,21 +204,12 @@ public class TrialBuilder extends Thread {
                     varstat = createVariableStat(value);
                     statsubset.addVariableStat(varstat);
                 }
-                else varstat = statsubset.getVariable(value.variableID());
+                //-----------------------------------------------
+                else varstat = (VStUnivAlpha)statsubset.getVariable(value.variableID());
                 addResponseToVarSat(varstat, value);
+                //-----------------------------------------------
             }
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         //********************************************************
         subsetstat.addStat(statsubset);
         //********************************************************
@@ -272,7 +255,7 @@ public class TrialBuilder extends Thread {
      * @throws AppException
      * @throws Exception 
      */
-    private VStAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
+    private VStUnivAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designatlas.getVariable(value.variableID());
@@ -285,24 +268,22 @@ public class TrialBuilder extends Thread {
         }
         */
         //***********************************************************
-        VStAlpha varstat = null;
+        VStUnivAlpha varstat = null;
         //-----------------------------------------------------------
         switch (value.getType()) {
             case Variable.VARTYPE_PUBVIEW:
-                varstat = new VStSmplPubView();
+                varstat = new VStUnivPubView();
                 varstat.variableid = var.variableID();
                 varstat.variabletype= Variable.VARTYPE_PUBVIEW;
-                //varstat.label = var.getLabel();
                 return varstat;
         }
         return null;
-        
     }
     //********************************************************************
     //********************************************************************
     //********************************************************************
     //********************************************************************
-    private void addResponseToVarSat (VStAlpha varstat, ResponseValue value) {
+    private void addResponseToVarSat (VStUnivAlpha varstat, ResponseValue value) {
         //***********************************************************
         //If the value we intend to add is of a diferent type
         //Than the stat. We just leave.
@@ -310,7 +291,7 @@ public class TrialBuilder extends Thread {
         //***********************************************************
         switch (varstat.variabletype) {
             case Variable.VARTYPE_PUBVIEW: {
-                VStSmplPubView varst = (VStSmplPubView)varstat;
+                VStUnivPubView varst = (VStUnivPubView)varstat;
                 varst.setValue(value.getValue());
             } break;
         }
