@@ -16,7 +16,6 @@ public class VStUnivPubView extends VStUnivAlpha {
     int negatives = 0;
     int unknowns = 0;
     //**********************************************************
-    
     public void setValue (int value) {
         switch (value) {
             case ConstVarValues.PUBVIEW_POSITIVE: positives++; break;
@@ -25,13 +24,9 @@ public class VStUnivPubView extends VStUnivAlpha {
             case ConstVarValues.PUBVIEW_UNKNOWN: unknowns++; break;
         }
     }
-    
-    
-    
-    public void setPositives(int p) { positives = p; }
-    public void setNeutrals (int n) { neutrals = n; }
-    public void setNegatives (int n) { negatives = n; }
-    public void setUnknowns (int u) { unknowns = u; } 
+    //**********************************************************
+    public int Positives () { return positives; }
+    public int Negatives () { return negatives; }
     //**********************************************************
     //Local proportions of responses
     float localpositive = 0;

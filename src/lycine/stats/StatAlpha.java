@@ -52,7 +52,7 @@ public class StatAlpha {
      * @param var 
      */
     public void addVariableStat (VStAlpha var) {
-        VStAlpha[] newarr = new VStSmplAlpha[varstatcount + 1];
+        VStAlpha[] newarr = new VStAlpha[varstatcount + 1];
         System.arraycopy(varstats, 0, newarr, 0, varstatcount);
         newarr[varstatcount] = var;
         varstats = newarr;

@@ -3,6 +3,7 @@ package lycine.trial.build;
 import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
 import lycine.stats.StatSubset;
+import lycine.stats.VStAlpha;
 import lycine.stats.universe.VStUnivAlpha;
 import lycine.stats.universe.VStUnivPubView;
 import methionine.AppException;
@@ -80,18 +81,27 @@ public class TrialBuilder extends Thread {
             trialspaceid = trialspace.environmentID(); // Sets the trial id
             universeid = trialspace.universeID(); // Sets the universe id
             //************************************************************
+            //We create the top Nester.
+            StatNester nester = new StatNester();
+            SubSet subset = universeatlas.getRootSubset(universeid);
+            nester.setSubset(subset);
+
+
+            //************************************************************
             //We recover the ROOT subset for the universe related.
             //We start the digging into the children subsets and calculate.
-            SubSet subset = universeatlas.getRootSubset(universeid);
-            SubsetDigging digging = new SubsetDigging();
-            digging.setSubset(subset);
-            doSubset(digging);
+            
+            //SubsetDigging digging = new SubsetDigging();
+            //digging.setSubset(subset);
+            doSubset(nester);
             //************************************************************
         }
         catch (AppException e) {
+            System.out.println(e.getMessage());
             return;
         }
         catch (Exception e) {
+            System.out.println(e.getMessage());
             return;
         }
         cleanUp();
@@ -103,14 +113,29 @@ public class TrialBuilder extends Thread {
      * @throws AppException
      * @throws Exception 
      */
-    private void doSubset (SubsetDigging diggingthis) throws AppException, Exception {
+    private void doSubset (StatNester nester_this) throws AppException, Exception {
         //************************************************************
-        SubsetDigging digindchild;
-        StatsHolder statholder = new StatsHolder();
+        //SubsetDigging digindchild;
+        //StatsHolder statholder = new StatsHolder();
         //************************************************************
-        statholder.setThisPopulation(diggingthis.getSubset().getPopulation());
+        //statholder.setThisPopulation(diggingthis.getSubset().getPopulation());
+        //************************************************************
+        
+        System.out.println("Subset ID " + nester_this.subsetID());
+        
+        
+        doSubsetStat(nester_this);
+        //************************************************************
+        SubSet[] subsets_children = universeatlas.getSubsets(universeid, nester_this.subsetID());
+        for (SubSet subset : subsets_children)
+            nester_this.addChild(subset);
+        //************************************************************
+        StatNester[] nester_children = nester_this.getChildren();
+        for (StatNester nester : nester_children)
+            doSubset(nester);
         //************************************************************
         //Children Subsets loop.
+        /*
         //------------------------------------------------------------
         //We recover the children subsets and add them to the "this digging".
         SubSet[] childrensubsets = universeatlas.getSubsets(universeid, diggingthis.subsetID());
@@ -122,62 +147,39 @@ public class TrialBuilder extends Thread {
             //=================================================
             digindchild = new SubsetDigging();
             digindchild.setSubset(childsubset);
-            doSubset(digindchild);
+            
+            nester_this.addChild(childsubset);
+            
+            //doSubset(digindchild, nester);
             //=================================================
             doSampleStat(digindchild, statholder);
             //=================================================
         }
-        //************************************************************
-        calculateByPopulation(diggingthis, statholder);
-        //************************************************************
-
-
-
-        
-        /*
-        SubSet[] chld = digdatain.getChildrenSubsets();
-        System.out.println("Subset id " + digdatain.subsetID() + " children " + chld.length + 
-                " Stats " + objstat.getStatHolds().length);
-        StatSubset stat;
-        for (SubSet s : chld) {
-            System.out.println("  Child: " + s.getSubsetID() + " " + objstat.findStat(s.getSubsetID()));
-            if (objstat.findStat(s.getSubsetID())) {
-                stat = objstat.getStat();
-                VStSmplAlpha[] vars = stat.getVarStatistics();
-                for (VStSmplAlpha var : vars) {
-                    VStSmplPubView pv = (VStSmplPubView)var;
-                    System.out.println("Positives: " + pv.getPositives());
-                    System.out.println("Negatives: " + pv.getNegatives());
-                }
-            }
-        }
         */
-        
+        //************************************************************
+        //calculateByPopulation(diggingthis, statholder);
         //************************************************************
     }
     //********************************************************************
     /**
      * 
-     * @param digdata
-     * @param subsetstat
-     * @throws AppException
-     * @throws Exception 
+     * @param nester 
      */
-    private void doSampleStat (SubsetDigging digging, StatsHolder subsetstat) throws AppException, Exception {
-        //********************************************************
-        //We prepare the land for recovering a sample slot
+    private void doSubsetStat (StatNester nester) throws AppException, Exception {
+        //========================================================
+        SubSet subset = nester.getSubset();
+        //========================================================
         SlotSelector sel = new SlotSelector();
         sel.trialspaceid = trialspaceid;
         sel.universeid = universeid;
-        sel.subsetid = digging.subsetID();
+        sel.subsetid = subset.getSubsetID();
         //========================================================
-        SampleSlot slot;
         SamplePayLoad samplepayload;
-        //********************************************************
+        //--------------------------------------------------------
         //We try to recover the payload of a sample.
         //If we fail. We check the cause and throw an e or simply return
         try { 
-            slot = trialatlas.getSampleSlotAllocation(sel);
+            SampleSlot slot = trialatlas.getSampleSlotAllocation(sel);
             samplepayload = samplecenter.getSamplePayload(slot.sampleID(), 0);
         }
         catch (AppException e) {
@@ -192,7 +194,7 @@ public class TrialBuilder extends Thread {
         //At this point we have a sample payload.
         //********************************************************
         StatSubset statsubset = new StatSubset();
-        statsubset.setSubsetId(digging.subsetID());
+        statsubset.setSubsetId(subset.getSubsetID());
         Responder[] responses = samplepayload.getResponses();
         ResponseValue[] values;
         VStUnivAlpha varstat;
@@ -211,40 +213,8 @@ public class TrialBuilder extends Thread {
             }
         }
         //********************************************************
-        subsetstat.addStat(statsubset);
+        nester.setStat(statsubset);
         //********************************************************
-    }
-    //********************************************************************
-    /**
-     * 
-     * @param digdata
-     * @param objstats 
-     */
-    private void calculateByPopulation (SubsetDigging digdata, StatsHolder objstats) {
-
-        
-        
-        
-        SubSet[] chld = digdata.getChildrenSubsets();
-        
-        
-
-        
-        System.out.println(objstats.childrenPopulation());
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
     }
     //********************************************************************
     //********************************************************************
@@ -259,14 +229,6 @@ public class TrialBuilder extends Thread {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designatlas.getVariable(value.variableID());
-        /*
-        if (value.getType() != var.variableType()) {
-            //It should happen NEVER. 
-            //But if it happens we should not go further.
-            System.out.println("Inconcistent type variable/value");
-            return new VStSmplAlpha();
-        }
-        */
         //***********************************************************
         VStUnivAlpha varstat = null;
         //-----------------------------------------------------------
@@ -279,9 +241,6 @@ public class TrialBuilder extends Thread {
         }
         return null;
     }
-    //********************************************************************
-    //********************************************************************
-    //********************************************************************
     //********************************************************************
     private void addResponseToVarSat (VStUnivAlpha varstat, ResponseValue value) {
         //***********************************************************
