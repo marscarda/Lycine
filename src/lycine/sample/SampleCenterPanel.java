@@ -1,5 +1,6 @@
 package lycine.sample;
 //************************************************************************
+import tryptophan.sample.SamplePayLoad;
 import methionine.AppException;
 import methionine.TabList;
 import methionine.auth.AuthLamda;

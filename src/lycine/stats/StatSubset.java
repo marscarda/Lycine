@@ -7,7 +7,7 @@ package lycine.stats;
  * Typically used when we calculate globally going deep into a universe.
  * @author marianoscardaccione
  */
-public class StatSubset extends StatAlpha {
+public class StatSubset {
     long subsetid = 0;
     public void setSubsetId (long subsetid) { this.subsetid = subsetid; }
     public long subsetID () { return subsetid; }

@@ -1,7 +1,7 @@
 package lycine.trial.build;
 //************************************************************************
 import lycine.sample.SampleCenterBack;
-import lycine.sample.SamplePayLoad;
+import tryptophan.sample.SamplePayLoad;
 import lycine.stats.StatSubset;
 import lycine.stats.VStAlpha;
 import methionine.AppException;
@@ -158,13 +158,13 @@ public class TrialBuilder extends Thread {
             //****************************************************
             values = response.getValues();
             for (ResponseValue value : values) {
-                if (!statsubset.checkVariable(value.variableID())) {
-                    varstat = VarStatMaker.createVariableStat(designatlas, value);
-                    statsubset.addVariableStat(varstat);
-                }
+                //if (!statsubset.checkVariable(value.variableID())) {
+                //    varstat = VarStatMaker.createVariableStat(designatlas, value);
+                //    statsubset.addVariableStat(varstat);
+                //}
                 //-----------------------------------------------
-                else varstat = statsubset.getVariable(value.variableID());
-                VarStatMaker.addResponseToVarSat(varstat, value);
+                //else varstat = statsubset.getVariable(value.variableID());
+                //VarStatMaker.addResponseToVarSat(varstat, value);
                 //-----------------------------------------------
             }
         }
@@ -182,10 +182,10 @@ public class TrialBuilder extends Thread {
         //********************************************************
         if (nester.hasStat()) {
             StatSubset stat = nester.getStat();
-            VStAlpha[] vars = stat.getVarStatistics();
-            for (VStAlpha var : vars) {
-                var.calculateLocal();
-            }
+            //VStAlpha[] vars = stat.getVarStatistics();
+            //for (VStAlpha var : vars) {
+            //    var.calculateLocal();
+            //}
         }
         //********************************************************
         if (nester.childStats() > 1) {
@@ -201,9 +201,9 @@ public class TrialBuilder extends Thread {
         for (StatNester child : children) {
             if (!child.hasStat()) continue;
             stat = child.getStat();
-            vars = stat.getVarStatistics();
-            for (VStAlpha var : vars)
-                var.calculateGlobal(child.popSubset(), nester.popSubset());
+            //vars = stat.getVarStatistics();
+            //for (VStAlpha var : vars)
+            //    var.calculateGlobal(child.popSubset(), nester.popSubset());
         }
     }
     //********************************************************************

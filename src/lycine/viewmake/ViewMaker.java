@@ -3,7 +3,7 @@ package lycine.viewmake;
 import lycine.stats.sample.VStSmplPubView;
 import lycine.stats.SampleView;
 import lycine.sample.SampleCenterPanel;
-import lycine.sample.SamplePayLoad;
+import tryptophan.sample.SamplePayLoad;
 import lycine.stats.VStAlpha;
 import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
