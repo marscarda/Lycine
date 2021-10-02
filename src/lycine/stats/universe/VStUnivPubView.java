@@ -2,6 +2,7 @@ package lycine.stats.universe;
 //************************************************************************
 //************************************************************************
 
+import lycine.stats.VStUnivAlpha;
 import lycine.sample.ConstVarValues;
 
 /**

@@ -4,7 +4,7 @@ import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
 import lycine.stats.StatSubset;
 import lycine.stats.VStAlpha;
-import lycine.stats.universe.VStUnivAlpha;
+import lycine.stats.VStUnivAlpha;
 import lycine.stats.universe.VStUnivPubView;
 import methionine.AppException;
 import methionine.DataBaseName;
