@@ -1,7 +1,6 @@
 package lycine.viewmake;
 //************************************************************************
 import lycine.stats.sample.VStSmplPubView;
-import lycine.stats.sample.VStSmplAlpha;
 import lycine.stats.SampleView;
 import lycine.sample.SampleCenterPanel;
 import lycine.sample.SamplePayLoad;
@@ -80,7 +79,7 @@ public class ViewMaker {
         //****************************************************************
     }
     //********************************************************************
-    private VStSmplAlpha createVariable (ResponseValue value) throws AppException, Exception {
+    private VStAlpha createVariable (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designlambda.getVariable(value.variableID());
@@ -91,7 +90,7 @@ public class ViewMaker {
             return null;
         }
         //***********************************************************
-        VStSmplAlpha varstat = null;
+        VStAlpha varstat = null;
         //-----------------------------------------------------------
         switch (value.getType()) {
             case Variable.VARTYPE_PUBVIEW:

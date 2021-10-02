@@ -1,8 +1,9 @@
 package lycine.stats.sample;
 //************************************************************************
 import lycine.sample.ConstVarValues;
+import lycine.stats.VStAlpha;
 //************************************************************************
-public class VStSmplPubView extends VStSmplAlpha {
+public class VStSmplPubView extends VStAlpha {
     //***********************************
     int positives = 0;
     int neutrals = 0;

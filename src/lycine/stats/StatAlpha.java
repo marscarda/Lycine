@@ -1,7 +1,5 @@
 package lycine.stats;
 //************************************************************************
-import lycine.stats.sample.VStSmplAlpha;
-//************************************************************************
 /**
  * ROOT Class. 
  * Holds variable stats.
