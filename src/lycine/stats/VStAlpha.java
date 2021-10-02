@@ -4,7 +4,7 @@ package lycine.stats;
  *
  * @author marianoscardaccione
  */
-public class VStAlpha {
+public abstract class VStAlpha {
     //*******************************************
     public long variableid = 0;
     public int variabletype = 0;
@@ -18,6 +18,9 @@ public class VStAlpha {
         if (label == null) return "";
         return label;
     }
+    //*******************************************
+    public void calculateLocal () {};
+    public void calculateGlobal (int localpop, int globalpop) {};
     //*******************************************
 }
 //************************************************************************

@@ -8,14 +8,17 @@ import threonine.universe.SubSet;
  */
 public class StatNester {
     //*******************************************************
-    //long universeid = 0;
-    //long subsetid = 0;
+    private int population = 0;
+    private int childrenpop = 0;
     //=======================================================
-    //int population = 0;
-    //int childpopulation = 0;
+    public int popSubset () { return population; }
+    public int popGap () { return population - childrenpop; }
     //*******************************************************
     private SubSet subset = null;
-    public void setSubset (SubSet subset) { this.subset = subset; }
+    public void setSubset (SubSet subset) { 
+        this.subset = subset;
+        population = this.subset.getPopulation();
+    }
     public SubSet getSubset () { return subset; }
     //=======================================================
     public long subsetID () { return subset.getSubsetID(); }
@@ -28,13 +31,15 @@ public class StatNester {
         return stat;
     }
     //*******************************************************
-    int childrencount = 0;
+    private int childrencount = 0;
     StatNester[] children = new StatNester[0];
     //=======================================================
     public void addChild (SubSet subset) {
         StatNester nester = new StatNester();
-        nester.subset = subset;
+        nester.setSubset(subset);
         addChild(nester);
+        childrenpop += subset.getPopulation();
+        if (childrenpop > population) population = childrenpop;
     }
     //=======================================================
     public void addChild (StatNester collector) {
@@ -46,6 +51,13 @@ public class StatNester {
     }
     //=======================================================
     public StatNester[] getChildren () { return children; }
+    //*******************************************************
+    public int childStats () {
+        int count = 0;
+        for (StatNester nester : children) 
+            if (nester.hasStat()) count++;
+        return count;
+    }
     //*******************************************************
 }
 //************************************************************************

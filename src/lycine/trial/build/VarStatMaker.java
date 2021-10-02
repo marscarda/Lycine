@@ -1,6 +1,6 @@
 package lycine.trial.build;
 //************************************************************************
-import lycine.stats.VStUnivAlpha;
+import lycine.stats.VStAlpha;
 import lycine.stats.universe.VStUnivPubView;
 import methionine.AppException;
 import tryptophan.design.DesignLambda;
@@ -17,12 +17,12 @@ public class VarStatMaker {
      * @throws AppException
      * @throws Exception 
      */
-    public static VStUnivAlpha createVariableStat (DesignLambda designatlas, ResponseValue value) throws AppException, Exception {
+    public static VStAlpha createVariableStat (DesignLambda designatlas, ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designatlas.getVariable(value.variableID());
         //***********************************************************
-        VStUnivAlpha varstat = null;
+        VStAlpha varstat = null;
         //-----------------------------------------------------------
         switch (value.getType()) {
             case Variable.VARTYPE_PUBVIEW:
@@ -39,7 +39,7 @@ public class VarStatMaker {
      * @param varstat
      * @param value 
      */
-    public static void addResponseToVarSat (VStUnivAlpha varstat, ResponseValue value) {
+    public static void addResponseToVarSat (VStAlpha varstat, ResponseValue value) {
         //***********************************************************
         //If the value we intend to add is of a diferent type
         //Than the stat. We just leave.

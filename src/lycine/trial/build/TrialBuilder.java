@@ -4,8 +4,6 @@ import lycine.sample.SampleCenterBack;
 import lycine.sample.SamplePayLoad;
 import lycine.stats.StatSubset;
 import lycine.stats.VStAlpha;
-import lycine.stats.VStUnivAlpha;
-import lycine.stats.universe.VStUnivPubView;
 import methionine.AppException;
 import methionine.DataBaseName;
 import methionine.Electra;
@@ -14,7 +12,6 @@ import methionine.project.ProjectLambda;
 import threonine.universe.SubSet;
 import threonine.universe.UniverseAtlas;
 import tryptophan.design.DesignLambda;
-import tryptophan.design.Variable;
 import tryptophan.sample.Responder;
 import tryptophan.sample.ResponseValue;
 import tryptophan.sample.SampleErrorCodes;
@@ -85,15 +82,9 @@ public class TrialBuilder extends Thread {
             StatNester nester = new StatNester();
             SubSet subset = universeatlas.getRootSubset(universeid);
             nester.setSubset(subset);
-
-
             //************************************************************
-            //We recover the ROOT subset for the universe related.
-            //We start the digging into the children subsets and calculate.
-            
-            //SubsetDigging digging = new SubsetDigging();
-            //digging.setSubset(subset);
             doSubset(nester);
+            doCalcByPop(nester);
             //************************************************************
         }
         catch (AppException e) {
@@ -114,16 +105,6 @@ public class TrialBuilder extends Thread {
      * @throws Exception 
      */
     private void doSubset (StatNester nester_this) throws AppException, Exception {
-        //************************************************************
-        //SubsetDigging digindchild;
-        //StatsHolder statholder = new StatsHolder();
-        //************************************************************
-        //statholder.setThisPopulation(diggingthis.getSubset().getPopulation());
-        //************************************************************
-        
-        System.out.println("Subset ID " + nester_this.subsetID());
-        
-        
         doSubsetStat(nester_this);
         //************************************************************
         SubSet[] subsets_children = universeatlas.getSubsets(universeid, nester_this.subsetID());
@@ -133,31 +114,6 @@ public class TrialBuilder extends Thread {
         StatNester[] nester_children = nester_this.getChildren();
         for (StatNester nester : nester_children)
             doSubset(nester);
-        //************************************************************
-        //Children Subsets loop.
-        /*
-        //------------------------------------------------------------
-        //We recover the children subsets and add them to the "this digging".
-        SubSet[] childrensubsets = universeatlas.getSubsets(universeid, diggingthis.subsetID());
-        diggingthis.setChildrenSubsets(childrensubsets);
-        //------------------------------------------------------------
-        //The loop itself.
-        for (SubSet childsubset : childrensubsets) {
-            statholder.addChildPopulation(childsubset.getPopulation());
-            //=================================================
-            digindchild = new SubsetDigging();
-            digindchild.setSubset(childsubset);
-            
-            nester_this.addChild(childsubset);
-            
-            //doSubset(digindchild, nester);
-            //=================================================
-            doSampleStat(digindchild, statholder);
-            //=================================================
-        }
-        */
-        //************************************************************
-        //calculateByPopulation(diggingthis, statholder);
         //************************************************************
     }
     //********************************************************************
@@ -197,18 +153,18 @@ public class TrialBuilder extends Thread {
         statsubset.setSubsetId(subset.getSubsetID());
         Responder[] responses = samplepayload.getResponses();
         ResponseValue[] values;
-        VStUnivAlpha varstat;
+        VStAlpha varstat;
         for (Responder response : responses) {
             //****************************************************
             values = response.getValues();
             for (ResponseValue value : values) {
                 if (!statsubset.checkVariable(value.variableID())) {
-                    varstat = createVariableStat(value);
+                    varstat = VarStatMaker.createVariableStat(designatlas, value);
                     statsubset.addVariableStat(varstat);
                 }
                 //-----------------------------------------------
-                else varstat = (VStUnivAlpha)statsubset.getVariable(value.variableID());
-                addResponseToVarSat(varstat, value);
+                else varstat = statsubset.getVariable(value.variableID());
+                VarStatMaker.addResponseToVarSat(varstat, value);
                 //-----------------------------------------------
             }
         }
@@ -217,46 +173,53 @@ public class TrialBuilder extends Thread {
         //********************************************************
     }
     //********************************************************************
-    //********************************************************************
-    /**
-     * This method creates and return a VStat
-     * @param value
-     * @return
-     * @throws AppException
-     * @throws Exception 
-     */
-    private VStUnivAlpha createVariableStat (ResponseValue value) throws AppException, Exception {
-        //***********************************************************
-        //We first recover the variable in question.
-        Variable var = designatlas.getVariable(value.variableID());
-        //***********************************************************
-        VStUnivAlpha varstat = null;
-        //-----------------------------------------------------------
-        switch (value.getType()) {
-            case Variable.VARTYPE_PUBVIEW:
-                varstat = new VStUnivPubView();
-                varstat.variableid = var.variableID();
-                varstat.variabletype= Variable.VARTYPE_PUBVIEW;
-                return varstat;
+    private void doCalcByPop (StatNester nester) throws Exception {
+        //********************************************************
+        StatNester[] children = nester.getChildren();
+        //********************************************************
+        for (StatNester child : children)
+            doCalcByPop(child);
+        //********************************************************
+        if (nester.hasStat()) {
+            StatSubset stat = nester.getStat();
+            VStAlpha[] vars = stat.getVarStatistics();
+            for (VStAlpha var : vars) {
+                var.calculateLocal();
+            }
         }
-        return null;
+        //********************************************************
+        if (nester.childStats() > 1) {
+            qwerty(nester);
+        }
+        
     }
     //********************************************************************
-    private void addResponseToVarSat (VStUnivAlpha varstat, ResponseValue value) {
-        //***********************************************************
-        //If the value we intend to add is of a diferent type
-        //Than the stat. We just leave.
-        if (varstat.variabletype != value.getType()) return;
-        //***********************************************************
-        switch (varstat.variabletype) {
-            case Variable.VARTYPE_PUBVIEW: {
-                VStUnivPubView varst = (VStUnivPubView)varstat;
-                varst.setValue(value.getValue());
-            } break;
+    private void qwerty (StatNester nester) throws Exception {
+        StatNester[] children = nester.getChildren();
+        StatSubset stat;
+        VStAlpha[] vars;
+        for (StatNester child : children) {
+            if (!child.hasStat()) continue;
+            stat = child.getStat();
+            vars = stat.getVarStatistics();
+            
+            System.out.println(nester.getSubset().getName());
+            System.out.println("Parent pop " + nester.popSubset());
+            
+            for (VStAlpha var : vars) {
+                System.out.println("child pop " + child.popSubset());
+                var.calculateGlobal(child.popSubset(), nester.popSubset());
+            }
+                
+            
+
+
+
+
+
+
         }
-        //***********************************************************
     }
-    //********************************************************************
     //********************************************************************
     /**
      * Prepares all the Atlas Objects to get them ready to start
