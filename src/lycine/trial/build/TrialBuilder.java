@@ -202,22 +202,8 @@ public class TrialBuilder extends Thread {
             if (!child.hasStat()) continue;
             stat = child.getStat();
             vars = stat.getVarStatistics();
-            
-            System.out.println(nester.getSubset().getName());
-            System.out.println("Parent pop " + nester.popSubset());
-            
-            for (VStAlpha var : vars) {
-                System.out.println("child pop " + child.popSubset());
+            for (VStAlpha var : vars)
                 var.calculateGlobal(child.popSubset(), nester.popSubset());
-            }
-                
-            
-
-
-
-
-
-
         }
     }
     //********************************************************************

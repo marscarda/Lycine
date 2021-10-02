@@ -291,10 +291,11 @@ public class TrialCenter {
         triallambda.createTrial(trial);
         //****************************************************************
         //We trigger the building.
-        TrialBuilder builder = new TrialBuilder();
-        builder.setDataBaseName(dbname);
-        builder.setTrialID(trial.getID());
-        builder.start();
+        
+        //TrialBuilder builder = new TrialBuilder();
+        //builder.setDataBaseName(dbname);
+        //builder.setTrialID(trial.getID());
+        //builder.start();
         //****************************************************************
     }
     //********************************************************************
