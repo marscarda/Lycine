@@ -1,6 +1,6 @@
 package lycine.stats.universe;
 //************************************************************************
-import lycine.sample.ConstVarValues;
+import tryptophan.design.ConstVarValues;
 import lycine.stats.VStAlpha;
 //************************************************************************
 /**
@@ -8,6 +8,7 @@ import lycine.stats.VStAlpha;
  * Name stands for Variable Statistic Universe Public View
  * @author marianoscardaccione
  */
+@Deprecated
 public class VStUnivPubView extends VStAlpha {
     //**********************************************************
     int positives = 0;

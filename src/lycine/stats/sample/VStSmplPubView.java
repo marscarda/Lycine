@@ -1,6 +1,6 @@
 package lycine.stats.sample;
 //************************************************************************
-import lycine.sample.ConstVarValues;
+import tryptophan.design.ConstVarValues;
 import lycine.stats.VStAlpha;
 //************************************************************************
 public class VStSmplPubView extends VStAlpha {

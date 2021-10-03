@@ -27,6 +27,7 @@ import tryptophan.trial.TrialSpace;
  * This class is entrusted to carry out the task of completing the creation of a trial
  * @author marianoscardaccione
  */
+@Deprecated
 public class TrialBuilder extends Thread {
     //********************************************************************
     long trialid = 0;

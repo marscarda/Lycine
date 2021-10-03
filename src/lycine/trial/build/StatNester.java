@@ -6,6 +6,7 @@ import threonine.universe.SubSet;
 /**
  * @author marianoscardaccione
  */
+@Deprecated
 public class StatNester {
     //*******************************************************
     private int population = 0;

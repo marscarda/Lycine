@@ -7,6 +7,7 @@ import tryptophan.design.DesignLambda;
 import tryptophan.design.Variable;
 import tryptophan.sample.ResponseValue;
 //************************************************************************
+@Deprecated
 public class VarStatMaker {
     //********************************************************************
     /**
