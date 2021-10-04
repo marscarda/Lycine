@@ -1,6 +1,5 @@
 package lycine.trial;
 //************************************************************************
-import lycine.trial.build.TrialBuilder;
 import methionine.AppException;
 import methionine.DataBaseName;
 import methionine.TabList;
@@ -27,14 +26,14 @@ import tryptophan.trial.TrialErrorCodes;
 public class TrialCenter {
     //********************************************************************
     AuthLamda authlambda = null;
-    ProjectLambda projectlambda = null;
+    ProjectLambda projectatlas = null;
     BillingLambda billinglambda = null;
     TrialAtlas triallambda = null;
     UniverseAtlas universelambda = null;
     SampleAtlas samplelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
-    public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
+    public void setProjectLambda (ProjectLambda projectatlas) { this.projectatlas = projectatlas; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
     public void setEnvironmentLambda (TrialAtlas environmentlambda) { this.triallambda = environmentlambda; }
     public void setUniverseLambda (UniverseAtlas universelambda) { this.universelambda = universelambda; }
@@ -51,14 +50,14 @@ public class TrialCenter {
         //Reading Part
         //****************************************************************
         //We check the user has write acces to the project
-        projectlambda.checkAccess(environment.projectID(), userid, 2);
+        projectatlas.checkAccess(environment.projectID(), userid, 2);
         //----------------------------------------------------------------
         //We recover the universe. We check it exists and add name to environment.
         Universe universe = universelambda.getUniverse(environment.universeID());
         environment.setUniverseName(universe.getName());
         //----------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(environment.projectID(), 0);
+        Project project = projectatlas.getProject(environment.projectID(), 0);
         //----------------------------------------------------------------
         //We persist the cost of this particular variable.
         environment.cost = UsageCost.ENVIRONMENT;
@@ -103,7 +102,7 @@ public class TrialCenter {
         //****************************************************************
         //We check the performing user has access to the project.
         if (userid != 0)
-            projectlambda.checkAccess(trialspace.projectID(), userid, 1);
+            projectatlas.checkAccess(trialspace.projectID(), userid, 1);
         //****************************************************************
         //We recover the universe so we can fill the data in the trial space.
         Universe universe = universelambda.getUniverse(trialspace.universeID());
@@ -124,7 +123,7 @@ public class TrialCenter {
     public TrialSpace[] getTrialSpaces (long projectid, long userid, boolean fillextras) throws AppException, Exception {
         //****************************************************************
         //We check the performing user has access to the project.
-        projectlambda.checkAccess(projectid, userid, 1);
+        projectatlas.checkAccess(projectid, userid, 1);
         //****************************************************************
         TrialSpace[] environments = triallambda.getEnviromentsByProject(projectid);
         if (!fillextras) return environments;
@@ -155,10 +154,10 @@ public class TrialCenter {
         //****************************************************************
         //We fetch the environment and check the performing user has access to the project.
         TrialSpace environment = triallambda.getEnvironment(environmentid);
-        projectlambda.checkAccess(environment.projectID(), userid, 3);
+        projectatlas.checkAccess(environment.projectID(), userid, 3);
         //----------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(environment.projectID(), 0);
+        Project project = projectatlas.getProject(environment.projectID(), 0);
         //****************************************************************
         TabList tabs = new TabList();
         triallambda.addDestroyEnvironment(tabs);
@@ -238,7 +237,7 @@ public class TrialCenter {
         //We fetch the environment and check the performing user has access to the project.
         TrialSpace tialspace = triallambda.getEnvironment(slotalloc.trialSpaceID());
         long projectid = tialspace.projectID();
-        projectlambda.checkAccess(projectid, userid, 2);
+        projectatlas.checkAccess(projectid, userid, 2);
         //================================================================
         //We check the universe belongs to the same project
         Universe universe = universelambda.getUniverse(tialspace.universeID());
@@ -264,7 +263,7 @@ public class TrialCenter {
         //We fetch the environment and check the performing user has access to the project.
         TrialSpace environment = triallambda.getEnvironment(selector.trialspaceid);
         if (userid != 0)
-            projectlambda.checkAccess(environment.projectID(), userid, 3);
+            projectatlas.checkAccess(environment.projectID(), userid, 3);
         //----------------------------------------------------------------
         triallambda.removeSampleAllocation(selector);
         //----------------------------------------------------------------
@@ -276,7 +275,7 @@ public class TrialCenter {
             throw new AppException("Name cannot be empty", AppException.INVALIDDATASUBMITED);
         //****************************************************************
         //We check the user has access to the project.
-        projectlambda.checkAccess(trial.projectID(), userid, 2);
+        projectatlas.checkAccess(trial.projectID(), userid, 2);
         //****************************************************************
         //Read and validation tests
         TrialSpace trialspace = triallambda.getEnvironment(trial.trialSpaceID());
@@ -297,6 +296,16 @@ public class TrialCenter {
         //builder.setTrialID(trial.getID());
         //builder.start();
         //****************************************************************
+    }
+    //********************************************************************
+    public Trial[] getTrials (long projectid, long userid) throws Exception {
+        //****************************************************************
+        //We check the performing user has access to the project.
+        projectatlas.checkAccess(projectid, userid, 1);
+        //****************************************************************
+        Trial[] trials = triallambda.getTrials(projectid);
+        //****************************************************************
+        return trials;
     }
     //********************************************************************
 }
