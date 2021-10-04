@@ -10,25 +10,25 @@ import methionine.billing.BillingLambda;
 import methionine.billing.UsageCost;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
-import tryptophan.design.DesignLambda;
+import tryptophan.design.DesignAtlas;
 import tryptophan.design.Form;
 import tryptophan.sample.Responder;
 import tryptophan.sample.Sample;
-import tryptophan.sample.SampleLambda;
+import tryptophan.sample.SampleAtlas;
 //************************************************************************
 public class SampleCenterPanel {
     //********************************************************************
     protected AuthLamda authlambda = null;
     protected ProjectLambda projectlambda = null;
     protected BillingLambda billinglambda = null;
-    protected DesignLambda designlambda = null;
-    protected SampleLambda samplelambda = null;
+    protected DesignAtlas designlambda = null;
+    protected SampleAtlas samplelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    public void setVariableLambda (DesignLambda variablelambda) { this.designlambda = variablelambda; }
-    public void setSampleLambda (SampleLambda samplelambda) { this.samplelambda = samplelambda; }
+    public void setVariableLambda (DesignAtlas variablelambda) { this.designlambda = variablelambda; }
+    public void setSampleLambda (SampleAtlas samplelambda) { this.samplelambda = samplelambda; }
     //********************************************************************
     /**
      * Creates a new sample.

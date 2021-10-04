@@ -3,7 +3,7 @@ package lycine.trial.build;
 import lycine.stats.VStAlpha;
 import lycine.stats.universe.VStUnivPubView;
 import methionine.AppException;
-import tryptophan.design.DesignLambda;
+import tryptophan.design.DesignAtlas;
 import tryptophan.design.Variable;
 import tryptophan.sample.ResponseValue;
 //************************************************************************
@@ -18,7 +18,7 @@ public class VarStatMaker {
      * @throws AppException
      * @throws Exception 
      */
-    public static VStAlpha createVariableStat (DesignLambda designatlas, ResponseValue value) throws AppException, Exception {
+    public static VStAlpha createVariableStat (DesignAtlas designatlas, ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
         Variable var = designatlas.getVariable(value.variableID());

@@ -10,22 +10,22 @@ import methionine.auth.AuthErrorCodes;
 import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import methionine.project.ProjectLambda;
-import tryptophan.design.DesignLambda;
+import tryptophan.design.DesignAtlas;
 import tryptophan.design.Variable;
 import tryptophan.sample.Responder;
 import tryptophan.sample.ResponseValue;
 import tryptophan.sample.Sample;
-import tryptophan.sample.SampleLambda;
+import tryptophan.sample.SampleAtlas;
 //************************************************************************
 public class ViewMaker {
     //********************************************************************
     ProjectLambda projectlambda = null;
     AuthLamda authlambda = null;
-    DesignLambda designlambda = null;
-    SampleLambda samplelambda = null;
+    DesignAtlas designlambda = null;
+    SampleAtlas samplelambda = null;
     //====================================================================
-    public void setSampleLambda (SampleLambda samplelambda) { this.samplelambda = samplelambda; }
-    public void setVariableLambda (DesignLambda variablelambda) { this.designlambda = variablelambda; }
+    public void setSampleLambda (SampleAtlas samplelambda) { this.samplelambda = samplelambda; }
+    public void setVariableLambda (DesignAtlas variablelambda) { this.designlambda = variablelambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     //********************************************************************

@@ -10,7 +10,7 @@ import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import tryptophan.design.CustomLabel;
 import tryptophan.design.Variable;
-import tryptophan.design.DesignLambda;
+import tryptophan.design.DesignAtlas;
 import tryptophan.design.Form;
 import tryptophan.design.FormQuestion;
 //************************************************************************
@@ -19,12 +19,12 @@ public class DesignCenter {
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     BillingLambda billinglambda = null;
-    DesignLambda designlambda = null;
+    DesignAtlas designlambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    public void setVariableLambda (DesignLambda designlambda) { this.designlambda = designlambda; }
+    public void setVariableLambda (DesignAtlas designlambda) { this.designlambda = designlambda; }
     //********************************************************************
     /**
      * 

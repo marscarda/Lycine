@@ -18,7 +18,7 @@ import tryptophan.sample.Sample;
 import tryptophan.sample.SampleErrorCodes;
 import tryptophan.trial.TrialSpace;
 import tryptophan.trial.TrialAtlas;
-import tryptophan.sample.SampleLambda;
+import tryptophan.sample.SampleAtlas;
 import tryptophan.trial.SampleSlot;
 import tryptophan.trial.SlotSelector;
 import tryptophan.trial.Trial;
@@ -31,14 +31,14 @@ public class TrialCenter {
     BillingLambda billinglambda = null;
     TrialAtlas triallambda = null;
     UniverseAtlas universelambda = null;
-    SampleLambda samplelambda = null;
+    SampleAtlas samplelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
     public void setEnvironmentLambda (TrialAtlas environmentlambda) { this.triallambda = environmentlambda; }
     public void setUniverseLambda (UniverseAtlas universelambda) { this.universelambda = universelambda; }
-    public void setSampleLambda (SampleLambda samplelambda) { this.samplelambda = samplelambda; }
+    public void setSampleLambda (SampleAtlas samplelambda) { this.samplelambda = samplelambda; }
     //********************************************************************
     public void createEnvirnment (TrialSpace environment, long userid) throws AppException, Exception {
         //****************************************************************

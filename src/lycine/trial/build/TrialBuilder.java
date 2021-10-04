@@ -11,11 +11,11 @@ import methionine.billing.BillingLambda;
 import methionine.project.ProjectLambda;
 import threonine.universe.SubSet;
 import threonine.universe.UniverseAtlas;
-import tryptophan.design.DesignLambda;
+import tryptophan.design.DesignAtlas;
 import tryptophan.sample.Responder;
 import tryptophan.sample.ResponseValue;
 import tryptophan.sample.SampleErrorCodes;
-import tryptophan.sample.SampleLambda;
+import tryptophan.sample.SampleAtlas;
 import tryptophan.trial.SampleSlot;
 import tryptophan.trial.SlotSelector;
 import tryptophan.trial.Trial;
@@ -43,9 +43,9 @@ public class TrialBuilder extends Thread {
     ProjectLambda projectatlas = null;
     BillingLambda billingatlas = null;
     UniverseAtlas universeatlas = null;
-    SampleLambda sampleatlas = null;
+    SampleAtlas sampleatlas = null;
     TrialAtlas trialatlas = null;
-    DesignLambda designatlas = null;
+    DesignAtlas designatlas = null;
     //====================================================================
     SampleCenterBack samplecenter = null;
     //********************************************************************
@@ -226,7 +226,7 @@ public class TrialBuilder extends Thread {
         universeatlas.setElectraObject(electra);
         universeatlas.setDataBaseName(dbname.universe);
         //---------------------------------------------------
-        sampleatlas = new SampleLambda();
+        sampleatlas = new SampleAtlas();
         sampleatlas.setElectraObject(electra);
         sampleatlas.setDataBaseName(dbname.sample);
         //---------------------------------------------------
@@ -234,7 +234,7 @@ public class TrialBuilder extends Thread {
         trialatlas.setElectraObject(electra);
         trialatlas.setDataBaseName(dbname.trial);
         //---------------------------------------------------
-        designatlas = new DesignLambda();
+        designatlas = new DesignAtlas();
         designatlas.setElectraObject(electra);
         designatlas.setDataBaseName(dbname.design);
         //***************************************************
