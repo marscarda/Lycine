@@ -2,8 +2,7 @@ package lycine.trial;
 //************************************************************************
 import histidine.AurigaObject;
 import methionine.AppException;
-import threonine.universe.SubSet;
-import tryptophan.trial.StatLayer;
+import tryptophan.trial.StatNode;
 import tryptophan.trial.Trial;
 //************************************************************************
 public class TrialReader {
@@ -30,7 +29,7 @@ public class TrialReader {
         Trial trial = auriga.getTrialAtlas().getTrial(trialid);
         auriga.getProjectLambda().checkAccess(trial.projectID(), userid, 1);
         //****************************************************************
-        StatLayer[] forks = auriga.getTrialAtlas().getStatForks(trialid, parentsubset);
+        StatNode[] forks = auriga.getTrialAtlas().getStatForks(trialid, parentsubset);
         int count = forks.length;
         StatForkPlus[] forkplus = new StatForkPlus[count];
         for (int n = 0; n < count; n++) {

@@ -1,13 +1,13 @@
 package lycine.trial;
 //************************************************************************
 import threonine.universe.SubSet;
-import tryptophan.trial.StatLayer;
+import tryptophan.trial.StatNode;
 //************************************************************************
 public class StatForkPlus {
     //***********************************************************
-    StatLayer statfork = null;
-    public StatLayer getStatFork () {
-        if (statfork == null) return new StatLayer();
+    StatNode statfork = null;
+    public StatNode getStatFork () {
+        if (statfork == null) return new StatNode();
         return statfork;
     }
     //***********************************************************
