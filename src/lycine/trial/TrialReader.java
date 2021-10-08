@@ -18,6 +18,10 @@ public class TrialReader {
         auriga.getProjectLambda().checkAccess(trial.projectID(), userid, 1);
     }
     //********************************************************************
+    /**
+     * 
+     * @return 
+     */
     public Trial getTrial () { return trial; }
     //********************************************************************
     /**
@@ -29,7 +33,7 @@ public class TrialReader {
      */
     public StatNodeView[] getStatNodes (long parentsubset) throws AppException, Exception {
         //****************************************************************
-        StatNode[] nodes = auriga.getTrialAtlas().getStatForks(trial.getID(), parentsubset);
+        StatNode[] nodes = auriga.getTrialAtlas().getStatNodes(trial.getID(), parentsubset);
         int count = nodes.length;
         StatNodeView[] nodeviews = new StatNodeView[count];
         for (int n = 0; n < count; n++) {
@@ -45,6 +49,32 @@ public class TrialReader {
         //================================================================
         return nodeviews;
         //****************************************************************
+    }
+    //********************************************************************
+    public StatNodeView getStatNode (long parent) throws AppException, Exception {
+        
+        
+        
+        
+        /*
+        StatNode node = auriga.getTrialAtlas().getStatNode(trial.getID(), subsetid);
+        StatNodeView nodeview = new StatNodeView();
+        try {
+            nodeview.subset = auriga.getUniverseAtlas().getSubset(trial.universeID(), node.subsetID());
+        }
+        catch (AppException e) {
+            
+        }
+        //================================================================
+        return nodeview;
+        //****************************************************************
+        */
+        
+        
+        
+        
+        return null;
+        
     }
     //********************************************************************
 }

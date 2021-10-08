@@ -17,5 +17,9 @@ public class StatNodeView {
         return subset;
     }
     //***********************************************************
+    boolean root = false;
+    public void setROOT () { root = true; }
+    public boolean isROOT () { return root; }
+    //***********************************************************
 }
 //************************************************************************
