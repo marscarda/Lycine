@@ -3,12 +3,12 @@ package lycine.trial;
 import threonine.universe.SubSet;
 import tryptophan.trial.StatNode;
 //************************************************************************
-public class StatForkPlus {
+public class StatNodeView {
     //***********************************************************
-    StatNode statfork = null;
+    StatNode statnode = null;
     public StatNode getStatFork () {
-        if (statfork == null) return new StatNode();
-        return statfork;
+        if (statnode == null) return new StatNode();
+        return statnode;
     }
     //***********************************************************
     SubSet subset = null;

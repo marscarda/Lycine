@@ -2,6 +2,7 @@ package lycine.trial;
 //************************************************************************
 import histidine.AurigaObject;
 import methionine.AppException;
+import threonine.universe.SubSet;
 import tryptophan.trial.StatNode;
 import tryptophan.trial.Trial;
 //************************************************************************
@@ -10,34 +11,39 @@ public class TrialReader {
     AurigaObject auriga = null;
     public void setAurigaObject (AurigaObject auriga) { this.auriga = auriga; }
     //********************************************************************
-    public Trial getTrial (long trialid, long userid) {
-        return null;
+    private Trial trial = null;
+    //********************************************************************
+    public void initTrial (long trialid, long userid) throws AppException, Exception {
+        trial = auriga.getTrialAtlas().getTrial(trialid);
+        auriga.getProjectLambda().checkAccess(trial.projectID(), userid, 1);
     }
+    //********************************************************************
+    public Trial getTrial () { return trial; }
     //********************************************************************
     /**
      * 
-     * @param trialid
      * @param parentsubset
-     * @param userid
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public StatForkPlus[] getStartForks (long trialid, long parentsubset, long userid) throws AppException, Exception {
+    public StatNodeView[] getStatNodes (long parentsubset) throws AppException, Exception {
         //****************************************************************
-        //We check the performing user has access to the project.
-        Trial trial = auriga.getTrialAtlas().getTrial(trialid);
-        auriga.getProjectLambda().checkAccess(trial.projectID(), userid, 1);
-        //****************************************************************
-        StatNode[] forks = auriga.getTrialAtlas().getStatForks(trialid, parentsubset);
-        int count = forks.length;
-        StatForkPlus[] forkplus = new StatForkPlus[count];
+        StatNode[] nodes = auriga.getTrialAtlas().getStatForks(trial.getID(), parentsubset);
+        int count = nodes.length;
+        StatNodeView[] nodeviews = new StatNodeView[count];
         for (int n = 0; n < count; n++) {
-            forkplus[n] = new StatForkPlus();
-            forkplus[n].statfork = forks[n];
+            nodeviews[n] = new StatNodeView();
+            nodeviews[n].statnode = nodes[n];
+            try {
+                nodeviews[n].subset = auriga.getUniverseAtlas().getSubset(trial.universeID(), nodes[n].subsetID());
+            }
+            catch (AppException e) {
+                
+            }
         }
-        //****************************************************************
-        return forkplus;
+        //================================================================
+        return nodeviews;
         //****************************************************************
     }
     //********************************************************************
