@@ -26,14 +26,14 @@ public class TrialReader {
     //********************************************************************
     /**
      * 
-     * @param parentsubset
+     * @param nodecode //The parent code of the nodes requested.
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public StatNodeView[] getStatNodes (long parentsubset) throws AppException, Exception {
+    public StatNodeView[] getStatNodes (int nodecode) throws AppException, Exception {
         //****************************************************************
-        StatNode[] nodes = auriga.getTrialAtlas().getStatNodes(trial.getID(), parentsubset);
+        StatNode[] nodes = auriga.getTrialAtlas().getStatNodes(trial.getID(), nodecode);
         int count = nodes.length;
         StatNodeView[] nodeviews = new StatNodeView[count];
         for (int n = 0; n < count; n++) {
