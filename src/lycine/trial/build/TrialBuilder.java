@@ -81,7 +81,7 @@ public class TrialBuilder extends Thread {
             //************************************************************
             //We create the top Nester.
             StatNester nester = new StatNester();
-            SubSet subset = universeatlas.getRootSubset(universeid);
+            SubSet subset = universeatlas.getTopSubset(universeid);
             nester.setSubset(subset);
             //************************************************************
             doSubset(nester);
