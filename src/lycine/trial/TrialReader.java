@@ -3,6 +3,7 @@ package lycine.trial;
 import histidine.AurigaObject;
 import methionine.AppException;
 import threonine.universe.SubSet;
+import threonine.universe.UniverseErrorCodes;
 import tryptophan.trial.StatNode;
 import tryptophan.trial.Trial;
 //************************************************************************
@@ -24,6 +25,28 @@ public class TrialReader {
      */
     public Trial getTrial () { return trial; }
     //********************************************************************
+    public StatNodeView getStatNode (int nodecode) throws AppException, Exception {
+        //=============================================================
+        StatNodeView nodeview = new StatNodeView();
+        //=============================================================
+        //If this is the root node. We just return a root node
+        if (nodecode == 0) {
+            nodeview.setROOT();
+            return nodeview;
+        }
+        //=============================================================
+        StatNode node = auriga.getTrialAtlas().getStatNode(trial.getID(), nodecode);
+        nodeview.statnode = node;
+        try { nodeview.subset = auriga.getUniverseAtlas().getSubset(trial.universeID(), node.subsetID()); }
+        catch (AppException e) {
+            if (e.getErrorCode() != UniverseErrorCodes.SUBSETNOTFOUND) throw e;
+            nodeview.subset = new SubSet();
+        }
+        //=============================================================
+        return nodeview;
+        //=============================================================
+    }
+    //********************************************************************
     /**
      * 
      * @param nodecode //The parent code of the nodes requested.
@@ -39,42 +62,15 @@ public class TrialReader {
         for (int n = 0; n < count; n++) {
             nodeviews[n] = new StatNodeView();
             nodeviews[n].statnode = nodes[n];
-            try {
-                nodeviews[n].subset = auriga.getUniverseAtlas().getSubset(trial.universeID(), nodes[n].subsetID());
-            }
+            try { nodeviews[n].subset = auriga.getUniverseAtlas().getSubset(trial.universeID(), nodes[n].subsetID()); }
             catch (AppException e) {
-                
+                if (e.getErrorCode() != UniverseErrorCodes.SUBSETNOTFOUND) throw e;
+                nodeviews[n].subset = new SubSet();
             }
         }
         //================================================================
         return nodeviews;
         //****************************************************************
-    }
-    //********************************************************************
-    public StatNodeView getStatNode (long parent) throws AppException, Exception {
-        
-        
-        
-        
-        /*
-        StatNode node = auriga.getTrialAtlas().getStatNode(trial.getID(), subsetid);
-        StatNodeView nodeview = new StatNodeView();
-        try {
-            nodeview.subset = auriga.getUniverseAtlas().getSubset(trial.universeID(), node.subsetID());
-        }
-        catch (AppException e) {
-            
-        }
-        //================================================================
-        return nodeview;
-        //****************************************************************
-        */
-        
-        
-        
-        
-        return null;
-        
     }
     //********************************************************************
 }
