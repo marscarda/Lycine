@@ -19,7 +19,7 @@ import tryptophan.sample.SampleAtlas;
 import tryptophan.trial.SampleSlot;
 import tryptophan.trial.SlotSelector;
 import tryptophan.trial.Trial;
-import tryptophan.trial.PayRoomAtlas;
+import tryptophan.trial.PlayRoomAtlas;
 import tryptophan.trial.TrialErrorCodes;
 import tryptophan.trial.PlayRoom;
 //************************************************************************
@@ -44,7 +44,7 @@ public class TrialBuilder extends Thread {
     BillingLambda billingatlas = null;
     UniverseAtlas universeatlas = null;
     SampleAtlas sampleatlas = null;
-    PayRoomAtlas trialatlas = null;
+    PlayRoomAtlas trialatlas = null;
     DesignAtlas designatlas = null;
     //====================================================================
     SampleCenterBack samplecenter = null;
@@ -230,7 +230,7 @@ public class TrialBuilder extends Thread {
         sampleatlas.setElectraObject(electra);
         sampleatlas.setDataBaseName(dbname.sample);
         //---------------------------------------------------
-        trialatlas = new PayRoomAtlas();
+        trialatlas = new PlayRoomAtlas();
         trialatlas.setElectraObject(electra);
         trialatlas.setDataBaseName(dbname.trial);
         //---------------------------------------------------

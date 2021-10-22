@@ -16,7 +16,7 @@ import threonine.universe.UniverseAtlas;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleErrorCodes;
 import tryptophan.trial.PlayRoom;
-import tryptophan.trial.PayRoomAtlas;
+import tryptophan.trial.PlayRoomAtlas;
 import tryptophan.sample.SampleAtlas;
 import tryptophan.trial.SampleSlot;
 import tryptophan.trial.SlotSelector;
@@ -28,14 +28,14 @@ public class TrialCenter {
     AuthLamda authlambda = null;
     ProjectLambda projectatlas = null;
     BillingLambda billinglambda = null;
-    PayRoomAtlas triallambda = null;
+    PlayRoomAtlas triallambda = null;
     UniverseAtlas universelambda = null;
     SampleAtlas samplelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda projectatlas) { this.projectatlas = projectatlas; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    public void setEnvironmentLambda (PayRoomAtlas environmentlambda) { this.triallambda = environmentlambda; }
+    public void setEnvironmentLambda (PlayRoomAtlas environmentlambda) { this.triallambda = environmentlambda; }
     public void setUniverseLambda (UniverseAtlas universelambda) { this.universelambda = universelambda; }
     public void setSampleLambda (SampleAtlas samplelambda) { this.samplelambda = samplelambda; }
     //********************************************************************
