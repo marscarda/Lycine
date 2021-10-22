@@ -19,9 +19,9 @@ import tryptophan.sample.SampleAtlas;
 import tryptophan.trial.SampleSlot;
 import tryptophan.trial.SlotSelector;
 import tryptophan.trial.Trial;
-import tryptophan.trial.TrialAtlas;
+import tryptophan.trial.PayRoomAtlas;
 import tryptophan.trial.TrialErrorCodes;
-import tryptophan.trial.TrialSpace;
+import tryptophan.trial.PlayRoom;
 //************************************************************************
 /**
  * This class is entrusted to carry out the task of completing the creation of a trial
@@ -44,7 +44,7 @@ public class TrialBuilder extends Thread {
     BillingLambda billingatlas = null;
     UniverseAtlas universeatlas = null;
     SampleAtlas sampleatlas = null;
-    TrialAtlas trialatlas = null;
+    PayRoomAtlas trialatlas = null;
     DesignAtlas designatlas = null;
     //====================================================================
     SampleCenterBack samplecenter = null;
@@ -74,7 +74,7 @@ public class TrialBuilder extends Thread {
             //************************************************************
             //We recover the trial and the universe related to it.
             Trial trial = trialatlas.getTrial(trialid);
-            TrialSpace trialspace = trialatlas.getEnvironment(trial.trialSpaceID());
+            PlayRoom trialspace = trialatlas.getEnvironment(trial.trialSpaceID());
             universeatlas.getUniverse(trialspace.universeID()); // check if the universe exists.
             trialspaceid = trialspace.environmentID(); // Sets the trial id
             universeid = trialspace.universeID(); // Sets the universe id
@@ -230,7 +230,7 @@ public class TrialBuilder extends Thread {
         sampleatlas.setElectraObject(electra);
         sampleatlas.setDataBaseName(dbname.sample);
         //---------------------------------------------------
-        trialatlas = new TrialAtlas();
+        trialatlas = new PayRoomAtlas();
         trialatlas.setElectraObject(electra);
         trialatlas.setDataBaseName(dbname.trial);
         //---------------------------------------------------

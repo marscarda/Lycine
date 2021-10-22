@@ -15,8 +15,8 @@ import threonine.universe.Universe;
 import threonine.universe.UniverseAtlas;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleErrorCodes;
-import tryptophan.trial.TrialSpace;
-import tryptophan.trial.TrialAtlas;
+import tryptophan.trial.PlayRoom;
+import tryptophan.trial.PayRoomAtlas;
 import tryptophan.sample.SampleAtlas;
 import tryptophan.trial.SampleSlot;
 import tryptophan.trial.SlotSelector;
@@ -28,18 +28,18 @@ public class TrialCenter {
     AuthLamda authlambda = null;
     ProjectLambda projectatlas = null;
     BillingLambda billinglambda = null;
-    TrialAtlas triallambda = null;
+    PayRoomAtlas triallambda = null;
     UniverseAtlas universelambda = null;
     SampleAtlas samplelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda projectatlas) { this.projectatlas = projectatlas; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    public void setEnvironmentLambda (TrialAtlas environmentlambda) { this.triallambda = environmentlambda; }
+    public void setEnvironmentLambda (PayRoomAtlas environmentlambda) { this.triallambda = environmentlambda; }
     public void setUniverseLambda (UniverseAtlas universelambda) { this.universelambda = universelambda; }
     public void setSampleLambda (SampleAtlas samplelambda) { this.samplelambda = samplelambda; }
     //********************************************************************
-    public void createEnvirnment (TrialSpace environment, long userid) throws AppException, Exception {
+    public void createEnvirnment (PlayRoom environment, long userid) throws AppException, Exception {
         //****************************************************************
         if (environment.getName().length() == 0)
             throw new AppException("Trial Space Name cannot be empty", AppException.INVALIDDATASUBMITED);
@@ -95,10 +95,10 @@ public class TrialCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public TrialSpace getTrialSpace (long trialspaceid, long userid) throws AppException, Exception {
+    public PlayRoom getTrialSpace (long trialspaceid, long userid) throws AppException, Exception {
         //****************************************************************
         //We recover the trial space.
-        TrialSpace trialspace = triallambda.getEnvironment(trialspaceid);
+        PlayRoom trialspace = triallambda.getEnvironment(trialspaceid);
         //****************************************************************
         //We check the performing user has access to the project.
         if (userid != 0)
@@ -120,16 +120,16 @@ public class TrialCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public TrialSpace[] getTrialSpaces (long projectid, long userid, boolean fillextras) throws AppException, Exception {
+    public PlayRoom[] getTrialSpaces (long projectid, long userid, boolean fillextras) throws AppException, Exception {
         //****************************************************************
         //We check the performing user has access to the project.
         projectatlas.checkAccess(projectid, userid, 1);
         //****************************************************************
-        TrialSpace[] environments = triallambda.getEnviromentsByProject(projectid);
+        PlayRoom[] environments = triallambda.getEnviromentsByProject(projectid);
         if (!fillextras) return environments;
         //----------------------------------------------------------------
         Universe universe;
-        for (TrialSpace environment : environments) {
+        for (PlayRoom environment : environments) {
             //----------------------------------------------
             try {
                 universe = universelambda.getUniverse(environment.universeID());
@@ -153,7 +153,7 @@ public class TrialCenter {
     public void destroyEnvironments (long environmentid, long userid) throws AppException, Exception {
         //****************************************************************
         //We fetch the environment and check the performing user has access to the project.
-        TrialSpace environment = triallambda.getEnvironment(environmentid);
+        PlayRoom environment = triallambda.getEnvironment(environmentid);
         projectatlas.checkAccess(environment.projectID(), userid, 3);
         //----------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
@@ -184,7 +184,7 @@ public class TrialCenter {
     //********************************************************************
     public TrialSubset[] getTrialSubsets (long trialspaceid, long parentid, long userid) throws AppException, Exception {
         //****************************************************************
-        TrialSpace trialspace = triallambda.getEnvironment(trialspaceid);
+        PlayRoom trialspace = triallambda.getEnvironment(trialspaceid);
         //****************************************************************
         //We create the subsets array and fill them with the actual subsets
         SubSet[] subsets = universelambda.getSubsets(trialspace.universeID(), parentid);
@@ -235,7 +235,7 @@ public class TrialCenter {
     public void setSampleToSubset (SampleSlot slotalloc, long userid) throws AppException, Exception {
         //****************************************************************
         //We fetch the environment and check the performing user has access to the project.
-        TrialSpace tialspace = triallambda.getEnvironment(slotalloc.trialSpaceID());
+        PlayRoom tialspace = triallambda.getEnvironment(slotalloc.trialSpaceID());
         long projectid = tialspace.projectID();
         projectatlas.checkAccess(projectid, userid, 2);
         //================================================================
@@ -261,7 +261,7 @@ public class TrialCenter {
     public void removeSampleAllocation (SlotSelector selector, long userid) throws AppException, Exception {
         //****************************************************************
         //We fetch the environment and check the performing user has access to the project.
-        TrialSpace environment = triallambda.getEnvironment(selector.trialspaceid);
+        PlayRoom environment = triallambda.getEnvironment(selector.trialspaceid);
         if (userid != 0)
             projectatlas.checkAccess(environment.projectID(), userid, 3);
         //----------------------------------------------------------------
@@ -278,7 +278,7 @@ public class TrialCenter {
         projectatlas.checkAccess(trial.projectID(), userid, 2);
         //****************************************************************
         //Read and validation tests
-        TrialSpace trialspace = triallambda.getEnvironment(trial.trialSpaceID());
+        PlayRoom trialspace = triallambda.getEnvironment(trial.trialSpaceID());
         if (trialspace.projectID() != trial.projectID())
             throw new AppException("Project inconcistency", ProjectErrorCodes.ENTITYPROJECTINCONCISTENCY);
         //================================================================
