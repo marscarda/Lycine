@@ -60,7 +60,7 @@ public class MapReadDirecter {
         return reader.recordsBySubset(universeid, subsetid, userid);
     }
     //********************************************************************
-    private MapRecordGraphic[] byTrial (long trialid, int nodecode, long userid) throws AppException, Exception {
+    private MapRecordGraphic[] byTrial (long trialid, long nodecode, long userid) throws AppException, Exception {
         
         //Trial trial = auriga.getTrialAtlas().getTrial(trialid);
         
