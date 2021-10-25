@@ -25,7 +25,7 @@ public class TrialReader {
      */
     public Trial getTrial () { return trial; }
     //********************************************************************
-    public StatNodeView getStatNode (int nodecode) throws AppException, Exception {
+    public StatNodeView getStatNode (long nodecode) throws AppException, Exception {
         //=============================================================
         StatNodeView nodeview = new StatNodeView();
         //=============================================================
@@ -54,7 +54,7 @@ public class TrialReader {
      * @throws AppException
      * @throws Exception 
      */
-    public StatNodeView[] getStatNodes (int nodecode) throws AppException, Exception {
+    public StatNodeView[] getStatNodes (long nodecode) throws AppException, Exception {
         //****************************************************************
         StatNode[] nodes = auriga.getTrialAtlas().getStatNodes(trial.getID(), nodecode);
         int count = nodes.length;
