@@ -35,7 +35,7 @@ public class TrialReader {
             return nodeview;
         }
         //=============================================================
-        StatNode node = auriga.getTrialAtlas().getStatNode(trial.getID(), nodecode);
+        StatNode node = auriga.getNewAtlas().getStatNode(trial.getID(), nodecode);
         nodeview.statnode = node;
         try { nodeview.subset = auriga.getUniverseAtlas().getSubset(trial.universeID(), node.subsetID()); }
         catch (AppException e) {
