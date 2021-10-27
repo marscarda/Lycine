@@ -82,8 +82,8 @@ public class ViewMaker {
     private VStAlpha createVariable (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
-        Metric var = designlambda.getVariable(value.variableID());
-        if (value.getType() != var.variableType()) {
+        Metric metric = designlambda.getVariable(value.variableID());
+        if (value.getType() != metric.variableType()) {
             //It should happen NEVER. 
             //But if it happens we should not go further.
             System.out.println("Inconcistent type variable/value");
@@ -95,9 +95,9 @@ public class ViewMaker {
         switch (value.getType()) {
             case Metric.VARTYPE_PUBVIEW:
                 varstat = new VStSmplPubView();
-                varstat.variableid = var.variableID();
+                varstat.variableid = metric.metricID();
                 varstat.variabletype = Metric.VARTYPE_PUBVIEW;
-                varstat.setLabel(var.getLabel());
+                varstat.setLabel(metric.getLabel());
                 return varstat;
         }
         return null;
