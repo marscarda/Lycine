@@ -9,7 +9,7 @@ import methionine.billing.UsageCost;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import tryptophan.design.CustomLabel;
-import tryptophan.design.Variable;
+import tryptophan.design.Metric;
 import tryptophan.design.DesignAtlas;
 import tryptophan.design.Form;
 import tryptophan.design.FormQuestion;
@@ -33,7 +33,7 @@ public class DesignCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public void createVariable (Variable variable, long userid) throws AppException, Exception {
+    public void createVariable (Metric variable, long userid) throws AppException, Exception {
         //----------------------------------------------------------------
         if (variable.getName().length() == 0)
             throw new AppException("Variable Name cannot be empty", AppException.INVALIDDATASUBMITED);
@@ -108,7 +108,7 @@ public class DesignCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public Variable[] getVariables (long projectid, int type, String category, long userid) throws AppException, Exception {
+    public Metric[] getVariables (long projectid, int type, String category, long userid) throws AppException, Exception {
         //******************************************************************
         //We check the user has read acces to the project
         projectlambda.checkAccess(projectid, userid, 1);
@@ -268,7 +268,7 @@ public class DesignCenter {
     public void addVariableToQuestionnaire (FormQuestion question, long userid) throws AppException, Exception {
         //****************************************************************
         // We fetch the variable and questionnaire.
-        Variable variable = designlambda.getVariable(question.variableID());
+        Metric variable = designlambda.getVariable(question.variableID());
         Form form = designlambda.getQuestionnaire(question.formID());
         //****************************************************************
         //We check the variable and questionnarie belongs to the same project.

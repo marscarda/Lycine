@@ -3,7 +3,7 @@ package lycine.stats.result;
 import histidine.AurigaObject;
 import methionine.AppException;
 import tryptophan.design.DesignErrorCodes;
-import tryptophan.design.Variable;
+import tryptophan.design.Metric;
 import tryptophan.trial.MetricRef;
 import tryptophan.trial.MetricValue;
 import tryptophan.trial.StatNode;
@@ -35,7 +35,7 @@ public class NodeReader {
     //********************************************************************
     private void newMetricDisplay (MetricRef metricref) throws AppException, Exception {
         //**************************************************
-        Variable metric;
+        Metric metric;
         try { metric = auriga.getDesignLambda().getVariable(metricref.metricID()); }
         catch (AppException e) {
             if (e.getErrorCode() != DesignErrorCodes.METRICNOTFOUND) throw e;

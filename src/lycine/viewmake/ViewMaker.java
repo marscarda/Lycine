@@ -11,7 +11,7 @@ import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import methionine.project.ProjectLambda;
 import tryptophan.design.DesignAtlas;
-import tryptophan.design.Variable;
+import tryptophan.design.Metric;
 import tryptophan.sample.Responder;
 import tryptophan.sample.ResponseValue;
 import tryptophan.sample.Sample;
@@ -82,7 +82,7 @@ public class ViewMaker {
     private VStAlpha createVariable (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
-        Variable var = designlambda.getVariable(value.variableID());
+        Metric var = designlambda.getVariable(value.variableID());
         if (value.getType() != var.variableType()) {
             //It should happen NEVER. 
             //But if it happens we should not go further.
@@ -93,10 +93,10 @@ public class ViewMaker {
         VStAlpha varstat = null;
         //-----------------------------------------------------------
         switch (value.getType()) {
-            case Variable.VARTYPE_PUBVIEW:
+            case Metric.VARTYPE_PUBVIEW:
                 varstat = new VStSmplPubView();
                 varstat.variableid = var.variableID();
-                varstat.variabletype = Variable.VARTYPE_PUBVIEW;
+                varstat.variabletype = Metric.VARTYPE_PUBVIEW;
                 varstat.setLabel(var.getLabel());
                 return varstat;
         }
@@ -110,7 +110,7 @@ public class ViewMaker {
         if (varstat.variabletype != value.getType()) return;
         //***********************************************************
         switch (varstat.variabletype) {
-            case Variable.VARTYPE_PUBVIEW: {
+            case Metric.VARTYPE_PUBVIEW: {
                 VStSmplPubView varst = (VStSmplPubView)varstat;
                 varst.setValue(value.getValue());
             } break;
