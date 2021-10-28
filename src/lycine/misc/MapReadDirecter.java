@@ -60,17 +60,27 @@ public class MapReadDirecter {
         return reader.recordsBySubset(universeid, subsetid, userid);
     }
     //********************************************************************
-    private MapRecordGraphic[] byTrial (long trialid, long nodecode, long userid) throws AppException, Exception {
+    /**
+     * Returns an array of maprecords given the trial and parent node.
+     * @param trialid
+     * @param parentnode
+     * @param userid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    private MapRecordGraphic[] byTrial (long trialid, long parentnode, long userid) throws AppException, Exception {
         
         //Trial trial = auriga.getTrialAtlas().getTrial(trialid);
         
         MapReaderGraphic reader = new MapReaderGraphic();
         reader.setUniverserLambda(auriga.getUniverseAtlas());
-        StatNode[] nodes = auriga.getTrialAtlas().getStatNodes(trialid, nodecode);
+        StatNode[] nodes = auriga.getNewAtlas().getStatNodes(trialid, parentnode);
         List<MapRecordGraphic> maprecords = new ArrayList<>();
         MapRecordGraphic maprecord;
         for (StatNode node : nodes) {
             maprecord = reader.subsetGetRecord(node.subsetID());
+            maprecord.reWriteId(node.nodeID());
             maprecords.add(maprecord);
         }
         return maprecords.toArray(new MapRecordGraphic[0]);
