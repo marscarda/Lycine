@@ -50,7 +50,7 @@ public class DesignCenter {
         Project project = projectlambda.getProject(variable.projectID(), 0);
         //------------------------------------------------------------------
         //We persist the cost of this particular variable.
-        variable.setCost(UsageCost.VARIABLE);
+        variable.setCost(UsageCost.METRIC);
         //******************************************************************
         //Writing Part
         //******************************************************************
@@ -67,7 +67,7 @@ public class DesignCenter {
         AlterUsage alter = new AlterUsage();
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
-        alter.setIncrease(UsageCost.VARIABLE);
+        alter.setIncrease(UsageCost.METRIC);
         alter.setStartingEvent("Variable '" + variable.getName() + "' Created");
         billinglambda.alterUsage(alter);
         //------------------------------------------------------------------
