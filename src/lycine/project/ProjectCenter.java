@@ -1,5 +1,6 @@
 package lycine.project;
 //************************************************************************
+import histidine.AurigaObject;
 import java.util.Calendar;
 import java.util.TimeZone;
 import methionine.billing.UsageCost;
@@ -18,13 +19,18 @@ import methionine.project.ProjectLambda;
 //************************************************************************
 public class ProjectCenter {
     //********************************************************************
+    AurigaObject auriga = null;
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     BillingLambda billinglambda = null;
     //PublicViewLambda publicviewlambda = null;
     //====================================================================
+    public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
+    @Deprecated
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
+    @Deprecated
     public void setWorkTeamLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
+    @Deprecated
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
 //    public void setPublicViewLambda (PublicViewLambda publicviewlambda) { this.publicviewlambda = publicviewlambda; }
     //********************************************************************
@@ -35,25 +41,31 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void createProject (Project project) throws AppException, Exception {
+        
+        
         //------------------------------------------------
         project.setDayCost(UsageCost.PROJECT);
         //------------------------------------------------
-        projectlambda.setAutoCommit(0);
-        projectlambda.createProject(project);
+        auriga.getProjectLambda().setAutoCommit(0);
+        auriga.getProjectLambda().createProject(project);
         //------------------------------------------------
         UsagePeriod period = new UsagePeriod();
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         period.setUserID(project.getOwner());
-        period.setProjectID(project.workTeamID());
+        period.setProjectID(project.projectID());
         period.setDateStart(Celaeno.getDateString(calendar, true));
+        
         period.setCostPerDay(UsageCost.PROJECT);
+        
         period.setProjectName(project.getName());
         period.setStartingEvent("Project created");
         //------------------------------------------------
-        billinglambda.startUsage(period);
+        auriga.getBillingLambda().startUsage(period);
         //------------------------------------------------
-        projectlambda.commit();
+        auriga.getProjectLambda().commit();
         //------------------------------------------------
+        
+        
     }
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
