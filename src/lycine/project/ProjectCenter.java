@@ -15,7 +15,6 @@ import methionine.auth.User;
 import methionine.project.Project;
 import methionine.project.ProjectAccess;
 import methionine.project.ProjectLambda;
-//import tryptophan.survey.publicview.PublicViewLambda;
 //************************************************************************
 public class ProjectCenter {
     //********************************************************************
@@ -26,6 +25,11 @@ public class ProjectCenter {
     //PublicViewLambda publicviewlambda = null;
     //====================================================================
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
+    
+    /*
+    All this deprecation... Use The Auriga.
+    */
+    
     @Deprecated
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     @Deprecated
@@ -116,11 +120,11 @@ public class ProjectCenter {
         //in projectlambda.createAccess(..)
         //=============================================
         //We recover the user we want to grant access.
-        long grantuserid = authlambda.getUserIdByIdentifier(access.getUserName());
+        long grantuserid = auriga.getAuthLambda().getUserIdByIdentifier(access.getUserName());
         //---------------------------------------------
         //The access itself
         access.setDayCost(UsageCost.PROJECTUSER);
-        Project project = projectlambda.getProject(access.projectID(), userid);
+        Project project = auriga.getProjectLambda().getProject(access.projectID(), userid);
         access.setUserID(grantuserid);
         //---------------------------------------------
         //Create the access. And alter the billing cost
@@ -135,15 +139,15 @@ public class ProjectCenter {
         //---------------------------------------------
         //We lock the tables
         TabList tablist = new TabList();
-        billinglambda.AddLockAlterUsage(tablist);
-        projectlambda.AddLockUserAccess(tablist);
-        projectlambda.lockTables(tablist);
-        projectlambda.setAutoCommit(0);
-        projectlambda.createAccess(access, userid);
-        billinglambda.alterUsage(alter);
+        auriga.getBillingLambda().AddLockAlterUsage(tablist);
+        auriga.getProjectLambda().AddLockUserAccess(tablist);
+        auriga.getProjectLambda().lockTables(tablist);
+        auriga.getProjectLambda().setAutoCommit(0);
+        auriga.getProjectLambda().createAccess(access, userid);
+        auriga.getBillingLambda().alterUsage(alter);
         //---------------------------------------------
         //We are done.
-        projectlambda.commit();
+        auriga.getProjectLambda().commit();
         //---------------------------------------------
     }
     //********************************************************************
