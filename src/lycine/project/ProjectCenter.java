@@ -10,6 +10,7 @@ import methionine.billing.UsagePeriod;
 import methionine.AppException;
 import methionine.Celaeno;
 import methionine.TabList;
+import methionine.auth.AuthErrorCodes;
 import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import methionine.project.Project;
@@ -160,17 +161,17 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void revokeProjectAccess (long projectid, long userid, long owner) throws AppException, Exception {
-        ProjectAccess access = projectlambda.getAccess(projectid, userid);
-        billinglambda.startTransaction();
-        projectlambda.revokeProjectAccess(projectid, userid, owner);
-        Project project = projectlambda.getProject(projectid, 0);
+        ProjectAccess access = auriga.getProjectLambda().getAccess(projectid, userid);
+        auriga.getBillingLambda().setAutoCommit(0);
+        auriga.getProjectLambda().revokeProjectAccess(projectid, userid, owner);
+        Project project = auriga.getProjectLambda().getProject(projectid, 0);
         AlterUsage alter = new AlterUsage();
         alter.setDecrease(access.dayCost());
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
         alter.setStartingEvent("User Removed From Project");
-        billinglambda.alterUsage(alter);
-        billinglambda.commitTransaction();
+        auriga.getBillingLambda().alterUsage(alter);
+        auriga.getBillingLambda().commit();
     }
     //********************************************************************
     /**
@@ -181,17 +182,17 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void leaveProject (long projectid, long userid) throws AppException, Exception {
-        ProjectAccess access = projectlambda.getAccess(projectid, userid);
-        billinglambda.startTransaction();
-        projectlambda.leaveProject(projectid, userid);
-        Project project = projectlambda.getProject(projectid, 0);
+        ProjectAccess access = auriga.getProjectLambda().getAccess(projectid, userid);
+        auriga.getProjectLambda().setAutoCommit(0);
+        auriga.getProjectLambda().leaveProject(projectid, userid);
+        Project project = auriga.getProjectLambda().getProject(projectid, 0);
         AlterUsage alter = new AlterUsage();
         alter.setDecrease(access.dayCost());
-        alter.setProjectId(project.workTeamID());
+        alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
         alter.setStartingEvent("User Left Project");
-        billinglambda.alterUsage(alter);
-        billinglambda.commitTransaction();
+        auriga.getBillingLambda().alterUsage(alter);
+        auriga.getBillingLambda().commit();
     }
     //********************************************************************
     /**
@@ -204,15 +205,15 @@ public class ProjectCenter {
      */
     public ProjectAccess[] getAccessList (long projectid, long owner) throws AppException, Exception {
         //================================================================
-        User user = authlambda.getUser(owner, false);
-        Project project = projectlambda.getProject(projectid, 0);
+        User user = auriga.getAuthLambda().getUser(owner, false);
+        Project project = auriga.getProjectLambda().getProject(projectid, 0);
         if (!user.isAdmin() && owner != project.getOwner())
-            throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
+            throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
         //================================================================
-        ProjectAccess[] accesslist = projectlambda.getAccessList(projectid, 0);
+        ProjectAccess[] accesslist = auriga.getProjectLambda().getAccessList(projectid, 0);
         for (ProjectAccess access : accesslist) {
             try {
-                user = authlambda.getUser(access.userID(), false);
+                user = auriga.getAuthLambda().getUser(access.userID(), false);
                 access.setUserName(user.loginName());
             }
             catch (Exception e) {}
