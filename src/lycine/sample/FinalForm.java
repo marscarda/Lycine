@@ -1,20 +1,20 @@
 package lycine.sample;
 //************************************************************************
 import tryptophan.design.Form;
-import tryptophan.design.FormQuestion;
+import tryptophan.design.FormMetricRef;
 //************************************************************************
 public class FinalForm {
     //******************************************************
     Form form = null;
-    FormQuestion[] questions = null;
+    FormMetricRef[] questions = null;
     //======================================================
     public Form getForm () {
         if (form == null) return new Form();
         return form;
     }
     //------------------------------------------------------
-    public FormQuestion[] getQuestions () {
-        if (questions == null) return new FormQuestion[0];
+    public FormMetricRef[] getQuestions () {
+        if (questions == null) return new FormMetricRef[0];
         return questions;
     }
     //******************************************************

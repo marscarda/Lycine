@@ -12,7 +12,7 @@ import tryptophan.design.CustomLabel;
 import tryptophan.design.Metric;
 import tryptophan.design.DesignAtlas;
 import tryptophan.design.Form;
-import tryptophan.design.FormQuestion;
+import tryptophan.design.FormMetricRef;
 //************************************************************************
 public class DesignCenter {
     //********************************************************************
@@ -261,22 +261,25 @@ public class DesignCenter {
     //********************************************************************
     /**
      * 
-     * @param question
+     * @param formref
      * @param userid 
      * @throws methionine.AppException 
      */
-    public void addVariableToQuestionnaire (FormQuestion question, long userid) throws AppException, Exception {
+    public void addFormMetricRef (FormMetricRef formref, long userid) throws AppException, Exception {
         //****************************************************************
         // We fetch the variable and questionnaire.
-        Metric variable = designlambda.getVariable(question.variableID());
-        Form form = designlambda.getQuestionnaire(question.formID());
+        Metric metric = designlambda.getVariable(formref.variableID());
+        Form form = designlambda.getQuestionnaire(formref.formID());
         //****************************************************************
         //We check the variable and questionnarie belongs to the same project.
-        if (variable.projectID() != form.projectID())
+        if (metric.projectID() != form.projectID())
             throw new AppException("Form and Variable are from different projects", AppException.NOTTHESAMEPROJECT);
         //****************************************************************
         //We check the performing user has access to the project.
-        projectlambda.checkAccess(variable.projectID(), userid, 2);
+        projectlambda.checkAccess(metric.projectID(), userid, 2);
+        //================================================================
+        //We set the project ID. 
+        formref.setProjectId(metric.projectID());
         //****************************************************************
         // Writing part
         //****************************************************************
@@ -286,14 +289,14 @@ public class DesignCenter {
         designlambda.lockTables(tabs);
         //----------------------------------------------------------------
         //We Add The variable to questionnaire
-        designlambda.addToQuestionnaire(question);
+        designlambda.addToQuestionnaire(formref);
         //----------------------------------------------------------------
         //We are done.
         designlambda.commit();
         designlambda.unLockTables();
         //****************************************************************
         //Last we add the variable to the question for display purpose.
-        question.fillVariable(variable);
+        formref.fillVariable(metric);
         //****************************************************************
     }
     //********************************************************************
@@ -305,7 +308,7 @@ public class DesignCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public FormQuestion[] getFormQuestions (long formid, long userid) throws AppException, Exception {
+    public FormMetricRef[] getFormQuestions (long formid, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has read acces to the project
         Form quest = designlambda.getQuestionnaire(formid);

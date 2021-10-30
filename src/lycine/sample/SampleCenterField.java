@@ -8,7 +8,7 @@ import methionine.project.Project;
 import tryptophan.design.CustomLabel;
 import tryptophan.design.DesignErrorCodes;
 import tryptophan.design.Form;
-import tryptophan.design.FormQuestion;
+import tryptophan.design.FormMetricRef;
 import tryptophan.sample.Responder;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleErrorCodes;
@@ -76,12 +76,12 @@ public class SampleCenterField extends SampleCenterPanel {
      * @throws AppException
      * @throws Exception 
      */
-    public FormQuestion[] getQuestionsBySample (long sampleid, long userid) throws AppException, Exception {
+    public FormMetricRef[] getQuestionsBySample (long sampleid, long userid) throws AppException, Exception {
         Sample sample = samplelambda.getSample(sampleid);
         if (sample.userID() != userid)
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
         Form form = designlambda.getQuestionnaire(sample.formID());
-        FormQuestion[] questions = designlambda.getFormQuestions(form.formID());
+        FormMetricRef[] questions = designlambda.getFormQuestions(form.formID());
         return questions;
     }
     //********************************************************************
@@ -101,7 +101,7 @@ public class SampleCenterField extends SampleCenterPanel {
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
         //--------------------------------------------
         Form form = designlambda.getQuestionnaire(sample.formID());
-        FormQuestion[] questions = designlambda.getFormQuestions(form.formID());
+        FormMetricRef[] questions = designlambda.getFormQuestions(form.formID());
         FinalForm finalform = new FinalForm();
         finalform.form = form;
         finalform.questions = questions;
