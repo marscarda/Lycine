@@ -244,6 +244,7 @@ public class TrialCenter {
         if (universe.projectID() != projectid)
             throw new AppException("Objects from different projects", ProjectErrorCodes.ENTITYPROJECTINCONCISTENCY);
         slotalloc.setUniverseId(universe.universeID());
+        slotalloc.setProjectId(projectid);
         //================================================================
         //We check the subset exists
         universelambda.getSubset(universe.universeID(), slotalloc.subsetID());
