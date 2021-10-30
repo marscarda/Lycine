@@ -1,5 +1,6 @@
 package lycine.sample;
 //************************************************************************
+import histidine.AurigaObject;
 import tryptophan.sample.SamplePayLoad;
 import methionine.AppException;
 import methionine.TabList;
@@ -18,16 +19,26 @@ import tryptophan.sample.SampleAtlas;
 //************************************************************************
 public class SampleCenterPanel {
     //********************************************************************
+    protected AurigaObject auriga = null;
     protected AuthLamda authlambda = null;
     protected ProjectLambda projectlambda = null;
     protected BillingLambda billinglambda = null;
     protected DesignAtlas designlambda = null;
     protected SampleAtlas samplelambda = null;
     //====================================================================
+    public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
+    //====================================================================
+    //Deprecated: Use setAuriga instead.
+    //====================================================================
+    @Deprecated
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
+    @Deprecated
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
+    @Deprecated
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
+    @Deprecated
     public void setVariableLambda (DesignAtlas variablelambda) { this.designlambda = variablelambda; }
+    @Deprecated
     public void setSampleLambda (SampleAtlas samplelambda) { this.samplelambda = samplelambda; }
     //********************************************************************
     /**

@@ -1,7 +1,9 @@
 package lycine.sample;
 //************************************************************************
 import methionine.AppException;
+import methionine.TabList;
 import methionine.auth.AuthErrorCodes;
+import methionine.billing.SystemCharge;
 import methionine.project.Project;
 import tryptophan.design.CustomLabel;
 import tryptophan.design.DesignErrorCodes;
@@ -134,22 +136,42 @@ public class SampleCenterField extends SampleCenterPanel {
     /**
      * Adds a new field response to a sample
      * @param responder
+     * @param userid
      * @throws AppException
      * @throws Exception 
      */
-    public void AddResponse (Responder responder, long userid) throws AppException, Exception {
-        //---------------------------------------------------
-        Sample sample = samplelambda.getSample(responder.sampleID());
-        //---------------------------------------------------
+    public void fieldResponse (Responder responder, long userid) throws AppException, Exception {
+        //***************************************************
+        //We first get the sample involved and check if the
+        //user has is the one entrusted to it.
+        Sample sample = auriga.getSampleLambda().getSample(responder.sampleID());
         if (sample.userID() != userid)
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
-        //---------------------------------------------------
-        Project project = projectlambda.getProject(sample.projectID(), 0);
-        responder.setProjectId(userid);
+        //***************************************************
+        //We get the project where the response is
+        Project project = auriga.getProjectLambda().getProject(sample.projectID(), 0);
+        //***************************************************
+        responder.setProjectId(project.projectID());
         responder.setUserId(userid);
-        //---------------------------------------------------
-        samplelambda.addFieldResponse(responder);
-        //---------------------------------------------------
+        //***************************************************
+        TabList tabs = new TabList();
+        auriga.getSampleLambda().submitResponseLock(tabs);
+        auriga.getBillingLambda().addSystemChargeLock(tabs);
+        auriga.getSampleLambda().setAutoCommit(0);
+        auriga.getSampleLambda().lockTables(tabs);
+        //===================================================
+        auriga.getSampleLambda().addFieldResponse(responder);
+        //===================================================
+        SystemCharge charge = new SystemCharge();
+        charge.setCost(sample.responseSubmitCost());
+        charge.setDescription("Response in Sample " + sample.getName());
+        charge.setProjectId(project.projectID());
+        charge.setUserid(project.getOwner());
+        auriga.getBillingLambda().createSystemCharge(charge);
+        //===================================================
+        //We are all done.
+        auriga.getSampleLambda().commit();
+        //***************************************************
     }
     //********************************************************************
 }
