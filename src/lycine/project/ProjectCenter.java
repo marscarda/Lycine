@@ -20,8 +20,18 @@ import methionine.project.ProjectLambda;
 public class ProjectCenter {
     //********************************************************************
     AurigaObject auriga = null;
+    
+    /*
+    
+    Use the auriga
+    
+    */
+    
+    @Deprecated
     AuthLamda authlambda = null;
+    @Deprecated
     ProjectLambda projectlambda = null;
+    @Deprecated
     BillingLambda billinglambda = null;
     //PublicViewLambda publicviewlambda = null;
     //====================================================================
@@ -46,8 +56,6 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void createProject (Project project) throws AppException, Exception {
-        
-        
         //------------------------------------------------
         project.setDayCost(UsageCost.PROJECT);
         //------------------------------------------------
@@ -69,8 +77,6 @@ public class ProjectCenter {
         //------------------------------------------------
         auriga.getProjectLambda().commit();
         //------------------------------------------------
-        
-        
     }
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
@@ -224,14 +230,43 @@ public class ProjectCenter {
     }
     //********************************************************************
     /**
+     * Marks a project as destroyed and ends the usage.
+     * @param projectid
+     * @param userid
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void setDestroyed (long projectid, long userid) throws AppException, Exception {
+        //-----------------------------------------------------------
+        Project project = auriga.getProjectLambda().getProject(projectid, 0);
+        if (project.getOwner() != userid) 
+            throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
+        //-----------------------------------------------------------
+        //Lock All Tables
+        TabList tabs = new TabList();
+        auriga.getProjectLambda().lockSetDestroyed(tabs);
+        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getProjectLambda().setAutoCommit(0);
+        auriga.getProjectLambda().lockTables(tabs);
+        //-----------------------------------------------------------
+        auriga.getProjectLambda().setProjectDestroyed(projectid);
+        auriga.getBillingLambda().endUsage(projectid);
+        //-----------------------------------------------------------
+        //We are all done
+        auriga.getProjectLambda().commit();
+        //-----------------------------------------------------------
+    }
+    //********************************************************************
+    /**
      * 
      * @param projectid
      * @param userid 
      * @throws AppException PROJECTNOTFOUND UNAUTHORIZED
      */
+    @Deprecated
     public void destroyProject (long projectid, long userid) throws AppException, Exception {
         //-----------------------------------------------------------
-        Project project = projectlambda.getProject(projectid, 0);
+        Project project = auriga.getProjectLambda().getProject(projectid, 0);
         if (project.getOwner() != userid) 
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         //-----------------------------------------------------------
@@ -253,6 +288,7 @@ public class ProjectCenter {
         }
         projectlambda.commitTransaction();
     }
+    
     //********************************************************************
 }
 //************************************************************************
