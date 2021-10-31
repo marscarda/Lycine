@@ -20,20 +20,6 @@ public class DesignCenter {
     AurigaObject auriga = null;
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
     //********************************************************************
-    AuthLamda authlambda = null;
-    ProjectLambda projectlambda = null;
-    BillingLambda billinglambda = null;
-    DesignAtlas designlambda = null;
-    //====================================================================
-    @Deprecated
-    public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
-    @Deprecated    
-    public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
-    @Deprecated
-    public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    @Deprecated
-    public void setVariableLambda (DesignAtlas designlambda) { this.designlambda = designlambda; }
-    //********************************************************************
     /**
      * 
      * @param variable
@@ -97,12 +83,8 @@ public class DesignCenter {
     public String[] getCategories (long projectid, int type, long userid) throws AppException, Exception {
         //******************************************************************
         //We check the user has read acces to the project
-        projectlambda.checkAccess(projectid, userid, 1);
-        //------------------------------------------------------------------
-        
-        
-        //******************************************************************
-        return designlambda.getVariableCategories(projectid, type);
+        auriga.getProjectLambda().checkAccess(projectid, userid, 1);
+        return auriga.getDesignLambda().getVariableCategories(projectid, type);
         //******************************************************************
     }
     //********************************************************************
@@ -119,11 +101,11 @@ public class DesignCenter {
     public Metric[] getVariables (long projectid, int type, String category, long userid) throws AppException, Exception {
         //******************************************************************
         //We check the user has read acces to the project
-        projectlambda.checkAccess(projectid, userid, 1);
+        auriga.getProjectLambda().checkAccess(projectid, userid, 1);
         //------------------------------------------------------------------
         if (category == null) category = "";
         //******************************************************************
-        return designlambda.getVariables(projectid, type, category);
+        return auriga.getDesignLambda().getVariables(projectid, type, category);
         //******************************************************************
     }
     //********************************************************************
@@ -141,10 +123,10 @@ public class DesignCenter {
         //Reading Part
         //******************************************************************
         //We check the user has write acces to the project
-        projectlambda.checkAccess(questionary.projectID(), userid, 2);
+        auriga.getProjectLambda().checkAccess(questionary.projectID(), userid, 2);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(questionary.projectID(), 0);
+        Project project = auriga.getProjectLambda().getProject(questionary.projectID(), 0);
         //------------------------------------------------------------------
         //We persist the cost of this particular variable.
         questionary.cost = UsageCost.QUESTIONARY;
@@ -153,12 +135,12 @@ public class DesignCenter {
         //******************************************************************
         //Lock All Tables
         TabList tabs = new TabList();
-        designlambda.addCreateQuestionaryLock(tabs);
-        billinglambda.AddLockAlterUsage(tabs);
-        designlambda.setAutoCommit(0);
-        designlambda.lockTables(tabs);
+        auriga.getDesignLambda().addCreateQuestionaryLock(tabs);
+        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getDesignLambda().setAutoCommit(0);
+        auriga.getDesignLambda().lockTables(tabs);
         //------------------------------------------------------------------
-        designlambda.createForm(questionary);
+        auriga.getDesignLambda().createForm(questionary);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -166,11 +148,11 @@ public class DesignCenter {
         alter.setProjectName(project.getName());
         alter.setIncrease(UsageCost.QUESTIONARY);
         alter.setStartingEvent("Questionary '" + questionary.getName() + "' Created");
-        billinglambda.alterUsage(alter);
+        auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        designlambda.commit();
-        designlambda.unLockTables();
+        auriga.getDesignLambda().commit();
+        auriga.getDesignLambda().unLockTables();
         //------------------------------------------------------------------
     }
     //********************************************************************
@@ -185,10 +167,10 @@ public class DesignCenter {
     public Form getQuestionnaire (long questionnaireid, long userid) throws AppException, Exception {
         //****************************************************************
         //We recover the quest.
-        Form questionnaire = designlambda.getQuestionnaire(questionnaireid);
+        Form questionnaire = auriga.getDesignLambda().getQuestionnaire(questionnaireid);
         //****************************************************************
         //We check the user has read acces to the project
-        projectlambda.checkAccess(questionnaire.projectID(), userid, 1);
+        auriga.getProjectLambda().checkAccess(questionnaire.projectID(), userid, 1);
         //----------------------------------------------------------------
         return questionnaire;
         //****************************************************************
@@ -205,9 +187,9 @@ public class DesignCenter {
     public Form[] getQuestionaries (long projectid, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has read acces to the project
-        projectlambda.checkAccess(projectid, userid, 1);
+        auriga.getProjectLambda().checkAccess(projectid, userid, 1);
         //----------------------------------------------------------------
-        return designlambda.getQuestionaries(projectid);
+        return auriga.getDesignLambda().getQuestionaries(projectid);
         //****************************************************************
     }
     //********************************************************************
@@ -222,10 +204,10 @@ public class DesignCenter {
     public void updateQuestionnaire (long questionnaireid, Form questionnaire, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has read acces to the project
-        Form quest = designlambda.getQuestionnaire(questionnaireid);
-        projectlambda.checkAccess(quest.projectID(), userid, 2);
+        Form quest = auriga.getDesignLambda().getQuestionnaire(questionnaireid);
+        auriga.getProjectLambda().checkAccess(quest.projectID(), userid, 2);
         //----------------------------------------------------------------
-        designlambda.updateQuestionnaire(questionnaireid, questionnaire);
+        auriga.getDesignLambda().updateQuestionnaire(questionnaireid, questionnaire);
         //****************************************************************
     }
     //********************************************************************
@@ -239,19 +221,19 @@ public class DesignCenter {
     public void destroyForm (long formid, long userid) throws AppException, Exception {
         //****************************************************************
         //We recover the form and check the user has delete acces to the project
-        Form form = designlambda.getQuestionnaire(formid);
-        projectlambda.checkAccess(form.projectID(), userid, 3);
+        Form form = auriga.getDesignLambda().getQuestionnaire(formid);
+        auriga.getProjectLambda().checkAccess(form.projectID(), userid, 3);
         //----------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(form.projectID(), 0);
+        Project project = auriga.getProjectLambda().getProject(form.projectID(), 0);
         //------------------------------------------------------------------
         TabList tabs = new TabList();
-        designlambda.addDestroyFormLock(tabs);
-        billinglambda.AddLockAlterUsage(tabs);
-        designlambda.setAutoCommit(0);
-        designlambda.lockTables(tabs);
+        auriga.getDesignLambda().addDestroyFormLock(tabs);
+        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getDesignLambda().setAutoCommit(0);
+        auriga.getDesignLambda().lockTables(tabs);
         //------------------------------------------------------------------
-        designlambda.destroyForm(formid);
+        auriga.getDesignLambda().destroyForm(formid);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -259,11 +241,11 @@ public class DesignCenter {
         alter.setProjectName(project.getName());
         alter.setDecrease(form.cost);
         alter.setStartingEvent("Form '" + form.getName() + "' Destroyed");
-        billinglambda.alterUsage(alter);
+        auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        designlambda.commit();
-        designlambda.unLockTables();
+        auriga.getDesignLambda().commit();
+        auriga.getDesignLambda().unLockTables();
         //----------------------------------------------------------------
     }
     //********************************************************************
@@ -276,15 +258,15 @@ public class DesignCenter {
     public void addFormMetricRef (FormMetricRef formref, long userid) throws AppException, Exception {
         //****************************************************************
         // We fetch the variable and questionnaire.
-        Metric metric = designlambda.getVariable(formref.variableID());
-        Form form = designlambda.getQuestionnaire(formref.formID());
+        Metric metric = auriga.getDesignLambda().getVariable(formref.variableID());
+        Form form = auriga.getDesignLambda().getQuestionnaire(formref.formID());
         //****************************************************************
         //We check the variable and questionnarie belongs to the same project.
         if (metric.projectID() != form.projectID())
             throw new AppException("Form and Variable are from different projects", AppException.NOTTHESAMEPROJECT);
         //****************************************************************
         //We check the performing user has access to the project.
-        projectlambda.checkAccess(metric.projectID(), userid, 2);
+        auriga.getProjectLambda().checkAccess(metric.projectID(), userid, 2);
         //================================================================
         //We set the project ID. 
         formref.setProjectId(metric.projectID());
@@ -292,16 +274,16 @@ public class DesignCenter {
         // Writing part
         //****************************************************************
         TabList tabs = new TabList();
-        designlambda.addAddToQuestionnaire(tabs);
-        designlambda.setAutoCommit(0);
-        designlambda.lockTables(tabs);
+        auriga.getDesignLambda().addAddToQuestionnaire(tabs);
+        auriga.getDesignLambda().setAutoCommit(0);
+        auriga.getDesignLambda().lockTables(tabs);
         //----------------------------------------------------------------
         //We Add The variable to questionnaire
-        designlambda.addToQuestionnaire(formref);
+        auriga.getDesignLambda().addToQuestionnaire(formref);
         //----------------------------------------------------------------
         //We are done.
-        designlambda.commit();
-        designlambda.unLockTables();
+        auriga.getDesignLambda().commit();
+        auriga.getDesignLambda().unLockTables();
         //****************************************************************
         //Last we add the variable to the question for display purpose.
         formref.fillVariable(metric);
@@ -319,22 +301,22 @@ public class DesignCenter {
     public FormMetricRef[] getFormQuestions (long formid, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has read acces to the project
-        Form quest = designlambda.getQuestionnaire(formid);
-        projectlambda.checkAccess(quest.projectID(), userid, 1);
+        Form quest = auriga.getDesignLambda().getQuestionnaire(formid);
+        auriga.getProjectLambda().checkAccess(quest.projectID(), userid, 1);
         //----------------------------------------------------------------
-        return designlambda.getFormQuestions(formid);
+        return auriga.getDesignLambda().getFormQuestions(formid);
         //****************************************************************
     }
     //********************************************************************
     public void setCustomLabels (CustomLabel[] labels, long projectid, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has write acces to the project
-        projectlambda.checkAccess(projectid, userid, 2);
+        auriga.getProjectLambda().checkAccess(projectid, userid, 2);
         //----------------------------------------------------------------
         for (CustomLabel label : labels)
             label.setProjectId(projectid);
         //----------------------------------------------------------------
-        designlambda.setCustomLabels(labels);
+        auriga.getDesignLambda().setCustomLabels(labels);
         //****************************************************************
     }
     //====================================================================
@@ -350,8 +332,8 @@ public class DesignCenter {
     public CustomLabel[] getCustomLabels (long projectid, int groupcode, long userid) throws AppException, Exception {
         //****************************************************************
         //We check the user has read acces to the project
-        projectlambda.checkAccess(projectid, userid, 1);
-        return designlambda.getCustomLabels(projectid, groupcode);
+        auriga.getProjectLambda().checkAccess(projectid, userid, 1);
+        return auriga.getDesignLambda().getCustomLabels(projectid, groupcode);
     }
     //********************************************************************
 }
