@@ -1,5 +1,6 @@
 package lycine.design;
 //************************************************************************
+import histidine.AurigaObject;
 import methionine.AppException;
 import methionine.TabList;
 import methionine.auth.AuthLamda;
@@ -16,14 +17,21 @@ import tryptophan.design.FormMetricRef;
 //************************************************************************
 public class DesignCenter {
     //********************************************************************
+    AurigaObject auriga = null;
+    public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
+    //********************************************************************
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     BillingLambda billinglambda = null;
     DesignAtlas designlambda = null;
     //====================================================================
+    @Deprecated
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
+    @Deprecated    
     public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
+    @Deprecated
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
+    @Deprecated
     public void setVariableLambda (DesignAtlas designlambda) { this.designlambda = designlambda; }
     //********************************************************************
     /**
@@ -33,7 +41,7 @@ public class DesignCenter {
      * @throws AppException
      * @throws Exception 
      */
-    public void createVariable (Metric variable, long userid) throws AppException, Exception {
+    public void createMetric (Metric variable, long userid) throws AppException, Exception {
         //----------------------------------------------------------------
         if (variable.getName().length() == 0)
             throw new AppException("Variable Name cannot be empty", AppException.INVALIDDATASUBMITED);
@@ -44,10 +52,10 @@ public class DesignCenter {
         //Reading Part
         //******************************************************************
         //We check the user has write acces to the project
-        projectlambda.checkAccess(variable.projectID(), userid, 2);
+        auriga.getProjectLambda().checkAccess(variable.projectID(), userid, 2);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(variable.projectID(), 0);
+        Project project = auriga.getProjectLambda().getProject(variable.projectID(), 0);
         //------------------------------------------------------------------
         //We persist the cost of this particular variable.
         variable.setCost(UsageCost.METRIC);
@@ -56,12 +64,12 @@ public class DesignCenter {
         //******************************************************************
         //Lock All Tables
         TabList tabs = new TabList();
-        designlambda.addCreateVariableLock(tabs);
-        billinglambda.AddLockAlterUsage(tabs);
-        designlambda.setAutoCommit(0);
-        designlambda.lockTables(tabs);
+        auriga.getDesignLambda().addCreateVariableLock(tabs);
+        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getDesignLambda().setAutoCommit(0);
+        auriga.getDesignLambda().lockTables(tabs);
         //------------------------------------------------------------------
-        designlambda.createVariable(variable);
+        auriga.getDesignLambda().createVariable(variable);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -69,11 +77,11 @@ public class DesignCenter {
         alter.setProjectName(project.getName());
         alter.setIncrease(UsageCost.METRIC);
         alter.setStartingEvent("Variable '" + variable.getName() + "' Created");
-        billinglambda.alterUsage(alter);
+        auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        designlambda.commit();
-        designlambda.unLockTables();
+        auriga.getDesignLambda().commit();
+        auriga.getDesignLambda().unLockTables();
         //------------------------------------------------------------------
     }
     //********************************************************************
