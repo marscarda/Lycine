@@ -95,17 +95,20 @@ public class SampleCenterField extends SampleCenterPanel {
      * @throws Exception 
      */
     public FinalForm getFinalFormBySample (long sampleid, long userid) throws AppException, Exception {
-        //--------------------------------------------
+        //********************************************************
         Sample sample = auriga.getSampleLambda().getSample(sampleid);
         if (sample.userID() != userid)
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
-        //--------------------------------------------
+        //**************************************
         Form form = auriga.getDesignLambda().getQuestionnaire(sample.formID());
+        //---------------------------------
+        //Metric Ref are selected by an inner Join. Metric existence is asured.
         FormMetricRef[] questions = auriga.getDesignLambda().getFormQuestions(form.formID());
+        //---------------------------------
         FinalForm finalform = new FinalForm();
         finalform.form = form;
         finalform.questions = questions;
-        //--------------------------------------------
+        //********************************************************
         CustomLabel label;
         CustomLabel[] labels = auriga.getDesignLambda().getCustomLabels(sample.projectID(), CustomLabel.G_PUBVIEW);
         //--------------------------------------------

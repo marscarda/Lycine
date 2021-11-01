@@ -48,7 +48,7 @@ public class DesignCenter {
         TabList tabs = new TabList();
         auriga.getDesignLambda().addCreateVariableLock(tabs);
         auriga.getBillingLambda().AddLockAlterUsage(tabs);
-        auriga.getProjectLambda().lockProjects(tabs);
+        auriga.getProjectLambda().setLock(tabs);
         auriga.getDesignLambda().setAutoCommit(0);
         auriga.getDesignLambda().lockTables(tabs);
         //==================================================================
@@ -226,13 +226,18 @@ public class DesignCenter {
         //----------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
         Project project = auriga.getProjectLambda().getProject(form.projectID(), 0);
-        //------------------------------------------------------------------
+        //****************************************************************
         TabList tabs = new TabList();
         auriga.getDesignLambda().addDestroyFormLock(tabs);
         auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getProjectLambda().setLock(tabs);
         auriga.getDesignLambda().setAutoCommit(0);
         auriga.getDesignLambda().lockTables(tabs);
-        //------------------------------------------------------------------
+        //==================================================================
+        //Check existence in master.
+        auriga.getProjectLambda().inMasterProject(project.projectID());
+        auriga.getDesignLambda().inMasterProject(formid);
+        //==================================================================
         auriga.getDesignLambda().destroyForm(formid);
         //------------------------------------------------------------------
         //We alter the usage cost.
