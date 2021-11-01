@@ -24,7 +24,7 @@ public class SampleCenterField extends SampleCenterPanel {
      */
     public Sample[] getUserActiveSamples (long userid) throws AppException, Exception {
         //****************************************************************
-        Sample[] samples = samplelambda.getUserActiveSamples(userid);
+        Sample[] samples = auriga.getSampleLambda().getUserActiveSamples(userid);
         return samples;
         //****************************************************************
     }
@@ -38,12 +38,12 @@ public class SampleCenterField extends SampleCenterPanel {
      * @throws Exception 
      */
     public Sample getSample (long sampleid, long userid) throws AppException, Exception {
-        Sample sample = samplelambda.getSample(sampleid);
+        Sample sample = auriga.getSampleLambda().getSample(sampleid);
         if (sample.userID() != userid)
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
         //---------------------------------------------------------------
         //Check if the form exists. If not the sample is invalid
-        try { designlambda.getQuestionnaire(sample.formID()); }
+        try { auriga.getDesignLambda().getQuestionnaire(sample.formID()); }
         catch (AppException e) {
             if (e.getErrorCode() == DesignErrorCodes.FORMNOTFOUND)
                 throw new AppException("Sample out of taking", SampleErrorCodes.SMPLEOUTOFTAKING);
@@ -61,10 +61,10 @@ public class SampleCenterField extends SampleCenterPanel {
      * @throws Exception 
      */
     public Form getFormBySample (long sampleid, long userid) throws AppException, Exception {
-        Sample sample = samplelambda.getSample(sampleid);
+        Sample sample = auriga.getSampleLambda().getSample(sampleid);
         if (sample.userID() != userid)
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
-        Form form = designlambda.getQuestionnaire(sample.formID());
+        Form form = auriga.getDesignLambda().getQuestionnaire(sample.formID());
         return form;
     }
     //********************************************************************
@@ -77,11 +77,11 @@ public class SampleCenterField extends SampleCenterPanel {
      * @throws Exception 
      */
     public FormMetricRef[] getQuestionsBySample (long sampleid, long userid) throws AppException, Exception {
-        Sample sample = samplelambda.getSample(sampleid);
+        Sample sample = auriga.getSampleLambda().getSample(sampleid);
         if (sample.userID() != userid)
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
-        Form form = designlambda.getQuestionnaire(sample.formID());
-        FormMetricRef[] questions = designlambda.getFormQuestions(form.formID());
+        Form form = auriga.getDesignLambda().getQuestionnaire(sample.formID());
+        FormMetricRef[] questions = auriga.getDesignLambda().getFormQuestions(form.formID());
         return questions;
     }
     //********************************************************************
@@ -96,18 +96,18 @@ public class SampleCenterField extends SampleCenterPanel {
      */
     public FinalForm getFinalFormBySample (long sampleid, long userid) throws AppException, Exception {
         //--------------------------------------------
-        Sample sample = samplelambda.getSample(sampleid);
+        Sample sample = auriga.getSampleLambda().getSample(sampleid);
         if (sample.userID() != userid)
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
         //--------------------------------------------
-        Form form = designlambda.getQuestionnaire(sample.formID());
-        FormMetricRef[] questions = designlambda.getFormQuestions(form.formID());
+        Form form = auriga.getDesignLambda().getQuestionnaire(sample.formID());
+        FormMetricRef[] questions = auriga.getDesignLambda().getFormQuestions(form.formID());
         FinalForm finalform = new FinalForm();
         finalform.form = form;
         finalform.questions = questions;
         //--------------------------------------------
         CustomLabel label;
-        CustomLabel[] labels = designlambda.getCustomLabels(sample.projectID(), CustomLabel.G_PUBVIEW);
+        CustomLabel[] labels = auriga.getDesignLambda().getCustomLabels(sample.projectID(), CustomLabel.G_PUBVIEW);
         //--------------------------------------------
         label = CustomLabel.findLabelByCode(labels, CustomLabel.C_PUBVIEW_FORMULATION);
         if (label.isValid()) finalform.labelpubviewf = label.labelText();

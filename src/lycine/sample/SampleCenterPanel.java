@@ -4,42 +4,18 @@ import histidine.AurigaObject;
 import tryptophan.sample.SamplePayLoad;
 import methionine.AppException;
 import methionine.TabList;
-import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import methionine.billing.AlterUsage;
-import methionine.billing.BillingLambda;
 import methionine.billing.UsageCost;
 import methionine.project.Project;
-import methionine.project.ProjectLambda;
-import tryptophan.design.DesignAtlas;
 import tryptophan.design.Form;
 import tryptophan.sample.Responder;
 import tryptophan.sample.Sample;
-import tryptophan.sample.SampleAtlas;
 //************************************************************************
 public class SampleCenterPanel {
     //********************************************************************
     protected AurigaObject auriga = null;
-    protected AuthLamda authlambda = null;
-    protected ProjectLambda projectlambda = null;
-    protected BillingLambda billinglambda = null;
-    protected DesignAtlas designlambda = null;
-    protected SampleAtlas samplelambda = null;
-    //====================================================================
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
-    //====================================================================
-    //Deprecated: Use setAuriga instead.
-    //====================================================================
-    @Deprecated
-    public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
-    @Deprecated
-    public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
-    @Deprecated
-    public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-    @Deprecated
-    public void setVariableLambda (DesignAtlas variablelambda) { this.designlambda = variablelambda; }
-    @Deprecated
-    public void setSampleLambda (SampleAtlas samplelambda) { this.samplelambda = samplelambda; }
     //********************************************************************
     /**
      * Creates a new sample.
@@ -49,6 +25,7 @@ public class SampleCenterPanel {
      * @throws Exception 
      */
     public void createSample (Sample sample, long userid) throws AppException, Exception {
+        
         //****************************************************************
         if (sample.getName().length() == 0)
             throw new AppException("Sample Name cannot be empty", AppException.INVALIDDATASUBMITED);
@@ -57,17 +34,17 @@ public class SampleCenterPanel {
             throw new AppException("A form must be selected", AppException.INVALIDDATASUBMITED);
         //****************************************************************
         //We check the performing user has access to the project.
-        projectlambda.checkAccess(sample.projectID(), userid, 2);
+        auriga.getProjectLambda().checkAccess(sample.projectID(), userid, 2);
         //****************************************************************
         //We check the form ID belongs to the same project.
-        Form form = designlambda.getQuestionnaire(sample.formID());
-        Project project = projectlambda.getProject(form.projectID(), 0);
+        Form form = auriga.getDesignLambda().getQuestionnaire(sample.formID());
+        Project project = auriga.getProjectLambda().getProject(form.projectID(), 0);
         if (form.projectID() != sample.projectID())
             throw new AppException("Form does not belong to the project", AppException.NOTTHESAMEPROJECT);
         //****************************************************************
         //If a user name is entrusted we find the user id.
         if (sample.getUserName().length() != 0)
-            sample.setUserId(authlambda.getUserIdByIdentifier(sample.getUserName()));
+            sample.setUserId(auriga.getAuthLambda().getUserIdByIdentifier(sample.getUserName()));
         //----------------------------------------------------------------
         //Set the form name in the sample for response sake
         sample.setFormName(form.getName());
@@ -76,14 +53,14 @@ public class SampleCenterPanel {
         //****************************************************************
         //Lock All Tables
         TabList tabs = new TabList();
-        samplelambda.addCreateSampleLock(tabs);
-        billinglambda.AddLockAlterUsage(tabs);
-        samplelambda.setAutoCommit(0);
-        samplelambda.lockTables(tabs);
+        auriga.getSampleLambda().addCreateSampleLock(tabs);
+        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getSampleLambda().setAutoCommit(0);
+        auriga.getSampleLambda().lockTables(tabs);
         //----------------------------------------------------------------
         //We create the sample.
         sample.cost = UsageCost.SAMPLE;
-        samplelambda.createSample(sample);
+        auriga.getSampleLambda().createSample(sample);
         //----------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -91,11 +68,11 @@ public class SampleCenterPanel {
         alter.setProjectName(project.getName());
         alter.setIncrease(sample.cost);
         alter.setStartingEvent("Sample '" + sample.getName() + "' Created");
-        billinglambda.alterUsage(alter);
+        auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        samplelambda.commit();
-        samplelambda.unLockTables();
+        auriga.getSampleLambda().commit();
+        auriga.getSampleLambda().unLockTables();
         //****************************************************************
     }
     //********************************************************************
@@ -112,9 +89,9 @@ public class SampleCenterPanel {
         //****************************************************************
         //We check the performing user has access to the project.
         if (userid != 0)
-            projectlambda.checkAccess(projectid, userid, 1);
+            auriga.getProjectLambda().checkAccess(projectid, userid, 1);
         //****************************************************************
-        Sample[] samples = samplelambda.getSamplesByProject(projectid);
+        Sample[] samples = auriga.getSampleLambda().getSamplesByProject(projectid);
         if (!fillextras) return samples;
         //----------------------------------------------------------------
         User user;
@@ -123,13 +100,13 @@ public class SampleCenterPanel {
             //------------------------------------------------------------
             //Fill the user name
             try { 
-                user = authlambda.getUser(sample.userID(), false); 
+                user = auriga.getAuthLambda().getUser(sample.userID(), false); 
                 sample.setUserName(user.loginName());
             }
             catch (AppException e) {}
             //------------------------------------------------------------
             try {
-                form = designlambda.getQuestionnaire(sample.formID());
+                form = auriga.getDesignLambda().getQuestionnaire(sample.formID());
                 sample.setFormName(form.getName());
             }
             catch (AppException e) {}
@@ -148,21 +125,22 @@ public class SampleCenterPanel {
      * @throws Exception 
      */
     public void destroySample (long sampleid, long userid) throws AppException, Exception {
+        /*
         //****************************************************************
         //We fetch the sample and check the performing user has access to the project.
-        Sample sample = samplelambda.getSample(sampleid);
-        projectlambda.checkAccess(sample.projectID(), userid, 3);
+        Sample sample = auriga.getSampleLambda().getSample(sampleid);
+        auriga.getProjectLambda().checkAccess(sample.projectID(), userid, 3);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(sample.projectID(), 0);
+        Project project = auriga.getProjectLambda().getProject(sample.projectID(), 0);
         //****************************************************************
         TabList tabs = new TabList();
-        samplelambda.addDestroySampleLock(tabs);
-        billinglambda.AddLockAlterUsage(tabs);
-        samplelambda.setAutoCommit(0);
-        samplelambda.lockTables(tabs);
+        auriga.getSampleLambda().addDestroySampleLock(tabs);
+        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getSampleLambda().setAutoCommit(0);
+        auriga.getSampleLambda().lockTables(tabs);
         //------------------------------------------------------------------
-        samplelambda.destroySample(sampleid);
+        auriga.getSampleLambda().destroySample(sampleid);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -170,12 +148,13 @@ public class SampleCenterPanel {
         alter.setProjectName(project.getName());
         alter.setDecrease(sample.cost);
         alter.setStartingEvent("Sample '" + sample.getName() + "' Destroyed");
-        billinglambda.alterUsage(alter);
+        auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        samplelambda.commit();
-        samplelambda.unLockTables();
+        auriga.getSampleLambda().commit();
+        auriga.getSampleLambda().unLockTables();
         //****************************************************************
+        */
     }
     //********************************************************************
     /**
@@ -189,18 +168,18 @@ public class SampleCenterPanel {
     public SamplePayLoad getSamplePayload (long sampleid, long userid) throws AppException, Exception {
         //****************************************************************
         //We recover the sample.
-        Sample sample = samplelambda.getSample(sampleid);
+        Sample sample = auriga.getSampleLambda().getSample(sampleid);
         //----------------------------------------------------------------
         //We check (If required) if the user has access to the project.
         if (userid != 0)
-            projectlambda.checkAccess(sample.projectID(), userid, 1);
+            auriga.getProjectLambda().checkAccess(sample.projectID(), userid, 1);
         //****************************************************************
         //We create the sample payload instance and set the sampleid.
         SamplePayLoad samplepayload = new SamplePayLoad();
         samplepayload.setSample(sample);
         //****************************************************************
         //We recover the responses and add them to the payload.
-        Responder[] responses = samplelambda.getResponses(sampleid, true);
+        Responder[] responses = auriga.getSampleLambda().getResponses(sampleid, true);
         samplepayload.setResponses(responses);
         //----------------------------------------------------------------
         return samplepayload;

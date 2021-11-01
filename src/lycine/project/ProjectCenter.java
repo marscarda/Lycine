@@ -20,34 +20,7 @@ import methionine.project.ProjectLambda;
 public class ProjectCenter {
     //********************************************************************
     AurigaObject auriga = null;
-    
-    /*
-    
-    Use the auriga
-    
-    */
-    
-    @Deprecated
-    AuthLamda authlambda = null;
-    @Deprecated
-    ProjectLambda projectlambda = null;
-    @Deprecated
-    BillingLambda billinglambda = null;
-    //PublicViewLambda publicviewlambda = null;
-    //====================================================================
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
-    
-    /*
-    All this deprecation... Use The Auriga.
-    */
-    
-    @Deprecated
-    public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
-    @Deprecated
-    public void setWorkTeamLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
-    @Deprecated
-    public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
-//    public void setPublicViewLambda (PublicViewLambda publicviewlambda) { this.publicviewlambda = publicviewlambda; }
     //********************************************************************
     /**
      * 
@@ -81,22 +54,22 @@ public class ProjectCenter {
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
         //============================================================
-        Project[] ownedworkteams = projectlambda.getWorkTeamByOwner(userid);
+        Project[] ownedworkteams = auriga.getProjectLambda().getWorkTeamByOwner(userid);
         int ownedcount = ownedworkteams.length;
         for (Project team : ownedworkteams) {
             team.setOwnerStatus();
             team.setAccessLevel(3);
         }
         //============================================================
-        ProjectAccess[] accesslist = projectlambda.getAccessList(0, userid);
+        ProjectAccess[] accesslist = auriga.getProjectLambda().getAccessList(0, userid);
         int accscount = accesslist.length;
         Project[] accecedteams = new Project[accscount];
         //============================================================
         User user;
         for (int n = 0; n < accscount; n++) {
             try {
-                accecedteams[n] = projectlambda.getProject(accesslist[n].projectID(), 0);
-                user = authlambda.getUser(accecedteams[n].getOwner(), false);
+                accecedteams[n] = auriga.getProjectLambda().getProject(accesslist[n].projectID(), 0);
+                user = auriga.getAuthLambda().getUser(accecedteams[n].getOwner(), false);
                 accecedteams[n].setOwnerName(user.loginName());
                 accecedteams[n].setAccessLevel(accesslist[n].accessLevel());
             }
@@ -270,23 +243,23 @@ public class ProjectCenter {
         if (project.getOwner() != userid) 
             throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
         //-----------------------------------------------------------
-        projectlambda.startTransaction();
+        auriga.getProjectLambda().startTransaction();
         try {
-            projectlambda.startTransaction();
+            auriga.getProjectLambda().startTransaction();
             //-----------------------------------------------
             //publicviewlambda.destroyCandidate(0, projectid);
             //-----------------------------------------------
-            projectlambda.deleteProject(projectid);
-            projectlambda.deleteAccessesForProject(projectid); ;
+            auriga.getProjectLambda().deleteProject(projectid);
+            auriga.getProjectLambda().deleteAccessesForProject(projectid); ;
             
             //billinglambda.endBillingPeriod(BillingPeriod.PROJECT, project.workTeamID());
             //-----------------------------------------------
         }
         catch (Exception e) {
-            projectlambda.rollbackTransaction();
+            auriga.getProjectLambda().rollbackTransaction();
             throw e;
         }
-        projectlambda.commitTransaction();
+        auriga.getProjectLambda().commitTransaction();
     }
     
     //********************************************************************

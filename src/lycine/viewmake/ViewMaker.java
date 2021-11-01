@@ -1,5 +1,6 @@
 package lycine.viewmake;
 //************************************************************************
+import histidine.AurigaObject;
 import lycine.stats.sample.VStSmplPubView;
 import lycine.stats.SampleView;
 import lycine.sample.SampleCenterPanel;
@@ -7,35 +8,23 @@ import tryptophan.sample.SamplePayLoad;
 import lycine.stats.VStAlpha;
 import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
-import methionine.auth.AuthLamda;
 import methionine.auth.User;
-import methionine.project.ProjectLambda;
-import tryptophan.design.DesignAtlas;
 import tryptophan.design.Metric;
 import tryptophan.sample.Responder;
 import tryptophan.sample.ResponseValue;
 import tryptophan.sample.Sample;
-import tryptophan.sample.SampleAtlas;
 //************************************************************************
 public class ViewMaker {
     //********************************************************************
-    ProjectLambda projectlambda = null;
-    AuthLamda authlambda = null;
-    DesignAtlas designlambda = null;
-    SampleAtlas samplelambda = null;
-    //====================================================================
-    public void setSampleLambda (SampleAtlas samplelambda) { this.samplelambda = samplelambda; }
-    public void setVariableLambda (DesignAtlas variablelambda) { this.designlambda = variablelambda; }
-    public void setProjectLambda (ProjectLambda workteamlambda) { this.projectlambda = workteamlambda; }
-    public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
+    AurigaObject auriga = null;
+    public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
     //********************************************************************
     public SampleView getSampleView (long sampleid, long userid, boolean setusername) throws AppException, Exception {
         //****************************************************************
         //We get the sample payload.
         //Wheter the user has access to the project is checked there.
         SampleCenterPanel samplecenter = new SampleCenterPanel();
-        samplecenter.setSampleLambda(samplelambda);
-        samplecenter.setProjectLambda(projectlambda);
+        samplecenter.setAuriga(auriga);
         SamplePayLoad samplepayload = samplecenter.getSamplePayload(sampleid, userid);
         //****************************************************************
         //We create the SampleView Instance and get the needed data.
@@ -47,7 +36,7 @@ public class ViewMaker {
         //If the user name is required we add it to the sample.
         if (setusername) {
             try {
-                User user = authlambda.getUser(sample.userID(), false);
+                User user = auriga.getAuthLambda().getUser(sample.userID(), false);
                 sample.setUserName(user.loginName());
             }
             catch (AppException e) {
@@ -82,7 +71,7 @@ public class ViewMaker {
     private VStAlpha createVariable (ResponseValue value) throws AppException, Exception {
         //***********************************************************
         //We first recover the variable in question.
-        Metric metric = designlambda.getVariable(value.variableID());
+        Metric metric = auriga.getDesignLambda().getVariable(value.metricID());
         if (value.getType() != metric.variableType()) {
             //It should happen NEVER. 
             //But if it happens we should not go further.
