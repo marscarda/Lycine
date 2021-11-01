@@ -5,17 +5,14 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import methionine.billing.UsageCost;
 import methionine.billing.AlterUsage;
-import methionine.billing.BillingLambda;
 import methionine.billing.UsagePeriod;
 import methionine.AppException;
 import methionine.Celaeno;
 import methionine.TabList;
 import methionine.auth.AuthErrorCodes;
-import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import methionine.project.Project;
 import methionine.project.ProjectAccess;
-import methionine.project.ProjectLambda;
 //************************************************************************
 public class ProjectCenter {
     //********************************************************************
@@ -229,39 +226,6 @@ public class ProjectCenter {
         auriga.getProjectLambda().commit();
         //-----------------------------------------------------------
     }
-    //********************************************************************
-    /**
-     * 
-     * @param projectid
-     * @param userid 
-     * @throws AppException PROJECTNOTFOUND UNAUTHORIZED
-     */
-    @Deprecated
-    public void destroyProject (long projectid, long userid) throws AppException, Exception {
-        //-----------------------------------------------------------
-        Project project = auriga.getProjectLambda().getProject(projectid, 0);
-        if (project.getOwner() != userid) 
-            throw new AppException("Unauthorized", AppException.UNAUTHORIZED);
-        //-----------------------------------------------------------
-        auriga.getProjectLambda().startTransaction();
-        try {
-            auriga.getProjectLambda().startTransaction();
-            //-----------------------------------------------
-            //publicviewlambda.destroyCandidate(0, projectid);
-            //-----------------------------------------------
-            auriga.getProjectLambda().deleteProject(projectid);
-            auriga.getProjectLambda().deleteAccessesForProject(projectid); ;
-            
-            //billinglambda.endBillingPeriod(BillingPeriod.PROJECT, project.workTeamID());
-            //-----------------------------------------------
-        }
-        catch (Exception e) {
-            auriga.getProjectLambda().rollbackTransaction();
-            throw e;
-        }
-        auriga.getProjectLambda().commitTransaction();
-    }
-    
     //********************************************************************
 }
 //************************************************************************

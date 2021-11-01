@@ -53,7 +53,7 @@ public class DesignCenter {
         auriga.getDesignLambda().lockTables(tabs);
         //==================================================================
         //We check existences.
-        if (!auriga.getProjectLambda().inMasterProject(project.projectID())) return;
+        auriga.getProjectLambda().inMasterProject(project.projectID());
         //==================================================================
         auriga.getDesignLambda().createVariable(variable);
         //==================================================================
