@@ -3,15 +3,11 @@ package lycine.design;
 import histidine.AurigaObject;
 import methionine.AppException;
 import methionine.TabList;
-import methionine.auth.AuthLamda;
 import methionine.billing.AlterUsage;
-import methionine.billing.BillingLambda;
 import methionine.billing.UsageCost;
 import methionine.project.Project;
-import methionine.project.ProjectLambda;
 import tryptophan.design.CustomLabel;
 import tryptophan.design.Metric;
-import tryptophan.design.DesignAtlas;
 import tryptophan.design.Form;
 import tryptophan.design.FormMetricRef;
 //************************************************************************
@@ -52,11 +48,15 @@ public class DesignCenter {
         TabList tabs = new TabList();
         auriga.getDesignLambda().addCreateVariableLock(tabs);
         auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getProjectLambda().lockProjects(tabs);
         auriga.getDesignLambda().setAutoCommit(0);
         auriga.getDesignLambda().lockTables(tabs);
-        //------------------------------------------------------------------
+        //==================================================================
+        //We check existences.
+        if (!auriga.getProjectLambda().inMasterProject(project.projectID())) return;
+        //==================================================================
         auriga.getDesignLambda().createVariable(variable);
-        //------------------------------------------------------------------
+        //==================================================================
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
         alter.setProjectId(project.projectID());
