@@ -1,4 +1,4 @@
-package lycine.misc;
+package lycine.map;
 //************************************************************************
 import threonine.midlayer.MapRecordGraphic;
 import histidine.AurigaObject;

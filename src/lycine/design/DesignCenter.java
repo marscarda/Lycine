@@ -280,10 +280,15 @@ public class DesignCenter {
         //****************************************************************
         TabList tabs = new TabList();
         auriga.getDesignLambda().addAddToQuestionnaire(tabs);
+        auriga.getProjectLambda().setLock(tabs);
         auriga.getDesignLambda().setAutoCommit(0);
         auriga.getDesignLambda().lockTables(tabs);
         //----------------------------------------------------------------
+        //We check the project exists
+        auriga.getProjectLambda().inMasterProject(metric.projectID());
+        //----------------------------------------------------------------
         //We Add The variable to questionnaire
+        //Form and metric existence are checked there.
         auriga.getDesignLambda().addToQuestionnaire(formref);
         //----------------------------------------------------------------
         //We are done.

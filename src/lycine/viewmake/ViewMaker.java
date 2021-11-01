@@ -9,6 +9,7 @@ import lycine.stats.VStAlpha;
 import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
 import methionine.auth.User;
+import tryptophan.design.DesignErrorCodes;
 import tryptophan.design.Metric;
 import tryptophan.sample.Responder;
 import tryptophan.sample.ResponseValue;
@@ -54,11 +55,15 @@ public class ViewMaker {
             values = response.getValues();
             VStAlpha varstat;
             for (ResponseValue value : values) {
-                if (!sampleview.checkVariable(value.variableID())) {
-                    varstat = createVariable(value);
+                if (!sampleview.checkVariable(value.metricID())) {
+                    //------------------------------------------------
+                    //Basically we ignore possible deleted metrics.
+                    try { varstat = createVariable(value); }
+                    catch (AppException e) { continue; }
+                    //------------------------------------------------
                     sampleview.addVariableStat(varstat);
                 }
-                else varstat = sampleview.getVariable(value.variableID());
+                else varstat = sampleview.getVariable(value.metricID());
                 addResponseToVarSat(varstat, value);
             }
             //******************************************************
@@ -76,7 +81,9 @@ public class ViewMaker {
             //It should happen NEVER. 
             //But if it happens we should not go further.
             System.out.println("Inconcistent type variable/value");
-            return null;
+            System.out.println("search keyword 'cambattaren' in projects");
+            System.out.println("Metric: " + value.metricID());
+            throw new AppException("Inconcistency", 0);
         }
         //***********************************************************
         VStAlpha varstat = null;
@@ -89,7 +96,10 @@ public class ViewMaker {
                 varstat.setLabel(metric.getLabel());
                 return varstat;
         }
-        return null;
+        System.out.println("Invalid metric type in sample value");
+        System.out.println("search keyword 'arramberala' in projects");
+        System.out.println("Metric: " + value.metricID());
+        throw new AppException("Invalid metric type", DesignErrorCodes.INVALIDMETRICTYPE);
     }
     //********************************************************************
     private void addResponseToVarSat (VStAlpha varstat, ResponseValue value) {
