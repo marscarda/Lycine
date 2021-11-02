@@ -43,6 +43,8 @@ public class ExcMapRecordDelete {
         record = auriga.getMapsLambda().getMapRecord(recordid);
         doObjects(record.getID());
         //================================================================
+        auriga.getMapsLambda().deleteMapRecord(0, recordid);
+        //================================================================
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
         alter.setProjectId(project.projectID());
@@ -50,6 +52,9 @@ public class ExcMapRecordDelete {
         alter.setDecrease(cost);
         alter.setStartingEvent("Map record '" + record.getName() + "' Destroyed");
         auriga.getBillingLambda().alterUsage(alter);
+        //================================================================
+        //We are all done
+        auriga.getMapsLambda().commit();
         //================================================================
     }    
     //********************************************************************
@@ -59,5 +64,6 @@ public class ExcMapRecordDelete {
         auriga.getMapsLambda().clearMapObjects(recordid);
     }
     //********************************************************************
+    
 }
 //************************************************************************
