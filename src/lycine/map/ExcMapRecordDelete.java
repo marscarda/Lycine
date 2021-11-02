@@ -9,22 +9,23 @@ import threonine.map.MapFolder;
 import threonine.map.MapObject;
 import threonine.map.MapRecord;
 //************************************************************************
-public class ExcMapFolderDelete {
+public class ExcMapRecordDelete {
     //********************************************************************
     AurigaObject auriga = null;
-    long folderid = 0;
+    long recordid = 0;
     long userid = 0;
     long projectid = 0;
     float cost = 0;
-    //----------------------------------------------
+    //--------------------------------------------------------------------
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
-    public void setFolderId (long folderid) { this.folderid = folderid; }
+    public void setRecordId (long recordid) { this.recordid = recordid; }
     public void setUserId (long userid) { this.userid = userid; }
     //********************************************************************
     public void doDelete () throws AppException, Exception {
         //================================================================
         //We check the user has permission to do this.
-        MapFolder folder = auriga.getMapsLambda().getMapFolder(folderid);
+        MapRecord record = auriga.getMapsLambda().getMapRecord(recordid);
+        MapFolder folder = auriga.getMapsLambda().getMapFolder(record.getFolderID());
         if (userid != 0)
             auriga.getProjectLambda().checkAccess(folder.projectID(), userid, 3);
         //================================================================
@@ -35,45 +36,22 @@ public class ExcMapFolderDelete {
         //================================================================
         TabList tabs = new TabList();
         auriga.getBillingLambda().AddLockAlterUsage(tabs);
-        auriga.getMapsLambda().addLockDeleteFolder(tabs);
+        auriga.getMapsLambda().addLockDeleteRecord(tabs);
         auriga.getMapsLambda().setAutoCommit(0);
         auriga.getMapsLambda().lockTables(tabs);
         //================================================================
-        doFolder(folderid);
+        record = auriga.getMapsLambda().getMapRecord(recordid);
+        doObjects(record.getID());
         //================================================================
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
         alter.setDecrease(cost);
-        alter.setStartingEvent("Map Folder '" + folder.getName() + "' Destroyed");
+        alter.setStartingEvent("Map record '" + record.getName() + "' Destroyed");
         auriga.getBillingLambda().alterUsage(alter);
         //================================================================
-        //We are all done
-        auriga.getMapsLambda().commit();
-        auriga.getMapsLambda().unLockTables();
-        //================================================================
-    }
-    //********************************************************************
-    private void doFolder (long folderid) throws AppException, Exception {
-        MapFolder[] folders = auriga.getMapsLambda().getChildrenFolders(projectid, folderid);
-        //======================================================
-        for (MapFolder folder : folders)
-            doFolder(folder.getID());
-        //======================================================
-        doRecords(folderid);
-        auriga.getMapsLambda().deleteFolder(folderid);
-        auriga.getMapsLambda().deleteFolderUsage(folderid, 0);
-        //======================================================
-    }
-    //********************************************************************
-    private void doRecords (long folderid) throws AppException, Exception {
-        MapRecord[] records = auriga.getMapsLambda().getMapRecords(folderid);
-        for (MapRecord record : records) {
-            doObjects(record.getID());
-        }
-        auriga.getMapsLambda().deleteMapRecord(folderid, 0);
-    }
+    }    
     //********************************************************************
     private void doObjects (long recordid) throws Exception {
         MapObject[] objects = auriga.getMapsLambda().getObjectsByRecord(recordid, false);
