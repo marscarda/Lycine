@@ -21,7 +21,7 @@ public class ExcMapRecordDelete {
     public void setRecordId (long recordid) { this.recordid = recordid; }
     public void setUserId (long userid) { this.userid = userid; }
     //********************************************************************
-    public void doDelete () throws AppException, Exception {
+    public void doRecordDelete () throws AppException, Exception {
         //================================================================
         //We check the user has permission to do this.
         MapRecord record = auriga.getMapsLambda().getMapRecord(recordid);
@@ -57,6 +57,43 @@ public class ExcMapRecordDelete {
         auriga.getMapsLambda().commit();
         //================================================================
     }    
+    //********************************************************************
+    public void doClearObjects () throws AppException, Exception {
+        //================================================================
+        //We check the user has permission to do this.
+        MapRecord record = auriga.getMapsLambda().getMapRecord(recordid);
+        MapFolder folder = auriga.getMapsLambda().getMapFolder(record.getFolderID());
+        if (userid != 0)
+            auriga.getProjectLambda().checkAccess(folder.projectID(), userid, 3);
+        //================================================================
+        Project project = auriga.getProjectLambda().getProject(folder.projectID(), userid);
+        //================================================================
+        //We need to use the master for this.
+        auriga.getMapsLambda().useMaster();
+        //================================================================
+        TabList tabs = new TabList();
+        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getMapsLambda().addLockDeleteRecord(tabs);
+        auriga.getMapsLambda().setAutoCommit(0);
+        auriga.getMapsLambda().lockTables(tabs);
+        //================================================================
+        record = auriga.getMapsLambda().getMapRecord(recordid);
+        doObjects(record.getID());
+        //================================================================
+        //auriga.getMapsLambda().deleteMapRecord(0, recordid);
+        //================================================================
+        //We alter the usage cost.
+        AlterUsage alter = new AlterUsage();
+        alter.setProjectId(project.projectID());
+        alter.setProjectName(project.getName());
+        alter.setDecrease(cost);
+        alter.setStartingEvent("Map Object Cleared from '" + record.getName() + "'");
+        auriga.getBillingLambda().alterUsage(alter);
+        //================================================================
+        //We are all done
+        auriga.getMapsLambda().commit();
+        //================================================================
+    }
     //********************************************************************
     private void doObjects (long recordid) throws Exception {
         MapObject[] objects = auriga.getMapsLambda().getObjectsByRecord(recordid, false);
