@@ -167,8 +167,9 @@ public class SampleCenterField extends SampleCenterPanel {
         //===================================================
         SystemCharge charge = new SystemCharge();
         charge.setCost(sample.responseSubmitCost());
-        charge.setDescription("Response in Sample " + sample.getName());
+        charge.setDescription("Response in Sample '" + sample.getName() + "'");
         charge.setProjectId(project.projectID());
+        charge.setProjectName(project.getName());
         charge.setUserid(project.getOwner());
         auriga.getBillingLambda().createSystemCharge(charge);
         //===================================================
