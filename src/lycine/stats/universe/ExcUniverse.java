@@ -242,11 +242,17 @@ public class ExcUniverse {
         MapFolder folder = null;
         Project projectto = null;
         if (usage.costPerUse() != 0) {
-            if (balance.getTotalBalance() < usage.costPerUse())
-                throw new AppException("Not enough balance", BillingErrorCodes.BALANCEINSUFICIENT);
             dotransfer = true;
             folder = auriga.getMapsLambda().getMapFolder(record.getFolderID());
             projectto = auriga.getProjectLambda().getProject(folder.projectID(), 0);
+            //------------------------------------------------
+            //The user to and from must be different. And Balance control to.
+            if (projectsubset.getOwner() == projectto.getOwner()) dotransfer = false;
+            else {
+                if (balance.getTotalBalance() < usage.costPerUse())
+                    throw new AppException("Not enough balance", BillingErrorCodes.BALANCEINSUFICIENT);
+            }
+            //------------------------------------------------
         }
         //------------------------------------------------------------------
         //We check the subset exists and the user has access to the project
