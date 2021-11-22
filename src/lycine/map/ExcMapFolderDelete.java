@@ -26,9 +26,9 @@ public class ExcMapFolderDelete {
         //We check the user has permission to do this.
         MapFolder folder = auriga.getMapsLambda().getMapFolder(folderid);
         if (userid != 0)
-            auriga.getProjectLambda().checkAccess(folder.projectID(), userid, 3);
+            auriga.projectAtlas().checkAccess(folder.projectID(), userid, 3);
         //================================================================
-        Project project = auriga.getProjectLambda().getProject(folder.projectID(), userid);
+        Project project = auriga.projectAtlas().getProject(folder.projectID(), userid);
         //================================================================
         //We need to use the master for this.
         auriga.getMapsLambda().useMaster();

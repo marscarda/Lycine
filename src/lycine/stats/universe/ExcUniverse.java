@@ -216,11 +216,11 @@ public class ExcUniverse {
         //Reading and Verification part
         //------------------------------------------------------------------
         //We check the user has access to the project.
-        auriga.getProjectLambda().checkAccess(projectid, userid, 2);
+        auriga.projectAtlas().checkAccess(projectid, userid, 2);
         //------------------------------------------------------------------
         //We check the owner of the project is able to spend.
         //It is always true. Lets change this to balance check.
-        Project projectsubset = auriga.getProjectLambda().getProject(projectid, 0);
+        Project projectsubset = auriga.projectAtlas().getProject(projectid, 0);
         BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(projectsubset.getOwner());
         if (balance.getTotalBalance() <= 0)
             throw new AppException("Not enough balance", BillingErrorCodes.CHARGEREJECTED);
@@ -244,7 +244,7 @@ public class ExcUniverse {
         if (usage.costPerUse() != 0) {
             dotransfer = true;
             folder = auriga.getMapsLambda().getMapFolder(record.getFolderID());
-            projectto = auriga.getProjectLambda().getProject(folder.projectID(), 0);
+            projectto = auriga.projectAtlas().getProject(folder.projectID(), 0);
             //------------------------------------------------
             //The user to and from must be different. And Balance control to.
             if (projectsubset.getOwner() == projectto.getOwner()) dotransfer = false;

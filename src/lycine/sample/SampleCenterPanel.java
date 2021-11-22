@@ -34,11 +34,11 @@ public class SampleCenterPanel {
             throw new AppException("A form must be selected", AppException.INVALIDDATASUBMITED);
         //****************************************************************
         //We check the performing user has access to the project.
-        auriga.getProjectLambda().checkAccess(sample.projectID(), userid, 2);
+        auriga.projectAtlas().checkAccess(sample.projectID(), userid, 2);
         //****************************************************************
         //We check the form ID belongs to the same project.
         Form form = auriga.getDesignLambda().getQuestionnaire(sample.formID());
-        Project project = auriga.getProjectLambda().getProject(form.projectID(), 0);
+        Project project = auriga.projectAtlas().getProject(form.projectID(), 0);
         if (form.projectID() != sample.projectID())
             throw new AppException("Form does not belong to the project", AppException.NOTTHESAMEPROJECT);
         //****************************************************************
@@ -89,7 +89,7 @@ public class SampleCenterPanel {
         //****************************************************************
         //We check the performing user has access to the project.
         if (userid != 0)
-            auriga.getProjectLambda().checkAccess(projectid, userid, 1);
+            auriga.projectAtlas().checkAccess(projectid, userid, 1);
         //****************************************************************
         Sample[] samples = auriga.getSampleLambda().getSamplesByProject(projectid);
         if (!fillextras) return samples;
@@ -172,7 +172,7 @@ public class SampleCenterPanel {
         //----------------------------------------------------------------
         //We check (If required) if the user has access to the project.
         if (userid != 0)
-            auriga.getProjectLambda().checkAccess(sample.projectID(), userid, 1);
+            auriga.projectAtlas().checkAccess(sample.projectID(), userid, 1);
         //****************************************************************
         //We create the sample payload instance and set the sampleid.
         SamplePayLoad samplepayload = new SamplePayLoad();

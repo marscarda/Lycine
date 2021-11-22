@@ -152,7 +152,7 @@ public class SampleCenterField extends SampleCenterPanel {
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
         //***************************************************
         //We get the project where the response is
-        Project project = auriga.getProjectLambda().getProject(sample.projectID(), 0);
+        Project project = auriga.projectAtlas().getProject(sample.projectID(), 0);
         //***************************************************
         responder.setProjectId(project.projectID());
         responder.setUserId(userid);

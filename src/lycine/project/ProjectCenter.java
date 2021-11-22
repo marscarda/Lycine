@@ -29,8 +29,8 @@ public class ProjectCenter {
         //------------------------------------------------
         project.setDayCost(UsageCost.PROJECT);
         //------------------------------------------------
-        auriga.getProjectLambda().setAutoCommit(0);
-        auriga.getProjectLambda().createProject(project);
+        auriga.projectAtlas().setAutoCommit(0);
+        auriga.projectAtlas().createProject(project);
         //------------------------------------------------
         UsagePeriod period = new UsagePeriod();
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -45,27 +45,27 @@ public class ProjectCenter {
         //------------------------------------------------
         auriga.getBillingLambda().startUsage(period);
         //------------------------------------------------
-        auriga.getProjectLambda().commit();
+        auriga.projectAtlas().commit();
         //------------------------------------------------
     }
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
         //============================================================
-        Project[] ownedworkteams = auriga.getProjectLambda().getWorkTeamByOwner(userid);
+        Project[] ownedworkteams = auriga.projectAtlas().getWorkTeamByOwner(userid);
         int ownedcount = ownedworkteams.length;
         for (Project team : ownedworkteams) {
             team.setOwnerStatus();
             team.setAccessLevel(3);
         }
         //============================================================
-        ProjectAccess[] accesslist = auriga.getProjectLambda().getAccessList(0, userid);
+        ProjectAccess[] accesslist = auriga.projectAtlas().getAccessList(0, userid);
         int accscount = accesslist.length;
         Project[] accecedteams = new Project[accscount];
         //============================================================
         User user;
         for (int n = 0; n < accscount; n++) {
             try {
-                accecedteams[n] = auriga.getProjectLambda().getProject(accesslist[n].projectID(), 0);
+                accecedteams[n] = auriga.projectAtlas().getProject(accesslist[n].projectID(), 0);
                 user = auriga.getAuthLambda().getUser(accecedteams[n].getOwner(), false);
                 accecedteams[n].setOwnerName(user.loginName());
                 accecedteams[n].setAccessLevel(accesslist[n].accessLevel());
@@ -101,7 +101,7 @@ public class ProjectCenter {
         //---------------------------------------------
         //The access itself
         access.setDayCost(UsageCost.PROJECTUSER);
-        Project project = auriga.getProjectLambda().getProject(access.projectID(), userid);
+        Project project = auriga.projectAtlas().getProject(access.projectID(), userid);
         access.setUserID(grantuserid);
         //---------------------------------------------
         //Create the access. And alter the billing cost
@@ -117,14 +117,14 @@ public class ProjectCenter {
         //We lock the tables
         TabList tablist = new TabList();
         auriga.getBillingLambda().AddLockAlterUsage(tablist);
-        auriga.getProjectLambda().AddLockUserAccess(tablist);
-        auriga.getProjectLambda().lockTables(tablist);
-        auriga.getProjectLambda().setAutoCommit(0);
-        auriga.getProjectLambda().createAccess(access, userid);
+        auriga.projectAtlas().AddLockUserAccess(tablist);
+        auriga.projectAtlas().lockTables(tablist);
+        auriga.projectAtlas().setAutoCommit(0);
+        auriga.projectAtlas().createAccess(access, userid);
         auriga.getBillingLambda().alterUsage(alter);
         //---------------------------------------------
         //We are done.
-        auriga.getProjectLambda().commit();
+        auriga.projectAtlas().commit();
         //---------------------------------------------
     }
     //********************************************************************
@@ -137,10 +137,10 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void revokeProjectAccess (long projectid, long userid, long owner) throws AppException, Exception {
-        ProjectAccess access = auriga.getProjectLambda().getAccess(projectid, userid);
+        ProjectAccess access = auriga.projectAtlas().getAccess(projectid, userid);
         auriga.getBillingLambda().setAutoCommit(0);
-        auriga.getProjectLambda().revokeProjectAccess(projectid, userid, owner);
-        Project project = auriga.getProjectLambda().getProject(projectid, 0);
+        auriga.projectAtlas().revokeProjectAccess(projectid, userid, owner);
+        Project project = auriga.projectAtlas().getProject(projectid, 0);
         AlterUsage alter = new AlterUsage();
         alter.setDecrease(access.dayCost());
         alter.setProjectId(project.projectID());
@@ -158,10 +158,10 @@ public class ProjectCenter {
      * @throws Exception 
      */
     public void leaveProject (long projectid, long userid) throws AppException, Exception {
-        ProjectAccess access = auriga.getProjectLambda().getAccess(projectid, userid);
-        auriga.getProjectLambda().setAutoCommit(0);
-        auriga.getProjectLambda().leaveProject(projectid, userid);
-        Project project = auriga.getProjectLambda().getProject(projectid, 0);
+        ProjectAccess access = auriga.projectAtlas().getAccess(projectid, userid);
+        auriga.projectAtlas().setAutoCommit(0);
+        auriga.projectAtlas().leaveProject(projectid, userid);
+        Project project = auriga.projectAtlas().getProject(projectid, 0);
         AlterUsage alter = new AlterUsage();
         alter.setDecrease(access.dayCost());
         alter.setProjectId(project.projectID());
@@ -182,11 +182,11 @@ public class ProjectCenter {
     public ProjectAccess[] getAccessList (long projectid, long owner) throws AppException, Exception {
         //================================================================
         User user = auriga.getAuthLambda().getUser(owner, false);
-        Project project = auriga.getProjectLambda().getProject(projectid, 0);
+        Project project = auriga.projectAtlas().getProject(projectid, 0);
         if (!user.isAdmin() && owner != project.getOwner())
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
         //================================================================
-        ProjectAccess[] accesslist = auriga.getProjectLambda().getAccessList(projectid, 0);
+        ProjectAccess[] accesslist = auriga.projectAtlas().getAccessList(projectid, 0);
         for (ProjectAccess access : accesslist) {
             try {
                 user = auriga.getAuthLambda().getUser(access.userID(), false);
@@ -208,22 +208,22 @@ public class ProjectCenter {
      */
     public void setDestroyed (long projectid, long userid) throws AppException, Exception {
         //-----------------------------------------------------------
-        Project project = auriga.getProjectLambda().getProject(projectid, 0);
+        Project project = auriga.projectAtlas().getProject(projectid, 0);
         if (project.getOwner() != userid) 
             throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
         //-----------------------------------------------------------
         //Lock All Tables
         TabList tabs = new TabList();
-        auriga.getProjectLambda().lockSetDestroyed(tabs);
+        auriga.projectAtlas().lockSetDestroyed(tabs);
         auriga.getBillingLambda().AddLockAlterUsage(tabs);
-        auriga.getProjectLambda().setAutoCommit(0);
-        auriga.getProjectLambda().lockTables(tabs);
+        auriga.projectAtlas().setAutoCommit(0);
+        auriga.projectAtlas().lockTables(tabs);
         //-----------------------------------------------------------
-        auriga.getProjectLambda().setProjectDestroyed(projectid);
+        auriga.projectAtlas().setProjectDestroyed(projectid);
         auriga.getBillingLambda().endUsage(projectid);
         //-----------------------------------------------------------
         //We are all done
-        auriga.getProjectLambda().commit();
+        auriga.projectAtlas().commit();
         //-----------------------------------------------------------
     }
     //********************************************************************

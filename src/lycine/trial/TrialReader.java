@@ -16,7 +16,7 @@ public class TrialReader {
     //********************************************************************
     public void initTrial (long trialid, long userid) throws AppException, Exception {
         trial = auriga.getTrialAtlas().getTrial(trialid);
-        auriga.getProjectLambda().checkAccess(trial.projectID(), userid, 1);
+        auriga.projectAtlas().checkAccess(trial.projectID(), userid, 1);
     }
     //********************************************************************
     /**

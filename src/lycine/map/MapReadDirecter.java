@@ -43,7 +43,7 @@ public class MapReadDirecter {
     private MapRecordGraphic[] byFolder (long folderid, long userid) throws AppException, Exception {
         if (userid != 0) {
             MapFolder folder = auriga.getMapsLambda().getMapFolder(folderid);
-            auriga.getProjectLambda().checkAccess(folder.projectID(), userid, 1);
+            auriga.projectAtlas().checkAccess(folder.projectID(), userid, 1);
         }
         MapReaderGraphic reader = new MapReaderGraphic();
         reader.setMapsLambda(auriga.getMapsLambda());
@@ -53,7 +53,7 @@ public class MapReadDirecter {
     private MapRecordGraphic[] bySubset (long universeid, long subsetid, long userid) throws AppException, Exception {
         if (userid != 0) {
             Universe universe = auriga.getUniverseAtlas().getUniverse(universeid);
-            auriga.getProjectLambda().checkAccess(universe.projectID(), userid, 1);
+            auriga.projectAtlas().checkAccess(universe.projectID(), userid, 1);
         }
         MapReaderGraphic reader = new MapReaderGraphic();
         reader.setUniverserLambda(auriga.getUniverseAtlas());
