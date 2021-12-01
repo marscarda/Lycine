@@ -3,7 +3,7 @@ package lycine.map;
 import histidine.AurigaObject;
 import methionine.AppException;
 import methionine.TabList;
-import methionine.billing.AlterUsage;
+import methionine.finance.AlterUsage;
 import methionine.project.Project;
 import threonine.map.MapFolder;
 import threonine.map.MapObject;

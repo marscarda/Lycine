@@ -3,7 +3,7 @@ package lycine.sample;
 import methionine.AppException;
 import methionine.TabList;
 import methionine.auth.AuthErrorCodes;
-import methionine.billing.SystemCharge;
+import methionine.finance.SystemCharge;
 import methionine.project.Project;
 import tryptophan.design.CustomLabel;
 import tryptophan.design.DesignErrorCodes;
