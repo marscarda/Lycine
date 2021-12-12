@@ -37,9 +37,7 @@ public class ProjectCenter {
         period.setUserID(project.getOwner());
         period.setProjectID(project.projectID());
         period.setDateStart(Celaeno.getDateString(calendar, true));
-        
         period.setCostPerDay(UsageCost.PROJECT);
-        
         period.setProjectName(project.getName());
         period.setStartingEvent("Project created");
         //------------------------------------------------
