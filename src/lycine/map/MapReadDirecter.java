@@ -43,7 +43,7 @@ public class MapReadDirecter {
     private MapRecordGraphic[] byFolder (long folderid, long userid) throws AppException, Exception {
         if (userid != 0) {
             MapFolder folder = auriga.getMapsLambda().getMapFolder(folderid);
-            auriga.projectAtlas().checkAccess(folder.projectID(), userid, 1);
+            //auriga.projectAtlas().checkAccess(folder.projectID(), userid, 1);
         }
         MapReaderGraphic reader = new MapReaderGraphic();
         reader.setMapsLambda(auriga.getMapsLambda());
