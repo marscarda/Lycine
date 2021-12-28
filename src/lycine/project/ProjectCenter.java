@@ -25,6 +25,8 @@ public class ProjectCenter {
      * @throws AppException
      * @throws Exception 
      */
+    
+    /*
     public void createProject (Project project) throws AppException, Exception {
         //------------------------------------------------
         project.setDayCost(UsageCost.PROJECT);
@@ -46,6 +48,9 @@ public class ProjectCenter {
         auriga.projectAtlas().commit();
         //------------------------------------------------
     }
+    */
+    
+    
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
         //============================================================
