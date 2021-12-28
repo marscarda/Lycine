@@ -44,7 +44,7 @@ public class SampleCenterPanel {
         //****************************************************************
         //If a user name is entrusted we find the user id.
         if (sample.getUserName().length() != 0)
-            sample.setUserId(auriga.getAuthLambda().getUserIdByIdentifier(sample.getUserName()));
+            sample.setUserId(auriga.getAuthLambda().getUserId(sample.getUserName()));
         //----------------------------------------------------------------
         //Set the form name in the sample for response sake
         sample.setFormName(form.getName());

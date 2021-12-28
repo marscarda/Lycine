@@ -95,7 +95,7 @@ public class ProjectCenter {
         //in projectlambda.createAccess(..)
         //=============================================
         //We recover the user we want to grant access.
-        long grantuserid = auriga.getAuthLambda().getUserIdByIdentifier(access.getUserName());
+        long grantuserid = auriga.getAuthLambda().getUserId(access.getUserName());
         //---------------------------------------------
         //The access itself
         access.setDayCost(UsageCost.PROJECTUSER);
