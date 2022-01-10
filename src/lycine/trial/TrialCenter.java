@@ -1,5 +1,7 @@
 package lycine.trial;
 //************************************************************************
+import histidine.AurigaObject;
+import histidine.trial.build.TrialBuilder;
 import methionine.AppException;
 import methionine.DataBaseName;
 import methionine.TabList;
@@ -270,6 +272,7 @@ public class TrialCenter {
         //----------------------------------------------------------------
     }
     //********************************************************************
+    @Deprecated
     public void createTrial (Trial trial, long userid, DataBaseName dbname) throws AppException, Exception {
         //****************************************************************
         if ( trial.getName().length() == 0)
@@ -291,11 +294,10 @@ public class TrialCenter {
         triallambda.createTrial(trial);
         //****************************************************************
         //We trigger the building.
-        
-        //TrialBuilder builder = new TrialBuilder();
+        TrialBuilder builder = new TrialBuilder();
         //builder.setDataBaseName(dbname);
-        //builder.setTrialID(trial.getID());
-        //builder.start();
+        builder.setTrialID(trial.getID());
+        builder.start();
         //****************************************************************
     }
     //********************************************************************
