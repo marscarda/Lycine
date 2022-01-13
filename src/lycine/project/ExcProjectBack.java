@@ -2,6 +2,7 @@ package lycine.project;
 //************************************************************************
 import histidine.AurigaObject;
 import methionine.AppException;
+import methionine.auth.AuthErrorCodes;
 import methionine.auth.User;
 import methionine.project.Project;
 //************************************************************************
@@ -24,14 +25,19 @@ public class ExcProjectBack {
         //============================================================
         int count = projects.length;
         User user;
-        for (int n = 0; n < count; n++)
-            user = auriga.getAuthLambda().getUser(projects[n].getOwner());
+        for (int n = 0; n < count; n++) {
+            try {
+                user = auriga.getAuthLambda().getUser(projects[n].getOwner());
+                projects[n].setOwnerName(user.loginName());
+            }
+            catch (AppException e) {
+                if (e.getErrorCode() == AuthErrorCodes.USERNOTFOUND) projects[n].setOwnerName("-- User not found --");
+            }
+        }
         //============================================================
         return projects;
         //============================================================
     }
-
-    
     //********************************************************************
 }
 //************************************************************************
