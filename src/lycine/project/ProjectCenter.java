@@ -1,13 +1,9 @@
 package lycine.project;
 //************************************************************************
 import histidine.AurigaObject;
-import java.util.Calendar;
-import java.util.TimeZone;
 import methionine.finance.UsageCost;
 import methionine.finance.AlterUsage;
-import methionine.finance.UsagePeriod;
 import methionine.AppException;
-import methionine.Celaeno;
 import methionine.TabList;
 import methionine.auth.AuthErrorCodes;
 import methionine.auth.User;
@@ -19,38 +15,7 @@ public class ProjectCenter {
     AurigaObject auriga = null;
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
     //********************************************************************
-    /**
-     * 
-     * @param project
-     * @throws AppException
-     * @throws Exception 
-     */
-    
-    /*
-    public void createProject (Project project) throws AppException, Exception {
-        //------------------------------------------------
-        project.setDayCost(UsageCost.PROJECT);
-        //------------------------------------------------
-        auriga.projectAtlas().setAutoCommit(0);
-        auriga.projectAtlas().createProject(project);
-        //------------------------------------------------
-        UsagePeriod period = new UsagePeriod();
-        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        period.setUserID(project.getOwner());
-        period.setProjectID(project.projectID());
-        period.setDateStart(Celaeno.getDateString(calendar, true));
-        period.setCostPerDay(UsageCost.PROJECT);
-        period.setProjectName(project.getName());
-        period.setStartingEvent("Project created");
-        //------------------------------------------------
-        auriga.getBillingLambda().startUsage(period);
-        //------------------------------------------------
-        auriga.projectAtlas().commit();
-        //------------------------------------------------
-    }
-    */
-    
-    
+    // CREATING PROJECTS IN ExcProject
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
         //============================================================
