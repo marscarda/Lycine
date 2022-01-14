@@ -1,8 +1,11 @@
 package lycine.design;
 //************************************************************************
 import histidine.AurigaObject;
+import histidine.auth.ProjectAuth;
+import java.security.AuthProvider;
 import methionine.AppException;
 import methionine.TabList;
+import methionine.auth.Session;
 import methionine.finance.AlterUsage;
 import methionine.finance.UsageCost;
 import methionine.project.Project;
@@ -18,29 +21,31 @@ public class DesignCenter {
     //********************************************************************
     /**
      * 
-     * @param variable
-     * @param userid
+     * @param metric
+     * @param session
      * @throws AppException
      * @throws Exception 
      */
-    public void createMetric (Metric variable, long userid) throws AppException, Exception {
+    public void createMetric (Metric metric, Session session) throws AppException, Exception {
         //----------------------------------------------------------------
-        if (variable.getName().length() == 0)
+        if (metric.getName().length() == 0)
             throw new AppException("Variable Name cannot be empty", AppException.INVALIDDATASUBMITED);
         //----------------------------------------------------------------
-        if (variable.getLabel().length() == 0)
+        if (metric.getLabel().length() == 0)
             throw new AppException("Label cannot be empty", AppException.INVALIDDATASUBMITED);
         //******************************************************************
         //Reading Part
         //******************************************************************
         //We check the user has write acces to the project
-        auriga.projectAtlas().checkAccess(variable.projectID(), userid, 2);
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(metric.projectID(), session, 2);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = auriga.projectAtlas().getProject(variable.projectID(), 0);
+        Project project = auriga.projectAtlas().getProject(metric.projectID());
         //------------------------------------------------------------------
         //We persist the cost of this particular variable.
-        variable.setCost(UsageCost.METRIC);
+        metric.setCost(UsageCost.METRIC);
         //******************************************************************
         //Writing Part
         //******************************************************************
@@ -55,14 +60,14 @@ public class DesignCenter {
         //We check existences.
         auriga.projectAtlas().inMasterProject(project.projectID());
         //==================================================================
-        auriga.getDesignLambda().createVariable(variable);
+        auriga.getDesignLambda().createVariable(metric);
         //==================================================================
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
         alter.setIncrease(UsageCost.METRIC);
-        alter.setStartingEvent("Variable '" + variable.getName() + "' Created");
+        alter.setStartingEvent("Metric '" + metric.getName() + "' Created");
         auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
@@ -73,39 +78,42 @@ public class DesignCenter {
     //********************************************************************
     /**
      * 
-     * @param projectid
      * @param type
-     * @param userid
+     * @param session
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public String[] getCategories (long projectid, int type, long userid) throws AppException, Exception {
+    public String[] getCategories (int type, Session session) throws AppException, Exception {
         //******************************************************************
         //We check the user has read acces to the project
-        auriga.projectAtlas().checkAccess(projectid, userid, 1);
-        return auriga.getDesignLambda().getVariableCategories(projectid, type);
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(session.getCurrentProject(), session, 1);
+        //******************************************************************        
+        return auriga.getDesignLambda().getVariableCategories(session.getCurrentProject(), type);
         //******************************************************************
     }
     //********************************************************************
     /**
      * 
-     * @param projectid
      * @param type
+     * @param session
      * @param category
-     * @param userid
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public Metric[] getVariables (long projectid, int type, String category, long userid) throws AppException, Exception {
+    public Metric[] getMetrics (int type, String category, Session session) throws AppException, Exception {
         //******************************************************************
         //We check the user has read acces to the project
-        auriga.projectAtlas().checkAccess(projectid, userid, 1);
-        //------------------------------------------------------------------
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(session.getCurrentProject(), session, 1);
+        //******************************************************************
         if (category == null) category = "";
         //******************************************************************
-        return auriga.getDesignLambda().getVariables(projectid, type, category);
+        return auriga.getDesignLambda().getVariables(session.getCurrentProject(), type, category);
         //******************************************************************
     }
     //********************************************************************
@@ -332,18 +340,21 @@ public class DesignCenter {
     //====================================================================
     /**
      * 
-     * @param projectid
+     * @param session
      * @param groupcode
-     * @param userid
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public CustomLabel[] getCustomLabels (long projectid, int groupcode, long userid) throws AppException, Exception {
-        //****************************************************************
+    public CustomLabel[] getCustomLabels (int groupcode, Session session) throws AppException, Exception {
+        //******************************************************************
         //We check the user has read acces to the project
-        auriga.projectAtlas().checkAccess(projectid, userid, 1);
-        return auriga.getDesignLambda().getCustomLabels(projectid, groupcode);
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(session.getCurrentProject(), session, 1);
+        //******************************************************************
+        return auriga.getDesignLambda().getCustomLabels(session.getCurrentProject(), groupcode);
+        //******************************************************************
     }
     //********************************************************************
 }

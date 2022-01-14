@@ -19,7 +19,7 @@ public class ProjectCenter {
     //********************************************************************
     public Project[] getWorkTeamsForUser (long userid) throws AppException, Exception {
         //============================================================
-        Project[] ownedworkteams = auriga.projectAtlas().getWorkTeamByOwner(userid);
+        Project[] ownedworkteams = auriga.projectAtlas().getProjectsByOwner(userid);
         int ownedcount = ownedworkteams.length;
         for (Project team : ownedworkteams) {
             team.setOwnerStatus();
