@@ -44,7 +44,7 @@ public class ExcProject {
         //*****************************************************
         //We check the user is able to spend.
         BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(project.getOwner());
-        float minbalance = UsageCost.MAXDEBT * (-1);
+        float minbalance = UsageCost.REJECTAT * (-1);
         if (balance.getTotalBalance() < minbalance)
             throw new AppException("Balance Insuficient", BillingErrorCodes.BALANCEINSUFICIENT);
         //*****************************************************
