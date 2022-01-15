@@ -2,7 +2,6 @@ package lycine.design;
 //************************************************************************
 import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
-import java.security.AuthProvider;
 import methionine.AppException;
 import methionine.TabList;
 import methionine.auth.Session;
@@ -120,21 +119,23 @@ public class DesignCenter {
     /**
      * Creates a new questionnaire.
      * @param questionary
-     * @param userid The user that is creating it.
+     * @param session
      * @throws AppException
      * @throws Exception 
      */
-    public void createForm (Form questionary, long userid) throws AppException, Exception {
+    public void createForm (Form questionary, Session session) throws AppException, Exception {
         if (questionary.getName().length() == 0)
             throw new AppException("Form Name cannot be empty", AppException.INVALIDDATASUBMITED);
         //******************************************************************
         //Reading Part
         //******************************************************************
-        //We check the user has write acces to the project
-        auriga.projectAtlas().checkAccess(questionary.projectID(), userid, 2);
+        //We check the user has read acces to the project
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(session.getCurrentProject(), session, 2);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = auriga.projectAtlas().getProject(questionary.projectID(), 0);
+        Project project = auriga.projectAtlas().getProject(questionary.projectID());
         //------------------------------------------------------------------
         //We persist the cost of this particular variable.
         questionary.cost = UsageCost.QUESTIONARY;
@@ -186,18 +187,19 @@ public class DesignCenter {
     //********************************************************************
     /**
      * 
-     * @param projectid
-     * @param userid
+     * @param session
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public Form[] getQuestionaries (long projectid, long userid) throws AppException, Exception {
-        //****************************************************************
+    public Form[] getQuestionaries (Session session) throws AppException, Exception {
+        //******************************************************************
         //We check the user has read acces to the project
-        auriga.projectAtlas().checkAccess(projectid, userid, 1);
-        //----------------------------------------------------------------
-        return auriga.getDesignLambda().getQuestionaries(projectid);
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(session.getCurrentProject(), session, 1);
+        //******************************************************************
+        return auriga.getDesignLambda().getQuestionaries(session.getCurrentProject());
         //****************************************************************
     }
     //********************************************************************

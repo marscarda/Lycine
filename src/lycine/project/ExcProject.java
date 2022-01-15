@@ -15,6 +15,7 @@ import methionine.finance.BillingLambda;
 import methionine.finance.UsageCost;
 import methionine.finance.UsagePeriod;
 import methionine.project.Project;
+import methionine.project.ProjectErrorCodes;
 import methionine.project.ProjectLambda;
 //************************************************************************
 public class ExcProject {
@@ -29,6 +30,12 @@ public class ExcProject {
      * @throws Exception 
      */
     public void createProject (Project project) throws AppException, Exception {
+        //*****************************************************
+        if (project.getName().length() == 0) 
+            throw new AppException("Project Name cannot be empty", ProjectErrorCodes.EMPTYPROJECTNAME);
+        //-----------------------------------------------------
+        if (project.getName().length() > 40)
+            throw new AppException("Project Name too long", ProjectErrorCodes.TOOLONGPROJECTNAME);
         //*****************************************************
         //We check the user has confirmed their email
         User user = auriga.getAuthLambda().getUser(project.getOwner());
@@ -68,6 +75,9 @@ public class ExcProject {
         //*****************************************************
         //We are all done.
         auriga.projectAtlas().commit();
+        //*****************************************************
+        //We assume the creator is the owner :)
+        project.setOwnerStatus();
         //*****************************************************
     }
     //********************************************************************
