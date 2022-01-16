@@ -1,10 +1,12 @@
 package lycine.stats.universe;
 //**************************************************************************
 import histidine.AurigaObject;
+import histidine.auth.ProjectAuth;
 import methionine.AppException;
 import methionine.TabList;
 import methionine.auth.AuthErrorCodes;
 import methionine.auth.AuthLamda;
+import methionine.auth.Session;
 import methionine.finance.AlterUsage;
 import methionine.finance.BalanceInfo;
 import methionine.finance.BillingErrorCodes;
@@ -12,6 +14,7 @@ import methionine.finance.BillingLambda;
 import methionine.finance.CommerceTransfer;
 import methionine.finance.UsageCost;
 import methionine.project.Project;
+import methionine.project.ProjectErrorCodes;
 import methionine.project.ProjectLambda;
 import threonine.map.FolderUsage;
 import threonine.map.MapErrorCodes;
@@ -120,6 +123,28 @@ public class ExcUniverse {
         if (userid != 0) 
             projectlambda.checkAccess(projectid, userid, 1);
         return universelambda.getUniverses(projectid);
+    }
+    //**********************************************************************
+    /**
+     * 
+     * @param universeid
+     * @param stat
+     * @param price
+     * @param session
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void setUniversePubStatus (long universeid, int stat, float price, Session session) throws AppException, Exception {
+        //*******************************************************************
+        Universe universe = auriga.getUniverseAtlas().getUniverse(universeid);
+        //===================================================================
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(universe.projectID(), session);
+        //*******************************************************************
+        auriga.getUniverseAtlas().setPublicStatus(universeid, stat, price);
+        //*******************************************************************
     }
     //**********************************************************************
     /**
