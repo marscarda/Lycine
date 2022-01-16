@@ -2,7 +2,12 @@ package lycine.stats.universe;
 //**************************************************************************
 import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
 import methionine.AppException;
+import methionine.Celaeno;
 import methionine.TabList;
 import methionine.auth.AuthErrorCodes;
 import methionine.auth.AuthLamda;
@@ -14,7 +19,6 @@ import methionine.finance.BillingLambda;
 import methionine.finance.CommerceTransfer;
 import methionine.finance.UsageCost;
 import methionine.project.Project;
-import methionine.project.ProjectErrorCodes;
 import methionine.project.ProjectLambda;
 import threonine.map.FolderUsage;
 import threonine.map.MapErrorCodes;
@@ -27,6 +31,7 @@ import threonine.midlayer.MapRecordGraphic;
 import threonine.universe.SubSet;
 import threonine.universe.Universe;
 import threonine.universe.UniverseAtlas;
+import threonine.universe.UniverseErrorCodes;
 //**************************************************************************
 public class ExcUniverse {
     //**********************************************************************
@@ -142,6 +147,12 @@ public class ExcUniverse {
         ProjectAuth pauth = new ProjectAuth();
         pauth.setAuriga(auriga);
         pauth.checkAccess(universe.projectID(), session);
+        //*******************************************************************
+        //We check if the date for pub allowance is past.
+        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        String datenow = Celaeno.getDateString(now, true);
+        if (datenow.compareTo(universe.notPubUntil()) < 0)
+            throw new AppException("To early to publish", UniverseErrorCodes.TOOEARLYTOPUBLISH);
         //*******************************************************************
         auriga.getUniverseAtlas().setPublicStatus(universeid, stat, price);
         //*******************************************************************
