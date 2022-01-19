@@ -2,8 +2,6 @@ package lycine.stats.universe;
 //**************************************************************************
 import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 import methionine.AppException;
@@ -151,8 +149,8 @@ public class ExcUniverse {
         //We check if the date for pub allowance is past.
         Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         String datenow = Celaeno.getDateString(now, true);
-        if (datenow.compareTo(universe.notPubUntil()) < 0)
-            throw new AppException("To early to publish", UniverseErrorCodes.TOOEARLYTOPUBLISH);
+        if (!universe.allowToPublish())
+            throw new AppException("More edits needed", UniverseErrorCodes.PUBLICNOTALLOWED);
         //*******************************************************************
         auriga.getUniverseAtlas().setPublicStatus(universeid, stat, price);
         //*******************************************************************
