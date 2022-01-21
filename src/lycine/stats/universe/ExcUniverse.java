@@ -130,6 +130,17 @@ public class ExcUniverse {
     //**********************************************************************
     /**
      * 
+     * @param search
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public Universe[] getPublicUniverses (String search) throws AppException, Exception {
+        return auriga.getUniverseAtlas().getPublicUniverseList(search);
+    }
+    //**********************************************************************
+    /**
+     * 
      * @param universeid
      * @param stat
      * @param price
@@ -378,6 +389,8 @@ public class ExcUniverse {
         updateParentsPop(universe, subset.getParentSubSet());
         //********************************************************
     }
+    //**********************************************************************
+    
     //**********************************************************************
 }
 //**************************************************************************
