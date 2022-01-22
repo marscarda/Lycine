@@ -1,6 +1,8 @@
 package lycine.stats.universe;
 //**************************************************************************
 import histidine.AurigaObject;
+import histidine.auth.ProjectAuth;
+import histidine.universe.UniverseCopy;
 import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
 import methionine.auth.Session;
@@ -111,14 +113,21 @@ public class ExcUniversePublic {
     }
     //**********************************************************************
     public void aquireUniverse (long universeid, Session session) throws AppException, Exception {
-        
-        
-        
-        
-        
-        
-        
-        
+        //*******************************************************************
+        Universe universe = auriga.getUniverseAtlas().getUniverse(universeid);
+        if (!universe.isPublic())
+            throw new AppException("Universe not public", UniverseErrorCodes.UNIVERSENOTPUBLIC);
+        //===================================================================
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(session, 2);
+        //*******************************************************************
+
+        UniverseCopy copy = new UniverseCopy();
+        copy.start();
+
+        //*******************************************************************
     }
     //**********************************************************************
 }
