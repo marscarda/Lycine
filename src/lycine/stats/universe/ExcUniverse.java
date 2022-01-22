@@ -67,7 +67,7 @@ public class ExcUniverse {
         pauth.checkAccess(universe.projectID(), session, 2);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(universe.projectID());
+        Project project = auriga.projectAtlas().getProject(universe.projectID());
         //------------------------------------------------------------------
         //The top subset of the new universe. We set the cost here.
         //The subset fields are completed in createUniverse(..)
@@ -78,13 +78,13 @@ public class ExcUniverse {
         //******************************************************************
         //Transaction section
         TabList tabs = new TabList();
-        universelambda.AddLockCreateSubset(tabs);
-        billinglambda.AddLockAlterUsage(tabs);
-        universelambda.setAutoCommit(0);
-        universelambda.lockTables(tabs);
+        auriga.getUniverseAtlas().AddLockCreateSubset(tabs);
+        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getUniverseAtlas().setAutoCommit(0);
+        auriga.getUniverseAtlas().lockTables(tabs);
         //------------------------------------------------------------------
         //We create the universe.
-        universelambda.createUniverse(universe, subset);
+        auriga.getUniverseAtlas().createUniverse(universe, subset);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -92,11 +92,11 @@ public class ExcUniverse {
         alter.setProjectName(project.getName());
         alter.setIncrease(UsageCost.UNIVSUBSET);
         alter.setStartingEvent("Universe '" + universe.getName() + "' Created");
-        billinglambda.alterUsage(alter);
+        auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------
         //We are done.
-        universelambda.commit();
-        universelambda.unLockTables();
+        auriga.getUniverseAtlas().commit();
+        auriga.getUniverseAtlas().unLockTables();
         //------------------------------------------------------------------
     }
     //**********************************************************************

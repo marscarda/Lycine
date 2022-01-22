@@ -3,6 +3,7 @@ package lycine.stats.universe;
 import histidine.AurigaObject;
 import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
+import methionine.auth.Session;
 import methionine.auth.User;
 import methionine.project.Project;
 import methionine.project.ProjectErrorCodes;
@@ -108,6 +109,17 @@ public class ExcUniversePublic {
         return subsets;
         //------------------------------------------------------------------
     }
-    //**********************************************************************    
+    //**********************************************************************
+    public void aquireUniverse (long universeid, Session session) throws AppException, Exception {
+        
+        
+        
+        
+        
+        
+        
+        
+    }
+    //**********************************************************************
 }
 //**************************************************************************
