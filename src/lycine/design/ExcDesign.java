@@ -13,7 +13,7 @@ import tryptophan.design.Metric;
 import tryptophan.design.Form;
 import tryptophan.design.FormMetricRef;
 //************************************************************************
-public class DesignCenter {
+public class ExcDesign {
     //********************************************************************
     AurigaObject auriga = null;
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
@@ -168,18 +168,20 @@ public class DesignCenter {
     /**
      * Returns a questionary given its ID
      * @param questionnaireid
-     * @param userid The user in behalf of the quest is being requested.
+     * @param session
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public Form getQuestionnaire (long questionnaireid, long userid) throws AppException, Exception {
+    public Form getQuestionnaire (long questionnaireid, Session session) throws AppException, Exception {
         //****************************************************************
         //We recover the quest.
         Form questionnaire = auriga.getDesignLambda().getQuestionnaire(questionnaireid);
         //****************************************************************
         //We check the user has read acces to the project
-        auriga.projectAtlas().checkAccess(questionnaire.projectID(), userid, 1);
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(session.getCurrentProject(), session, 1);
         //----------------------------------------------------------------
         return questionnaire;
         //****************************************************************

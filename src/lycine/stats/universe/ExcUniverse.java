@@ -50,22 +50,24 @@ public class ExcUniverse {
     /**
      * Creates a new Universe. 
      * @param universe
-     * @param userid
+     * @param session
      * @throws AppException
      * @throws Exception 
      */
-    public void createUniverse (Universe universe, long userid) throws AppException, Exception {
+    public void createUniverse (Universe universe, Session session) throws AppException, Exception {
         //------------------------------------------------------------------
         if (universe.getName().length() == 0)
             throw new AppException("Universe Name cannot be empty", AppException.INVALIDDATASUBMITED);
         //******************************************************************
         //Reading Part
         //******************************************************************
-        //We check the user thai is trying has write access to the project
-        projectlambda.checkAccess(universe.projectID(), userid, 2);
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(universe.projectID(), session, 2);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(universe.projectID(), 0);
+        Project project = projectlambda.getProject(universe.projectID());
         //------------------------------------------------------------------
         //The top subset of the new universe. We set the cost here.
         //The subset fields are completed in createUniverse(..)
@@ -159,23 +161,25 @@ public class ExcUniverse {
     /**
      * Creates a universe subset 
      * @param subset
-     * @param userid
+     * @param session
      * @throws AppException
      * @throws Exception 
      */
-    public void createSubset (SubSet subset, long userid) throws AppException, Exception {
+    public void createSubset (SubSet subset, Session session) throws AppException, Exception {
         //------------------------------------------------------------------
         if (subset.getName().length() == 0)
             throw new AppException("Subset Name cannot be empty", AppException.INVALIDDATASUBMITED);
         //------------------------------------------------------------------
         if (subset.getParentSubSet() == 0)
-            throw new AppException("Subser cannot be created in the root", AppException.ROOTSUBSETALREADYEXISTS);
+            throw new AppException("Subser cannot be created in the root", UniverseErrorCodes.ROOTSUBSETALREADYEXISTS);
         //******************************************************************
         //Reading Part
         //******************************************************************
         //We recover the universe and check the user is able to perform this.
         Universe universe = universelambda.getUniverse(subset.getUniverseID());
-        projectlambda.checkAccess(universe.projectID(), userid, 2);
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(universe.projectID(), session, 2);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
         Project project = projectlambda.getProject(universe.projectID(), 0);
