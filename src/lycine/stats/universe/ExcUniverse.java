@@ -254,9 +254,9 @@ public class ExcUniverse {
         //------------------------------------------------------------------
         //We check the owner of the project is able to spend.
         //It is always true. Lets change this to balance check.
-        Project projectsubset = auriga.projectAtlas().getProject(projectid, 0);
+        Project projectsubset = auriga.projectAtlas().getProject(projectid);
         BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(projectsubset.getOwner());
-        if (balance.getTotalBalance() <= 0)
+        if (balance.getTotalBalance() <= UsageCost.REJECTAT)
             throw new AppException("Not enough balance", BillingErrorCodes.CHARGEREJECTED);
         //------------------------------------------------------------------
         //We recover the record. In the proccess we check if the record can be
