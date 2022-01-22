@@ -59,6 +59,19 @@ public class ExcUniversePublic {
         return subset;
         //------------------------------------------------------------------
     }
+    //**********************************************************************
+    public SubSet[] getSubsets (long universeid, long parentid) throws AppException, Exception {
+        //------------------------------------------------------------------
+        //We check the user has access to the project.
+        //if (userid != 0) {
+        //    Universe universe = universelambda.getUniverse(universeid);
+        //    projectlambda.checkAccess(universe.projectID(), userid, 1);
+        //}
+        //------------------------------------------------------------------
+        SubSet[] subsets = auriga.getUniverseAtlas().getSubsets(universeid, parentid);
+        return subsets;
+        //------------------------------------------------------------------
+    }
     //**********************************************************************    
     
 }
