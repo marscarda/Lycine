@@ -1,6 +1,5 @@
 package lycine.trial;
 //************************************************************************
-import histidine.AurigaObject;
 import histidine.trial.build.TrialBuilder;
 import methionine.AppException;
 import methionine.DataBaseName;
@@ -69,7 +68,7 @@ public class TrialCenter {
         //Lock All Tables
         TabList tabs = new TabList();
         triallambda.addCreateEnvironmentLock(tabs);
-        billinglambda.AddLockAlterUsage(tabs);
+        billinglambda.lockAlterUsage(tabs);
         triallambda.setAutoCommit(0);
         triallambda.lockTables(tabs);
         //----------------------------------------------------------------
@@ -163,7 +162,7 @@ public class TrialCenter {
         //****************************************************************
         TabList tabs = new TabList();
         triallambda.addDestroyEnvironment(tabs);
-        billinglambda.AddLockAlterUsage(tabs);
+        billinglambda.lockAlterUsage(tabs);
         triallambda.setAutoCommit(0);
         triallambda.lockTables(tabs);
         //------------------------------------------------------------------

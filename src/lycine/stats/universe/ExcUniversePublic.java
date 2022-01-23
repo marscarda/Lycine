@@ -123,14 +123,10 @@ public class ExcUniversePublic {
         pauth.setAuriga(auriga);
         pauth.checkAccess(session, 2);
         //*******************************************************************
-
         UniverseCopy univcopy = new UniverseCopy();
-        
         univcopy.setProjectId(session.getCurrentProject());
         univcopy.setUniverseId(universeid);
-        
         univcopy.start();
-
         //*******************************************************************
     }
     //**********************************************************************

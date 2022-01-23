@@ -35,7 +35,7 @@ public class ExcMapRecordDelete {
         auriga.getMapsLambda().useMaster();
         //================================================================
         TabList tabs = new TabList();
-        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.getMapsLambda().addLockDeleteRecord(tabs);
         auriga.getMapsLambda().setAutoCommit(0);
         auriga.getMapsLambda().lockTables(tabs);
@@ -72,7 +72,7 @@ public class ExcMapRecordDelete {
         auriga.getMapsLambda().useMaster();
         //================================================================
         TabList tabs = new TabList();
-        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.getMapsLambda().addLockDeleteRecord(tabs);
         auriga.getMapsLambda().setAutoCommit(0);
         auriga.getMapsLambda().lockTables(tabs);

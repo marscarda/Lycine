@@ -51,7 +51,7 @@ public class ExcDesign {
         //Lock All Tables
         TabList tabs = new TabList();
         auriga.getDesignLambda().addCreateVariableLock(tabs);
-        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.projectAtlas().setLock(tabs);
         auriga.getDesignLambda().setAutoCommit(0);
         auriga.getDesignLambda().lockTables(tabs);
@@ -145,7 +145,7 @@ public class ExcDesign {
         //Lock All Tables
         TabList tabs = new TabList();
         auriga.getDesignLambda().addCreateQuestionaryLock(tabs);
-        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.getDesignLambda().setAutoCommit(0);
         auriga.getDesignLambda().lockTables(tabs);
         //------------------------------------------------------------------
@@ -241,7 +241,7 @@ public class ExcDesign {
         //****************************************************************
         TabList tabs = new TabList();
         auriga.getDesignLambda().addDestroyFormLock(tabs);
-        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.projectAtlas().setLock(tabs);
         auriga.getDesignLambda().setAutoCommit(0);
         auriga.getDesignLambda().lockTables(tabs);

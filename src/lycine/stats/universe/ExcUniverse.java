@@ -82,7 +82,7 @@ public class ExcUniverse {
         //Transaction section
         TabList tabs = new TabList();
         auriga.getUniverseAtlas().AddLockCreateSubset(tabs);
-        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.getUniverseAtlas().setAutoCommit(0);
         auriga.getUniverseAtlas().lockTables(tabs);
         //------------------------------------------------------------------
@@ -195,7 +195,7 @@ public class ExcUniverse {
         //Lock All tables.
         TabList tabs = new TabList();
         universelambda.AddLockCreateSubset(tabs);
-        billinglambda.AddLockAlterUsage(tabs);
+        billinglambda.lockAlterUsage(tabs);
         universelambda.setAutoCommit(0);
         universelambda.lockTables(tabs);
         //------------------------------------------------------------------
@@ -317,8 +317,8 @@ public class ExcUniverse {
         //We lock all tables involved
         TabList tablist = new TabList();
         auriga.getUniverseAtlas().AddLockMapRecord(tablist);
-        auriga.getBillingLambda().AddLockAlterUsage(tablist);
-        auriga.getBillingLambda().addLockCommunityCommerce(tablist);
+        auriga.getBillingLambda().lockAlterUsage(tablist);
+        auriga.getBillingLambda().lockCommunityCommerce(tablist);
         auriga.getUniverseAtlas().setAutoCommit(0);
         auriga.getUniverseAtlas().lockTables(tablist);
         //------------------------------------------------------------------

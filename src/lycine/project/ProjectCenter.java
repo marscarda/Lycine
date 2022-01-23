@@ -84,7 +84,7 @@ public class ProjectCenter {
         //---------------------------------------------
         //We lock the tables
         TabList tablist = new TabList();
-        auriga.getBillingLambda().AddLockAlterUsage(tablist);
+        auriga.getBillingLambda().lockAlterUsage(tablist);
         auriga.projectAtlas().AddLockUserAccess(tablist);
         auriga.projectAtlas().lockTables(tablist);
         auriga.projectAtlas().setAutoCommit(0);
@@ -183,7 +183,7 @@ public class ProjectCenter {
         //Lock All Tables
         TabList tabs = new TabList();
         auriga.projectAtlas().lockSetDestroyed(tabs);
-        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.projectAtlas().setAutoCommit(0);
         auriga.projectAtlas().lockTables(tabs);
         //-----------------------------------------------------------

@@ -54,7 +54,7 @@ public class SampleCenterPanel {
         //Lock All Tables
         TabList tabs = new TabList();
         auriga.getSampleLambda().addCreateSampleLock(tabs);
-        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.getSampleLambda().setAutoCommit(0);
         auriga.getSampleLambda().lockTables(tabs);
         //----------------------------------------------------------------

@@ -34,7 +34,7 @@ public class ExcMapFolderDelete {
         auriga.getMapsLambda().useMaster();
         //================================================================
         TabList tabs = new TabList();
-        auriga.getBillingLambda().AddLockAlterUsage(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.getMapsLambda().addLockDeleteFolder(tabs);
         auriga.getMapsLambda().setAutoCommit(0);
         auriga.getMapsLambda().lockTables(tabs);
