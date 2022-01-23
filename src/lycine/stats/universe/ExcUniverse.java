@@ -72,6 +72,9 @@ public class ExcUniverse {
         //The top subset of the new universe. We set the cost here.
         //The subset fields are completed in createUniverse(..)
         SubSet subset = new SubSet();
+        subset.setName(universe.getName());
+        subset.setDescription(universe.getDescription());
+        subset.setWeight(1);
         subset.setCost(UsageCost.UNIVSUBSET);
         //******************************************************************
         //Writing Part

@@ -124,8 +124,12 @@ public class ExcUniversePublic {
         pauth.checkAccess(session, 2);
         //*******************************************************************
 
-        UniverseCopy copy = new UniverseCopy();
-        copy.start();
+        UniverseCopy univcopy = new UniverseCopy();
+        
+        univcopy.setProjectId(session.getCurrentProject());
+        univcopy.setUniverseId(universeid);
+        
+        univcopy.start();
 
         //*******************************************************************
     }
