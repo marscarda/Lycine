@@ -1,6 +1,7 @@
 package lycine.project;
 //************************************************************************
 import histidine.AurigaObject;
+import histidine.finance.FinanceMetaData;
 import java.util.Calendar;
 import java.util.TimeZone;
 import methionine.AppException;
@@ -44,9 +45,8 @@ public class ExcProject {
         //*****************************************************
         //We check the user is able to spend.
         BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(project.getOwner());
-        float minbalance = UsageCost.REJECTAT * (-1);
-        if (balance.getTotalBalance() < minbalance)
-            throw new AppException("Balance Insuficient", BillingErrorCodes.BALANCEINSUFICIENT);
+        if (balance.getTotalBalance() < FinanceMetaData.REJECTAT)
+            throw new AppException("Spent rejected. No balance available", BillingErrorCodes.BALANCEINSUFICIENT);
         //*****************************************************
         project.setDayCost(UsageCost.PROJECT);
         ProjectLambda projatlas = auriga.projectAtlas();
