@@ -22,7 +22,7 @@ import threonine.map.FolderUsage;
 import threonine.map.MapErrorCodes;
 import threonine.map.MapFolder;
 import threonine.map.MapRecord;
-import threonine.map.MapsLambda;
+import threonine.map.MappingAttlas;
 import threonine.midlayer.MapObjectGraphic;
 import threonine.midlayer.MapReaderGraphic;
 import threonine.midlayer.MapRecordGraphic;
@@ -39,12 +39,12 @@ public class ExcUniverse {
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     UniverseAtlas universelambda = null;
-    MapsLambda mapslambda = null;
+    MappingAttlas mapslambda = null;
     BillingLambda billinglambda = null;
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda projectlambda) { this.projectlambda = projectlambda; }
     public void setUniverseLambda (UniverseAtlas universelambda) { this.universelambda = universelambda; }
-    public void setMapsLambda (MapsLambda mapslambda) { this.mapslambda = mapslambda; }
+    public void setMapsLambda (MappingAttlas mapslambda) { this.mapslambda = mapslambda; }
     public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
     //**********************************************************************
     /**
