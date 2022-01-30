@@ -5,7 +5,9 @@ import histidine.auth.ProjectAuth;
 import methionine.AppException;
 import methionine.TabList;
 import methionine.auth.Session;
+import methionine.auth.User;
 import methionine.finance.AlterUsage;
+import methionine.finance.BalanceInfo;
 import methionine.finance.FinanceRules;
 import methionine.project.Project;
 import tryptophan.design.CustomLabel;
@@ -39,18 +41,23 @@ public class ExcDesign {
         ProjectAuth pauth = new ProjectAuth();
         pauth.setAuriga(auriga);
         pauth.checkAccess(metric.projectID(), session, 2);
-        //------------------------------------------------------------------
+        //******************************************************************
         //We recover the project. Needed ahead when altering usage.
         Project project = auriga.projectAtlas().getProject(metric.projectID());
         //------------------------------------------------------------------
-        //We persist the cost of this particular variable.
-        metric.setCost(FinanceRules.METRIC);
+        //We check the project's owner has enough balance.
+        User user = auriga.getAuthLambda().getUser(project.getOwner());
+        BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(user.userID());
+        FinanceRules.spendOk(balance.getAvailableBalance());
         //******************************************************************
         //Writing Part
         //******************************************************************
+        //We persist the cost of this particular variable.
+        metric.setCost(FinanceRules.METRIC);
+        //------------------------------------------------------------------
         //Lock All Tables
         TabList tabs = new TabList();
-        auriga.getDesignLambda().addCreateVariableLock(tabs);
+        auriga.getDesignLambda().lockMetric(tabs);
         auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.projectAtlas().setLock(tabs);
         auriga.getDesignLambda().setAutoCommit(0);

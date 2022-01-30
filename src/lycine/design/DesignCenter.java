@@ -50,7 +50,7 @@ public class DesignCenter {
         //******************************************************************
         //Lock All Tables
         TabList tabs = new TabList();
-        auriga.getDesignLambda().addCreateVariableLock(tabs);
+        auriga.getDesignLambda().lockMetric(tabs);
         auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.projectAtlas().setLock(tabs);
         auriga.getDesignLambda().setAutoCommit(0);
