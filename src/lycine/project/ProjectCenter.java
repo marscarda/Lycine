@@ -1,7 +1,7 @@
 package lycine.project;
 //************************************************************************
 import histidine.AurigaObject;
-import methionine.finance.UsageCost;
+import methionine.finance.FinanceRules;
 import methionine.finance.AlterUsage;
 import methionine.AppException;
 import methionine.TabList;
@@ -68,7 +68,7 @@ public class ProjectCenter {
         long grantuserid = auriga.getAuthLambda().getUserId(access.getUserName());
         //---------------------------------------------
         //The access itself
-        access.setDayCost(UsageCost.PROJECTUSER);
+        access.setDayCost(FinanceRules.PROJECTUSER);
         Project project = auriga.projectAtlas().getProject(access.projectID(), userid);
         access.setUserID(grantuserid);
         //---------------------------------------------
@@ -77,7 +77,7 @@ public class ProjectCenter {
         //---------------------------------------------
         //We create the usage alteration before lockin tables. Performance.
         AlterUsage alter = new AlterUsage();
-        alter.setIncrease(UsageCost.PROJECTUSER);
+        alter.setIncrease(FinanceRules.PROJECTUSER);
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
         alter.setStartingEvent("User Added to project");

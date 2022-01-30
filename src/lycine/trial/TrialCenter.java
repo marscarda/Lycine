@@ -7,7 +7,7 @@ import methionine.TabList;
 import methionine.auth.AuthLamda;
 import methionine.finance.AlterUsage;
 import methionine.finance.BillingLambda;
-import methionine.finance.UsageCost;
+import methionine.finance.FinanceRules;
 import methionine.project.Project;
 import methionine.project.ProjectErrorCodes;
 import methionine.project.ProjectLambda;
@@ -61,7 +61,7 @@ public class TrialCenter {
         Project project = projectatlas.getProject(environment.projectID(), 0);
         //----------------------------------------------------------------
         //We persist the cost of this particular variable.
-        environment.cost = UsageCost.ENVIRONMENT;
+        environment.cost = FinanceRules.ENVIRONMENT;
         //****************************************************************
         //Writing Part
         //****************************************************************

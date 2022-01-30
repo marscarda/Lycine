@@ -6,7 +6,7 @@ import methionine.AppException;
 import methionine.TabList;
 import methionine.auth.Session;
 import methionine.finance.AlterUsage;
-import methionine.finance.UsageCost;
+import methionine.finance.FinanceRules;
 import methionine.project.Project;
 import tryptophan.design.CustomLabel;
 import tryptophan.design.Metric;
@@ -44,7 +44,7 @@ public class ExcDesign {
         Project project = auriga.projectAtlas().getProject(metric.projectID());
         //------------------------------------------------------------------
         //We persist the cost of this particular variable.
-        metric.setCost(UsageCost.METRIC);
+        metric.setCost(FinanceRules.METRIC);
         //******************************************************************
         //Writing Part
         //******************************************************************
@@ -65,7 +65,7 @@ public class ExcDesign {
         AlterUsage alter = new AlterUsage();
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
-        alter.setIncrease(UsageCost.METRIC);
+        alter.setIncrease(FinanceRules.METRIC);
         alter.setStartingEvent("Metric '" + metric.getName() + "' Created");
         auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------
@@ -138,7 +138,7 @@ public class ExcDesign {
         Project project = auriga.projectAtlas().getProject(questionary.projectID());
         //------------------------------------------------------------------
         //We persist the cost of this particular variable.
-        questionary.cost = UsageCost.QUESTIONARY;
+        questionary.cost = FinanceRules.QUESTIONARY;
         //******************************************************************
         //Writing Part
         //******************************************************************
@@ -155,7 +155,7 @@ public class ExcDesign {
         AlterUsage alter = new AlterUsage();
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
-        alter.setIncrease(UsageCost.QUESTIONARY);
+        alter.setIncrease(FinanceRules.QUESTIONARY);
         alter.setStartingEvent("Questionary '" + questionary.getName() + "' Created");
         auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------

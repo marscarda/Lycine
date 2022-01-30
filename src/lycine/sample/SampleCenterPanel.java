@@ -6,7 +6,7 @@ import methionine.AppException;
 import methionine.TabList;
 import methionine.auth.User;
 import methionine.finance.AlterUsage;
-import methionine.finance.UsageCost;
+import methionine.finance.FinanceRules;
 import methionine.project.Project;
 import tryptophan.design.Form;
 import tryptophan.sample.Responder;
@@ -59,7 +59,7 @@ public class SampleCenterPanel {
         auriga.getSampleLambda().lockTables(tabs);
         //----------------------------------------------------------------
         //We create the sample.
-        sample.cost = UsageCost.SAMPLE;
+        sample.cost = FinanceRules.SAMPLE;
         auriga.getSampleLambda().createSample(sample);
         //----------------------------------------------------------------
         //We alter the usage cost.

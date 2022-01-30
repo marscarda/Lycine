@@ -15,7 +15,7 @@ import methionine.finance.BalanceInfo;
 import methionine.finance.BillingErrorCodes;
 import methionine.finance.BillingLambda;
 import methionine.finance.CommerceTransfer;
-import methionine.finance.UsageCost;
+import methionine.finance.FinanceRules;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import threonine.map.FolderUsage;
@@ -75,7 +75,7 @@ public class ExcUniverse {
         subset.setName(universe.getName());
         subset.setDescription(universe.getDescription());
         subset.setWeight(1);
-        subset.setCost(UsageCost.UNIVSUBSET);
+        subset.setCost(FinanceRules.UNIVSUBSET);
         //******************************************************************
         //Writing Part
         //******************************************************************
@@ -93,7 +93,7 @@ public class ExcUniverse {
         AlterUsage alter = new AlterUsage();
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
-        alter.setIncrease(UsageCost.UNIVSUBSET);
+        alter.setIncrease(FinanceRules.UNIVSUBSET);
         alter.setStartingEvent("Universe '" + universe.getName() + "' Created");
         auriga.getBillingLambda().alterUsage(alter);
         //------------------------------------------------------------------
@@ -188,7 +188,7 @@ public class ExcUniverse {
         Project project = projectlambda.getProject(universe.projectID(), 0);
         //------------------------------------------------------------------
         //We persist the cost of this particular subset.
-        subset.setCost(UsageCost.UNIVSUBSET);
+        subset.setCost(FinanceRules.UNIVSUBSET);
         //******************************************************************
         //Writing Part
         //******************************************************************
@@ -206,7 +206,7 @@ public class ExcUniverse {
         AlterUsage alter = new AlterUsage();
         alter.setProjectId(project.projectID());
         alter.setProjectName(project.getName());
-        alter.setIncrease(UsageCost.UNIVSUBSET);
+        alter.setIncrease(FinanceRules.UNIVSUBSET);
         alter.setStartingEvent("Subset " + subset.getName() + " Added to universe " + universe.getName());
         billinglambda.alterUsage(alter);
         //******************************************************************
@@ -263,8 +263,8 @@ public class ExcUniverse {
         //It is always true. Lets change this to balance check.
         Project projectsubset = auriga.projectAtlas().getProject(projectid);
         BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(projectsubset.getOwner());
-        if (balance.getTotalBalance() <= UsageCost.REJECTAT)
-            throw new AppException("Not enough balance", BillingErrorCodes.CHARGEREJECTED);
+        //if (balance.getTotalBalance() <= FinanceRules.REJECTAT)
+        //    throw new AppException("Not enough balance", BillingErrorCodes.CHARGEREJECTED);
         //------------------------------------------------------------------
         //We recover the record. In the proccess we check if the record can be
         //used in the project that is intended. The usage is useful here to
@@ -347,12 +347,12 @@ public class ExcUniverse {
             AlterUsage alter = new AlterUsage();
             alter.setProjectId(projectsubset.projectID());
             alter.setProjectName(projectsubset.getName());
-            alter.setIncrease(UsageCost.MAPRECORDSUBSET);
+            alter.setIncrease(FinanceRules.MAPRECORDSUBSET);
             alter.setStartingEvent("Map Record set to subset '");
             auriga.getBillingLambda().alterUsage(alter);
             //--------------------------------------------------------------
             //We record How Much this Cost.
-            auriga.getUniverseAtlas().setMapCost(subset.getUniverseID(), subset.getSubsetID(), UsageCost.MAPRECORDSUBSET);
+            auriga.getUniverseAtlas().setMapCost(subset.getUniverseID(), subset.getSubsetID(), FinanceRules.MAPRECORDSUBSET);
         }
         //==================================================================
         //We are all done.

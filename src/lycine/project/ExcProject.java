@@ -1,7 +1,7 @@
 package lycine.project;
 //************************************************************************
 import histidine.AurigaObject;
-import histidine.finance.FinanceMetaData;
+import methionine.finance.FinanceAuth;
 import java.util.Calendar;
 import java.util.TimeZone;
 import methionine.AppException;
@@ -13,7 +13,7 @@ import methionine.auth.User;
 import methionine.finance.BalanceInfo;
 import methionine.finance.BillingErrorCodes;
 import methionine.finance.BillingLambda;
-import methionine.finance.UsageCost;
+import methionine.finance.FinanceRules;
 import methionine.finance.UsagePeriod;
 import methionine.project.Project;
 import methionine.project.ProjectErrorCodes;
@@ -45,10 +45,10 @@ public class ExcProject {
         //*****************************************************
         //We check the user is able to spend.
         BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(project.getOwner());
-        if (balance.getTotalBalance() < FinanceMetaData.REJECTAT)
+        if (!FinanceRules.spendOk(balance.getTotalBalance()))
             throw new AppException("Spent rejected. No balance available", BillingErrorCodes.BALANCEINSUFICIENT);
         //*****************************************************
-        project.setDayCost(UsageCost.PROJECT);
+        project.setDayCost(FinanceRules.PROJECT);
         ProjectLambda projatlas = auriga.projectAtlas();
         BillingLambda fincatlas = auriga.getBillingLambda();
         AuthLamda authatlas = auriga.getAuthLambda();
@@ -67,7 +67,7 @@ public class ExcProject {
         UsagePeriod period = new UsagePeriod();
         period.setUserID(project.getOwner());
         period.setProjectID(project.projectID());
-        period.setCostPerDay(UsageCost.PROJECT);
+        period.setCostPerDay(FinanceRules.PROJECT);
         period.setProjectName(project.getName());
         period.setStartingEvent("Project created");
         //------------------------------------------------
