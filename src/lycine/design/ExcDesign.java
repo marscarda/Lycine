@@ -237,11 +237,15 @@ public class ExcDesign {
      * @throws AppException
      * @throws Exception 
      */
-    public void destroyForm (long formid, long userid) throws AppException, Exception {
+    public void destroyForm (long formid, Session session) throws AppException, Exception {
         //****************************************************************
         //We recover the form and check the user has delete acces to the project
         Form form = auriga.getDesignLambda().getQuestionnaire(formid);
-        auriga.projectAtlas().checkAccess(form.projectID(), userid, 3);
+        //----------------------------------------------------------------
+        //We check the user has read acces to the project
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(form.projectID(), session, 1);
         //----------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
         Project project = auriga.projectAtlas().getProject(form.projectID(), 0);
@@ -279,7 +283,7 @@ public class ExcDesign {
      * @param userid 
      * @throws methionine.AppException 
      */
-    public void addFormMetricRef (FormMetricRef formref, long userid) throws AppException, Exception {
+    public void addFormMetricRef (FormMetricRef formref, Session session) throws AppException, Exception {
         //****************************************************************
         // We fetch the variable and questionnaire.
         Metric metric = auriga.getDesignLambda().getVariable(formref.variableID());
@@ -289,8 +293,10 @@ public class ExcDesign {
         if (metric.projectID() != form.projectID())
             throw new AppException("Form and Variable are from different projects", AppException.NOTTHESAMEPROJECT);
         //****************************************************************
-        //We check the performing user has access to the project.
-        auriga.projectAtlas().checkAccess(metric.projectID(), userid, 2);
+        //We check the user has write acces to the project
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(metric.projectID(), session, 2);
         //================================================================
         //We set the project ID. 
         formref.setProjectId(metric.projectID());
