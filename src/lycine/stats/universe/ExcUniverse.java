@@ -8,7 +8,6 @@ import methionine.AppException;
 import methionine.Celaeno;
 import methionine.TabList;
 import methionine.auth.AuthErrorCodes;
-import methionine.auth.AuthLamda;
 import methionine.auth.Session;
 import methionine.finance.AlterUsage;
 import methionine.finance.BalanceInfo;
@@ -22,7 +21,6 @@ import threonine.map.FolderUsage;
 import threonine.map.MapErrorCodes;
 import threonine.map.MapFolder;
 import threonine.map.MapRecord;
-import threonine.map.MappingAttlas;
 import threonine.midlayer.MapObjectGraphic;
 import threonine.midlayer.MapReaderGraphic;
 import threonine.midlayer.MapRecordGraphic;
@@ -39,17 +37,6 @@ public class ExcUniverse {
     //When get children subsets. We set the map status of current subset.
     boolean mapstatus = false;
     public boolean mapStatus () { return mapstatus; }
-    //======================================================================
-    AuthLamda authlambda = null;
-    ProjectLambda projectlambda = null;
-    UniverseAtlas universelambda = null;
-    MappingAttlas mapslambda = null;
-    BillingLambda billinglambda = null;
-    public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
-    public void setProjectLambda (ProjectLambda projectlambda) { this.projectlambda = projectlambda; }
-    public void setUniverseLambda (UniverseAtlas universelambda) { this.universelambda = universelambda; }
-    public void setMapsLambda (MappingAttlas mapslambda) { this.mapslambda = mapslambda; }
-    public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
     //**********************************************************************
     /**
      * Creates a new Universe. 
@@ -138,8 +125,8 @@ public class ExcUniverse {
     public Universe[] getUniversesByProject (long projectid, long userid) throws AppException, Exception {
         //We check the user has access to the project.
         if (userid != 0) 
-            projectlambda.checkAccess(projectid, userid, 1);
-        return universelambda.getUniverses(projectid);
+            auriga.projectAtlas().checkAccess(projectid, userid, 1);
+        return auriga.getUniverseAtlas().getUniverses(projectid);
     }
     //**********************************************************************
     /**
@@ -185,16 +172,20 @@ public class ExcUniverse {
         if (subset.getParentSubSet() == 0)
             throw new AppException("Subser cannot be created in the root", UniverseErrorCodes.ROOTSUBSETALREADYEXISTS);
         //******************************************************************
+        UniverseAtlas univatlas = auriga.getUniverseAtlas();
+        ProjectLambda prjatlas = auriga.projectAtlas();
+        BillingLambda fncatlas = auriga.getBillingLambda();
+        //******************************************************************
         //Reading Part
         //******************************************************************
         //We recover the universe and check the user is able to perform this.
-        Universe universe = universelambda.getUniverse(subset.getUniverseID());
+        Universe universe = univatlas.getUniverse(subset.getUniverseID());
         ProjectAuth pauth = new ProjectAuth();
         pauth.setAuriga(auriga);
         pauth.checkAccess(universe.projectID(), session, 2);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(universe.projectID());
+        Project project = prjatlas.getProject(universe.projectID());
         //------------------------------------------------------------------
         //We persist the cost of this particular subset.
         subset.setCost(FinanceRules.UNIVSUBSET);
@@ -203,13 +194,13 @@ public class ExcUniverse {
         //******************************************************************
         //Lock All tables.
         TabList tabs = new TabList();
-        universelambda.AddLockCreateSubset(tabs);
-        billinglambda.lockAlterUsage(tabs);
-        universelambda.setAutoCommit(0);
-        universelambda.lockTables(tabs);
+        univatlas.AddLockCreateSubset(tabs);
+        fncatlas.lockAlterUsage(tabs);
+        univatlas.setAutoCommit(0);
+        univatlas.lockTables(tabs);
         //------------------------------------------------------------------
         //Creating the subset.
-        universelambda.createSubSet(subset);
+        univatlas.createSubSet(subset);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -217,14 +208,14 @@ public class ExcUniverse {
         alter.setProjectName(project.getName());
         alter.setIncrease(FinanceRules.UNIVSUBSET);
         alter.setStartingEvent("Subset " + subset.getName() + " Added to universe " + universe.getName());
-        billinglambda.alterUsage(alter);
+        fncatlas.alterUsage(alter);
         //******************************************************************
         //We recalculate the population to parents.
         updateParentsPop(subset.getUniverseID(), subset.getParentSubSet());
         //******************************************************************
         //We are done.
-        universelambda.commit();
-        universelambda.unLockTables();
+        univatlas.commit();
+        univatlas.unLockTables();
         //------------------------------------------------------------------
     }
     //**********************************************************************
@@ -252,7 +243,7 @@ public class ExcUniverse {
             subset.setValid();
             subset.setROOT();
         }
-        else subset = universelambda.getSubset(universe.universeID(), subsetid);
+        else subset = auriga.getUniverseAtlas().getSubset(universe.universeID(), subsetid);
         return subset;
         //------------------------------------------------------------------
     }
@@ -265,7 +256,7 @@ public class ExcUniverse {
             subset.setValid();
             subset.setROOT();
         }
-        else subset = universelambda.getSubset(universeid, subsetid);
+        else subset = auriga.getUniverseAtlas().getSubset(universeid, subsetid);
         return subset;
     }
     //**********************************************************************
@@ -299,7 +290,7 @@ public class ExcUniverse {
         pauth.setAuriga(auriga);
         pauth.checkAccess(universe.projectID(), session, 1);
         //==================================================================
-        SubSet[] subsets = universelambda.getSubsets(universe.universeID(), parentid);
+        SubSet[] subsets = auriga.getUniverseAtlas().getSubsets(universe.universeID(), parentid);
         //==================================================================
         mapstatus = false;
         for (SubSet s : subsets)
@@ -447,15 +438,15 @@ public class ExcUniverse {
         //Top reached. Nothing to do.
         if (pinsubset == 0) return;
         //********************************************************
-        SubSet subset = universelambda.getSubset(universe, pinsubset);
-        SubSet[] subsets = universelambda.getSubsets(universe, pinsubset);
+        SubSet subset = auriga.getUniverseAtlas().getSubset(universe, pinsubset);
+        SubSet[] subsets = auriga.getUniverseAtlas().getSubsets(universe, pinsubset);
         int childrenpop = 0;
         //==============================================
         for (SubSet sbst : subsets)
             childrenpop += sbst.getPopulation();
         //********************************************************
         if (childrenpop > subset.getPopulation()) 
-            universelambda.setSubsetPop(universe, pinsubset, childrenpop);
+            auriga.getUniverseAtlas().setSubsetPop(universe, pinsubset, childrenpop);
         //********************************************************
         updateParentsPop(universe, subset.getParentSubSet());
         //********************************************************
