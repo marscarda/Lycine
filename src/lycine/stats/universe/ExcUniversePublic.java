@@ -17,6 +17,10 @@ public class ExcUniversePublic {
     //**********************************************************************
     AurigaObject auriga = null;
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
+    //======================================================================
+    //When get children subsets. We set the map status of current subset.
+    boolean mapstatus = false;
+    public boolean mapStatus () { return mapstatus; }
     //**********************************************************************
     /**
      * 
@@ -108,8 +112,13 @@ public class ExcUniversePublic {
             throw new AppException("Universe not public", UniverseErrorCodes.UNIVERSENOTPUBLIC);
         //==================================================================
         SubSet[] subsets = auriga.getUniverseAtlas().getSubsets(universeid, parentid);
+        //==================================================================
+        mapstatus = false;
+        for (SubSet s : subsets)
+            if (s.mapStatus()) { mapstatus = true; break; }
+        //==================================================================
         return subsets;
-        //------------------------------------------------------------------
+        //==================================================================
     }
     //**********************************************************************
     public void aquireUniverse (long universeid, Session session) throws AppException, Exception {
