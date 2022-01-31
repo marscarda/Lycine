@@ -36,6 +36,10 @@ public class ExcUniverse {
     AurigaObject auriga = null;
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
     //======================================================================
+    //When get children subsets. We set the map status of current subset.
+    boolean mapstatus = false;
+    public boolean mapStatus () { return mapstatus; }
+    //======================================================================
     AuthLamda authlambda = null;
     ProjectLambda projectlambda = null;
     UniverseAtlas universelambda = null;
@@ -106,16 +110,21 @@ public class ExcUniverse {
     /**
      * Returns a universe given its ID
      * @param universeid
-     * @param userid
+     * @param session
      * @return
      * @throws AppException
      * @throws Exception 
      */
-    public Universe getUniverse (long universeid, long userid) throws AppException, Exception {
-        Universe universe = universelambda.getUniverse(universeid);
-        //We check the user has access to the project
-        if (userid != 0) projectlambda.checkAccess(universe.projectID(), userid, 1);
+    public Universe getUniverse (long universeid, Session session) throws AppException, Exception {
+        Universe universe = auriga.getUniverseAtlas().getUniverse(universeid);
+        //==================================================================
+        //We check the user has write acces to the project where the universe belongs
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(universe.projectID(), session, 1);
+        //==================================================================
         return universe;
+        //==================================================================
     }
     //**********************************************************************
     /**
@@ -185,7 +194,7 @@ public class ExcUniverse {
         pauth.checkAccess(universe.projectID(), session, 2);
         //------------------------------------------------------------------
         //We recover the project. Needed ahead when altering usage.
-        Project project = projectlambda.getProject(universe.projectID(), 0);
+        Project project = projectlambda.getProject(universe.projectID());
         //------------------------------------------------------------------
         //We persist the cost of this particular subset.
         subset.setCost(FinanceRules.UNIVSUBSET);
@@ -219,14 +228,36 @@ public class ExcUniverse {
         //------------------------------------------------------------------
     }
     //**********************************************************************
-    public SubSet getSubset (long universeid, long subsetid, long userid) throws AppException, Exception {
-        //------------------------------------------------------------------
-        //We check the user has access to the project.
-        if (userid != 0) {
-            Universe universe = universelambda.getUniverse(universeid);
-            projectlambda.checkAccess(universe.projectID(), userid, 1);
+    /**
+     * Returns a Subset by ID. if we already have the universe this is the method.
+     * Checks user authorization to fetch.
+     * @param universe
+     * @param subsetid
+     * @param session
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public SubSet getSubset (Universe universe, long subsetid, Session session) throws AppException, Exception {
+        //==================================================================
+        //We check the user has write acces to the project where the universe belongs
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(universe.projectID(), session, 1);
+        //==================================================================
+        SubSet subset;
+        if (subsetid == 0) {
+            subset = new SubSet();
+            subset.setUniverseID(universe.universeID());
+            subset.setValid();
+            subset.setROOT();
         }
+        else subset = universelambda.getSubset(universe.universeID(), subsetid);
+        return subset;
         //------------------------------------------------------------------
+    }
+    //**********************************************************************
+    public SubSet getSubset (long universeid, long subsetid) throws AppException, Exception {
         SubSet subset;
         if (subsetid == 0) {
             subset = new SubSet();
@@ -236,20 +267,46 @@ public class ExcUniverse {
         }
         else subset = universelambda.getSubset(universeid, subsetid);
         return subset;
-        //------------------------------------------------------------------
     }
     //**********************************************************************
-    public SubSet[] getSubsets (long universeid, long parentid, long userid) throws AppException, Exception {
-        //------------------------------------------------------------------
-        //We check the user has access to the project.
-        if (userid != 0) {
-            Universe universe = universelambda.getUniverse(universeid);
-            projectlambda.checkAccess(universe.projectID(), userid, 1);
-        }
-        //------------------------------------------------------------------
-        SubSet[] subsets = universelambda.getSubsets(universeid, parentid);
+    /**
+     * Returns an array of subset given a parent subset
+     * @param universeid
+     * @param parentid
+     * @param session
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public SubSet[] getSubsets (long universeid, long parentid, Session session) throws AppException, Exception {
+        Universe universe = auriga.getUniverseAtlas().getUniverse(universeid);
+        return getSubsets(universe, parentid, session);
+    }    
+    //======================================================================
+    /**
+     * 
+     * @param universe
+     * @param parentid
+     * @param session
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public SubSet[] getSubsets (Universe universe, long parentid, Session session) throws AppException, Exception {
+        //==================================================================
+        //We check the user has write acces to the project where the universe belongs
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(universe.projectID(), session, 1);
+        //==================================================================
+        SubSet[] subsets = universelambda.getSubsets(universe.universeID(), parentid);
+        //==================================================================
+        mapstatus = false;
+        for (SubSet s : subsets)
+            if (s.mapStatus()) { mapstatus = true; break; }
+        //==================================================================
         return subsets;
-        //------------------------------------------------------------------
+        //==================================================================
     }
     //**********************************************************************
     /**
@@ -378,127 +435,6 @@ public class ExcUniverse {
         auriga.getUniverseAtlas().unLockTables();
         //******************************************************************
     }
-    //**********************************************************************
-    
-    
-    /*
-    public void setMapRecordTo(long subsetid, long recordid, Session session) throws AppException, Exception {
-        
-        /*
-        //******************************************************************
-        //Reading and Verification part
-        //==================================================================
-        SubSet subset = auriga.getUniverseAtlas().getSubset(0, subsetid);
-        Universe universe = auriga.getUniverseAtlas().getUniverse(subset.getUniverseID());
-        //==================================================================
-        //We check the user has read acces to the project 
-        //where the universe belongs
-        ProjectAuth pauth = new ProjectAuth();
-        pauth.setAuriga(auriga);
-        pauth.checkAccess(universe.projectID(), session, 2);
-        //==================================================================
-        //We check the owner of the project is able to spend.
-        //It is always true. Lets change this to balance check.
-        Project projectsubset = auriga.projectAtlas().getProject(session.getCurrentProject());
-        BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(projectsubset.getOwner());
-        FinanceRules.spendOk(balance.getAvailableBalance());
-        //------------------------------------------------------------------
-        //We recover the record. In the proccess we check if the record can be
-        //used in the project that is intended. The usage is useful here to
-        //set the using cost of the map record.
-        MapRecord record = auriga.getMapsLambda().getMapRecord(recordid);
-        FolderUsage usage;
-        try { usage = auriga.getMapsLambda().getFolderUsage(projectid, record.getFolderID()); }
-        catch (AppException e) {
-            if (e.getErrorCode() == MapErrorCodes.FOLDERUSEAGENOTFOUND)
-                throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
-            throw e;
-        }
-        //------------------------------------------------------------------
-        //We decide wether to make a commerce transfer.
-        boolean dotransfer = false;
-        MapFolder folder = null;
-        Project projectto = null;
-        if (usage.costPerUse() != 0) {
-            dotransfer = true;
-            folder = auriga.getMapsLambda().getMapFolder(record.getFolderID());
-            projectto = auriga.projectAtlas().getProject(folder.projectID(), 0);
-            //------------------------------------------------
-            //The user to and from must be different. And Balance control to.
-            if (projectsubset.getOwner() == projectto.getOwner()) dotransfer = false;
-            else {
-                if (balance.getTotalBalance() < usage.costPerUse())
-                    throw new AppException("Not enough balance", BillingErrorCodes.BALANCEINSUFICIENT);
-            }
-            //------------------------------------------------
-        }
-        //------------------------------------------------------------------
-        //We check the subset exists and the user has access to the project
-        //where it belongs.
-        SubSet subset = auriga.getUniverseAtlas().getSubset(0, subsetid);
-        Universe universe = auriga.getUniverseAtlas().getUniverse(subset.getUniverseID());
-        if (universe.projectID() != projectid)
-            throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
-        //------------------------------------------------------------------
-        MapReaderGraphic mapreader = new MapReaderGraphic();
-        mapreader.setMapsLambda(auriga.getMapsLambda());
-        MapRecordGraphic recordg = mapreader.getRecord(record);
-        MapObjectGraphic[] objects = recordg.getMapObjects();
-        //------------------------------------------------------------------
-        //If there is no map object in the record.
-        if (objects.length == 0)
-            throw new AppException("The record " + record.getName() + " has no map object", AppException.NOMAPOBJECTINRECORD);
-        //******************************************************************
-        //Writing part
-        //------------------------------------------------------------------
-        //We lock all tables involved
-        TabList tablist = new TabList();
-        auriga.getUniverseAtlas().AddLockMapRecord(tablist);
-        auriga.getBillingLambda().lockAlterUsage(tablist);
-        auriga.getBillingLambda().lockCommunityCommerce(tablist);
-        auriga.getUniverseAtlas().setAutoCommit(0);
-        auriga.getUniverseAtlas().lockTables(tablist);
-        //------------------------------------------------------------------
-        //We clear the existent map objects the subset could have
-        auriga.getUniverseAtlas().clearMapObject(subset.getSubsetID());
-        //------------------------------------------------------------------
-        //We Add the objects to the subset.
-        for (MapObjectGraphic obj : objects)
-            auriga.getUniverseAtlas().addMapObject(subset.getSubsetID(), obj.getPoints());
-        //==================================================================
-        //If the use of the map object has a cost we create a transfer.
-        if (dotransfer) {
-            CommerceTransfer transfer = new CommerceTransfer();
-            transfer.setFromUserid(projectsubset.getOwner());
-            transfer.setFromProjectId(projectsubset.projectID());
-            transfer.setToUserId(projectto.getOwner());//If it was a null pointer we would not be here.
-            transfer.setToProjectId(projectto.projectID());
-            String description = "Map Record " + record.getName() + " Added to subset";
-            transfer.setDescription(description);
-            transfer.setAmount(usage.costPerUse());
-            auriga.getBillingLambda().addCommerceTransfer(transfer);
-        }
-        //==================================================================
-        //We alter the usage cost.
-        if (subset.getMapCost() == 0) {
-            AlterUsage alter = new AlterUsage();
-            alter.setProjectId(projectsubset.projectID());
-            alter.setProjectName(projectsubset.getName());
-            alter.setIncrease(FinanceRules.MAPRECORDSUBSET);
-            alter.setStartingEvent("Map Record set to subset '");
-            auriga.getBillingLambda().alterUsage(alter);
-            //--------------------------------------------------------------
-            //We record How Much this Cost.
-            auriga.getUniverseAtlas().setMapCost(subset.getUniverseID(), subset.getSubsetID(), FinanceRules.MAPRECORDSUBSET);
-        }
-        //==================================================================
-        //We are all done.
-        auriga.getUniverseAtlas().commit();
-        auriga.getUniverseAtlas().unLockTables();
-        //******************************************************************
-        
-    }
-    */
     //**********************************************************************
     /**
      * 
