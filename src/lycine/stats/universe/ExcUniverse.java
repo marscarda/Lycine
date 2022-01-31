@@ -252,19 +252,156 @@ public class ExcUniverse {
         //------------------------------------------------------------------
     }
     //**********************************************************************
-    public void setMapRecordTo(long subsetid, long recordid, long projectid, long userid) throws AppException, Exception {
+    /**
+     * 
+     * @param subsetid
+     * @param recordid
+     * @param session
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void setMapRecordToSubset (long subsetid, long recordid, Session session) throws AppException, Exception {
         //******************************************************************
-        //Reading and Verification part
-        //------------------------------------------------------------------
-        //We check the user has access to the project.
-        auriga.projectAtlas().checkAccess(projectid, userid, 2);
-        //------------------------------------------------------------------
+        //Reading Part and decisions taking
+        //******************************************************************
+        UniverseAtlas univatlas = auriga.getUniverseAtlas();
+        ProjectLambda prjcatlas = auriga.projectAtlas();
+        BillingLambda fincatlas = auriga.getBillingLambda();
+        //******************************************************************
+        //First necesary reads.
+        SubSet subset = univatlas.getSubset(0, subsetid);
+        Universe universe = univatlas.getUniverse(subset.getUniverseID());
+        Project projectsubset = prjcatlas.getProject(universe.projectID());
+        //==================================================================
+        //We check the user has write acces to the project where the universe belongs
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(projectsubset.projectID(), session, 2);
+        //==================================================================
         //We check the owner of the project is able to spend.
         //It is always true. Lets change this to balance check.
-        Project projectsubset = auriga.projectAtlas().getProject(projectid);
         BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(projectsubset.getOwner());
-        //if (balance.getTotalBalance() <= FinanceRules.REJECTAT)
-        //    throw new AppException("Not enough balance", BillingErrorCodes.CHARGEREJECTED);
+        FinanceRules.spendOk(balance.getAvailableBalance());
+        //******************************************************************
+        //Second reading. We check there is a valid usage of the folder in
+        //the project the subset belongs to.
+        MapRecord record = auriga.getMapsLambda().getMapRecord(recordid);
+        FolderUsage usage;
+        try { usage = auriga.getMapsLambda().getFolderUsage(projectsubset.projectID(), record.getFolderID()); }
+        catch (AppException e) {
+            if (e.getErrorCode() == MapErrorCodes.FOLDERUSEAGENOTFOUND)
+                throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
+            throw e;
+        }
+        //******************************************************************
+        //We decide wether to make a commerce transfer.        
+        boolean dotransfer = false;
+        MapFolder folder = null;
+        Project projectto = null;
+        if (usage.costPerUse() != 0) {
+            dotransfer = true;
+            folder = auriga.getMapsLambda().getMapFolder(record.getFolderID());
+            projectto = auriga.projectAtlas().getProject(folder.projectID());
+            //------------------------------------------------
+            //The user to and from must be different. And Balance control to.
+            if (projectsubset.getOwner() == projectto.getOwner()) dotransfer = false;
+            else {
+                if (balance.getTotalBalance() < usage.costPerUse())
+                    throw new AppException("Not enough balance", BillingErrorCodes.BALANCEINSUFICIENT);
+            }
+            //------------------------------------------------
+        }
+        //******************************************************************
+        //We fetch the map features from the record we want to set.
+        MapReaderGraphic mapreader = new MapReaderGraphic();
+        mapreader.setMapsLambda(auriga.getMapsLambda());
+        MapRecordGraphic recordg = mapreader.getRecord(record);
+        MapObjectGraphic[] features = recordg.getMapObjects();
+        //------------------------------------------------------------------
+        //If there is no map object in the record. We throw an exception
+        if (features.length == 0)
+            throw new AppException("The record " + record.getName() + " has no map object", AppException.NOMAPOBJECTINRECORD);
+        
+        //******************************************************************
+        //WE ENTER THE EXECUTION SECTION
+        //******************************************************************
+        //We lock all tables involved
+        TabList tablist = new TabList();
+        univatlas.lockSubset(tablist);
+        univatlas.lockMapObject(tablist);
+        univatlas.lockLocationPoint(tablist);
+        fincatlas.lockAlterUsage(tablist);
+        if (dotransfer) fincatlas.lockCommunityCommerce(tablist);
+        univatlas.useMaster();
+        univatlas.setAutoCommit(0);
+        univatlas.lockTables(tablist);
+        //******************************************************************
+        //We reread from the master
+        subset = univatlas.getSubset(0, subsetid);
+        //------------------------------------------------------------------
+        //We clear the existent map objects the subset could have
+        univatlas.clearMapObject(subset.getSubsetID());
+        //------------------------------------------------------------------
+        //We Add the objects to the subset.
+        for (MapObjectGraphic feature : features)
+            univatlas.addMapObject(subset.getSubsetID(), feature.getPoints());
+        univatlas.setMapStatus(subsetid, 1);
+        //==================================================================
+        //If the use of the map object has a cost we create a transfer.
+        if (dotransfer) {
+            CommerceTransfer transfer = new CommerceTransfer();
+            transfer.setFromUserid(projectsubset.getOwner());
+            transfer.setFromProjectId(projectsubset.projectID());
+            transfer.setToUserId(projectto.getOwner());//If it was a null pointer we would not be here.
+            transfer.setToProjectId(projectto.projectID());
+            String description = "Map Record " + record.getName() + " Added to subset";
+            transfer.setDescription(description);
+            transfer.setAmount(usage.costPerUse());
+            auriga.getBillingLambda().addCommerceTransfer(transfer);
+        }
+        //==================================================================
+        //We alter the usage cost.
+        if (subset.getMapCost() == 0) {
+            AlterUsage alter = new AlterUsage();
+            alter.setProjectId(projectsubset.projectID());
+            alter.setProjectName(projectsubset.getName());
+            alter.setIncrease(FinanceRules.MAPRECORDSUBSET);
+            alter.setStartingEvent("Map Record set to subset '");
+            auriga.getBillingLambda().alterUsage(alter);
+            //--------------------------------------------------------------
+            //We record How Much this Cost.
+            auriga.getUniverseAtlas().setMapCost(subset.getUniverseID(), subset.getSubsetID(), FinanceRules.MAPRECORDSUBSET);
+        }
+        //==================================================================
+        //We are all done.
+        auriga.getUniverseAtlas().commit();
+        auriga.getUniverseAtlas().unLockTables();
+        //******************************************************************
+    }
+    //**********************************************************************
+    
+    
+    /*
+    public void setMapRecordTo(long subsetid, long recordid, Session session) throws AppException, Exception {
+        
+        /*
+        //******************************************************************
+        //Reading and Verification part
+        //==================================================================
+        SubSet subset = auriga.getUniverseAtlas().getSubset(0, subsetid);
+        Universe universe = auriga.getUniverseAtlas().getUniverse(subset.getUniverseID());
+        //==================================================================
+        //We check the user has read acces to the project 
+        //where the universe belongs
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(universe.projectID(), session, 2);
+        //==================================================================
+        //We check the owner of the project is able to spend.
+        //It is always true. Lets change this to balance check.
+        Project projectsubset = auriga.projectAtlas().getProject(session.getCurrentProject());
+        BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(projectsubset.getOwner());
+        FinanceRules.spendOk(balance.getAvailableBalance());
         //------------------------------------------------------------------
         //We recover the record. In the proccess we check if the record can be
         //used in the project that is intended. The usage is useful here to
@@ -359,7 +496,9 @@ public class ExcUniverse {
         auriga.getUniverseAtlas().commit();
         auriga.getUniverseAtlas().unLockTables();
         //******************************************************************
+        
     }
+    */
     //**********************************************************************
     /**
      * 
