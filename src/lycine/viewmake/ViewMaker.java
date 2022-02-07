@@ -3,7 +3,7 @@ package lycine.viewmake;
 import histidine.AurigaObject;
 import lycine.stats.sample.VStSmplPubView;
 import lycine.stats.SampleView;
-import lycine.sample.SampleCenterPanel;
+import lycine.sample.ExcSamplePanel;
 import tryptophan.sample.SamplePayLoad;
 import lycine.stats.VStAlpha;
 import methionine.AppException;
@@ -24,7 +24,7 @@ public class ViewMaker {
         //****************************************************************
         //We get the sample payload.
         //Wheter the user has access to the project is checked there.
-        SampleCenterPanel samplecenter = new SampleCenterPanel();
+        ExcSamplePanel samplecenter = new ExcSamplePanel();
         samplecenter.setAuriga(auriga);
         SamplePayLoad samplepayload = samplecenter.getSamplePayload(sampleid, userid);
         //****************************************************************

@@ -13,7 +13,7 @@ import tryptophan.sample.Responder;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleErrorCodes;
 //************************************************************************
-public class SampleCenterField extends SampleCenterPanel {
+public class SampleCenterField extends ExcSamplePanel {
     //********************************************************************
     /**
      * Returns a list of samples given an entrusted user id

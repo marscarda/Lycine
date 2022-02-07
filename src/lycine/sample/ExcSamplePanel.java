@@ -12,9 +12,10 @@ import methionine.finance.FinanceRules;
 import methionine.project.Project;
 import tryptophan.design.Form;
 import tryptophan.sample.Responder;
+import tryptophan.sample.ResponseCall;
 import tryptophan.sample.Sample;
 //************************************************************************
-public class SampleCenterPanel {
+public class ExcSamplePanel {
     //********************************************************************
     protected AurigaObject auriga = null;
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
@@ -42,7 +43,7 @@ public class SampleCenterPanel {
         //****************************************************************
         //We check the form ID belongs to the same project.
         Form form = auriga.getDesignLambda().getQuestionnaire(sample.formID());
-        Project project = auriga.projectAtlas().getProject(form.projectID(), 0);
+        Project project = auriga.projectAtlas().getProject(form.projectID());
         if (form.projectID() != sample.projectID())
             throw new AppException("Form does not belong to the project", AppException.NOTTHESAMEPROJECT);
         //****************************************************************
@@ -187,6 +188,41 @@ public class SampleCenterPanel {
         samplepayload.setResponses(responses);
         //----------------------------------------------------------------
         return samplepayload;
+        //****************************************************************
+    }
+    //********************************************************************
+    /**
+     * Creates a response call.
+     * @param call
+     * @param session
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void createResponseCall (ResponseCall call, Session session) throws AppException, Exception {
+        //****************************************************************
+        Sample sample = auriga.getSampleLambda().getSample(call.sampleID());
+        //****************************************************************
+        //We check the performing user has access to the project.
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(sample.projectID(), session, 2);
+        //****************************************************************
+        //Lock All Tables
+        TabList tabs = new TabList();
+        auriga.getSampleLambda().lockResponseCall(tabs);
+        /*
+        auriga.getSampleLambda().addCreateSampleLock(tabs);
+        auriga.getBillingLambda().lockAlterUsage(tabs);
+        */
+        auriga.getSampleLambda().useMaster();
+        auriga.getSampleLambda().setAutoCommit(0);
+        auriga.getSampleLambda().lockTables(tabs);
+        //****************************************************************
+        auriga.getSampleLambda().createResponseCall(call);
+        //****************************************************************
+        //We are all done.
+        auriga.getSampleLambda().commit();
         //****************************************************************
     }
     //********************************************************************
