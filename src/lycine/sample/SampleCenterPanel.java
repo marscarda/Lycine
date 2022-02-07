@@ -1,9 +1,11 @@
 package lycine.sample;
 //************************************************************************
 import histidine.AurigaObject;
+import histidine.auth.ProjectAuth;
 import tryptophan.sample.SamplePayLoad;
 import methionine.AppException;
 import methionine.TabList;
+import methionine.auth.Session;
 import methionine.auth.User;
 import methionine.finance.AlterUsage;
 import methionine.finance.FinanceRules;
@@ -20,12 +22,11 @@ public class SampleCenterPanel {
     /**
      * Creates a new sample.
      * @param sample
-     * @param userid
+     * @param session
      * @throws AppException
      * @throws Exception 
      */
-    public void createSample (Sample sample, long userid) throws AppException, Exception {
-        
+    public void createSample (Sample sample, Session session) throws AppException, Exception {
         //****************************************************************
         if (sample.getName().length() == 0)
             throw new AppException("Sample Name cannot be empty", AppException.INVALIDDATASUBMITED);
@@ -34,7 +35,10 @@ public class SampleCenterPanel {
             throw new AppException("A form must be selected", AppException.INVALIDDATASUBMITED);
         //****************************************************************
         //We check the performing user has access to the project.
-        auriga.projectAtlas().checkAccess(sample.projectID(), userid, 2);
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(sample.projectID(), session, 2);
         //****************************************************************
         //We check the form ID belongs to the same project.
         Form form = auriga.getDesignLambda().getQuestionnaire(sample.formID());
