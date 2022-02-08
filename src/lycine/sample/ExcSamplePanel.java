@@ -81,6 +81,18 @@ public class ExcSamplePanel {
         //****************************************************************
     }
     //********************************************************************
+    public Sample getSample (long sampleid, Session session) throws AppException, Exception {
+        Sample sample = auriga.getSampleLambda().getSample(sampleid);
+        //****************************************************************
+        //We check the performing user has access to the project.
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(sample.projectID(), session, 1);
+        //****************************************************************        
+        return sample;
+    }
+    //********************************************************************
     /**
      * Returns a list of samples given a project
      * @param projectid
