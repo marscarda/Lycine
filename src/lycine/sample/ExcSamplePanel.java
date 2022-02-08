@@ -14,6 +14,7 @@ import tryptophan.design.Form;
 import tryptophan.sample.Responder;
 import tryptophan.sample.ResponseCall;
 import tryptophan.sample.Sample;
+import tryptophan.sample.SampleErrorCodes;
 //************************************************************************
 public class ExcSamplePanel {
     //********************************************************************
@@ -235,6 +236,33 @@ public class ExcSamplePanel {
         //****************************************************************
         //We are all done.
         auriga.getSampleLambda().commit();
+        //****************************************************************
+    }
+    //********************************************************************
+    /**
+     * 
+     * @param sampleid
+     * @param session
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public ResponseCall[] getResponseCalls (long sampleid, Session session) throws AppException, Exception {
+        Sample sample = auriga.getSampleLambda().getSample(sampleid);
+        return getResponseCalls(sample, session);
+    }
+    public ResponseCall[] getResponseCalls (Sample sample, Session session) throws AppException, Exception {
+        //****************************************************************
+        //We check the performing user has access to the project.
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(sample.projectID(), session, 1);
+        //****************************************************************
+        if (sample.getCollection() != Sample.COLLECT_MANAGED)
+            throw new AppException("Action not allowed", SampleErrorCodes.SAMPLEACTIONNOTALLOWED);
+        //****************************************************************
+        return auriga.getSampleLambda().getResponseCalls(sample.sampleID());
         //****************************************************************
     }
     //********************************************************************
