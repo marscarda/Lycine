@@ -5,6 +5,7 @@ import methionine.AppException;
 import tryptophan.design.CustomLabel;
 import tryptophan.design.DesignAtlas;
 import tryptophan.design.Form;
+import tryptophan.design.FormMetricRef;
 import tryptophan.sample.ResponseCall;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleAtlas;
@@ -27,6 +28,7 @@ public class ExcSampleInputCall {
     Sample sample = null;
     Form form = null;
     DisplayLabels displabels = null;
+    FormMetricRef[] metricrefs = null;
     //********************************************************************
     public ResponseCall getCall () {
         if (responsecall == null) return new ResponseCall();
@@ -41,6 +43,11 @@ public class ExcSampleInputCall {
     public DisplayLabels getLabels () {
         if (displabels == null) return new  DisplayLabels();
         return displabels;
+    }
+    //====================================================================
+    public FormMetricRef[] getMetrics () {
+        if (metricrefs == null) return new FormMetricRef[0];
+        return metricrefs;
     }
     //********************************************************************
     /**
@@ -85,6 +92,9 @@ public class ExcSampleInputCall {
         form = dsgatlas.getQuestionnaire(sample.formID());
         CustomLabel[] customlabels = dsgatlas.getCustomLabels(form.projectID(), 0);
         fillLabels(customlabels);
+        //****************************************************************
+        //We recover the metrics.
+        metricrefs = dsgatlas.getFormQuestions(form.formID());
         //****************************************************************
     }
     //********************************************************************
