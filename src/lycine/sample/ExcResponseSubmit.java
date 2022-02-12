@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import methionine.AppException;
 import methionine.TabList;
+import methionine.finance.BalanceInfo;
+import methionine.finance.FinanceRules;
+import methionine.finance.SystemCharge;
 import methionine.project.Project;
 import tryptophan.design.DesignErrorCodes;
 import tryptophan.design.FormMetricRef;
@@ -61,11 +64,10 @@ public class ExcResponseSubmit {
         //****************************************************************
         //We prepare to work in the master.
         TabList tabs = new TabList();
-        
         smpatlas.lockFeedbackCall(tabs);
         smpatlas.lockFeedBack(tabs);
         smpatlas.lockFeedBackValue(tabs);
-        
+        auriga.getBillingLambda().lockSystemCharge(tabs);
         smpatlas.setAutoCommit(0);
         smpatlas.lockTables(tabs);
         smpatlas.useMaster();
@@ -89,15 +91,34 @@ public class ExcResponseSubmit {
         //We persist the values.
         for (ResponseValue value : values)
             smpatlas.addFeedBackValue(feedback.responseID(), value);
+        //----------------------------------------------------------------
+        //We mark the call as feedbak sent, Responded.
+        smpatlas.setFeedbackCallStatus(someid);
+        //----------------------------------------------------------------
+        //We create the charge
+        doBilling();
         //****************************************************************
         //We are all done.
         smpatlas.commit();
         //****************************************************************
     }
     //********************************************************************
-    //FINANCE BALANCES CHECK
+    //FINANCE PART
+    //********************************************************************
+    //Checks the project owner is able to spend.
     private void ableToSpend () throws AppException, Exception {
-        
+        BalanceInfo balance = auriga.getBillingLambda().getTotalBalance(project.getOwner());
+        FinanceRules.spendOk(balance.getTotalBalance());
+    }
+    //********************************************************************
+    private void doBilling () throws AppException, Exception {
+        SystemCharge charge = new SystemCharge();
+        charge.setCost(sample.responseSubmitCost());
+        charge.setDescription("Response in Sample '" + sample.getName() + "'");
+        charge.setProjectId(project.projectID());
+        charge.setProjectName(project.getName());
+        charge.setUserid(project.getOwner());
+        auriga.getBillingLambda().createSystemCharge(charge);        
     }
     //********************************************************************
     //CHECK THE RESPONSES ARE VALID
