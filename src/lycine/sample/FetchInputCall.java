@@ -16,7 +16,7 @@ import tryptophan.sample.SampleAtlas;
  * Typically an URL is sent to the subject to answer the survey without authenticating.
  * @author marianoscardaccione
  */
-public class ExcSampleInputCall {
+public class FetchInputCall {
     //********************************************************************
     protected AurigaObject auriga = null;
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }

@@ -3,6 +3,8 @@ package lycine.sample;
 import tryptophan.design.Form;
 import tryptophan.design.FormMetricRef;
 //************************************************************************
+//Scheduled to implement something new.
+@Deprecated
 public class FinalForm {
     //******************************************************
     Form form = null;
