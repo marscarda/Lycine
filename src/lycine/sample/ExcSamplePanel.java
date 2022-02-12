@@ -223,7 +223,7 @@ public class ExcSamplePanel {
         //****************************************************************
         //Lock All Tables
         TabList tabs = new TabList();
-        auriga.getSampleLambda().lockResponseCall(tabs);
+        auriga.getSampleLambda().lockFeedbackCall(tabs);
         /*
         auriga.getSampleLambda().addCreateSampleLock(tabs);
         auriga.getBillingLambda().lockAlterUsage(tabs);

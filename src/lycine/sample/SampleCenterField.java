@@ -143,6 +143,7 @@ public class SampleCenterField extends ExcSamplePanel {
      * @throws AppException
      * @throws Exception 
      */
+    @Deprecated
     public void fieldResponse (Responder responder, long userid) throws AppException, Exception {
         //***************************************************
         //We first get the sample involved and check if the
