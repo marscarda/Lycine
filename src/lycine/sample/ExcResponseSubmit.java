@@ -9,7 +9,6 @@ import methionine.finance.BalanceInfo;
 import methionine.finance.FinanceRules;
 import methionine.finance.SystemCharge;
 import methionine.project.Project;
-import tryptophan.design.DesignErrorCodes;
 import tryptophan.design.FormMetricRef;
 import tryptophan.design.Metric;
 import tryptophan.sample.FeedBack;
@@ -17,6 +16,7 @@ import tryptophan.sample.ResponseCall;
 import tryptophan.sample.ResponseValue;
 import tryptophan.sample.Sample;
 import tryptophan.sample.SampleAtlas;
+import tryptophan.sample.SampleErrorCodes;
 //************************************************************************
 public class ExcResponseSubmit {
     //********************************************************************
@@ -43,11 +43,10 @@ public class ExcResponseSubmit {
         //We recover the call and check it is valid
         ResponseCall call = smpatlas.getResponseCall(someid);
         boolean valid = true;
-        if (call.responded()) valid = false;
-        if (call.isExpired()) valid = false;
-        if (!valid) {
-            throw new Exception("Invalid");
-        }
+        if (call.responded()) 
+            throw new AppException("Invalid Feedback Call", SampleErrorCodes.INVALIDCALL);
+        if (call.isExpired()) 
+            throw new AppException("Invalid Feedback Call", SampleErrorCodes.INVALIDCALL);
         //****************************************************************
         //Recover all necesary
         sample = smpatlas.getSample(call.sampleID());
@@ -75,11 +74,10 @@ public class ExcResponseSubmit {
         //This time read from the master and validated.
         call = auriga.getSampleLambda().getResponseCall(someid);
         valid = true;
-        if (call.responded()) valid = false;
-        if (call.isExpired()) valid = false;
-        if (!valid) {
-            throw new Exception("Invalid");
-        }        
+        if (call.responded())
+            throw new AppException("Invalid Feedback Call", SampleErrorCodes.INVALIDCALL);
+        if (call.isExpired())
+            throw new AppException("Invalid Feedback Call", SampleErrorCodes.INVALIDCALL);
         //****************************************************************
         //We persist a new feedback
         FeedBack feedback = new FeedBack();
