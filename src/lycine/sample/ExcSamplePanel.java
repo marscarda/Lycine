@@ -266,5 +266,28 @@ public class ExcSamplePanel {
         //****************************************************************
     }
     //********************************************************************
+    /**
+     * Deletes a feedback call.
+     * @param callid
+     * @param session
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void destroyFeedbacKCall (long callid, Session session) throws AppException, Exception {
+        //****************************************************************
+        ResponseCall call = auriga.getSampleLambda().getResponseCall(callid);
+        Sample sample = auriga.getSampleLambda().getSample(call.sampleID());
+        //****************************************************************
+        //We check the user has access to perform
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(sample.projectID(), session, 3);
+        //****************************************************************
+        //In this case locking tables and starting transactions don't seem
+        //to be that necesary. We do it at once for now.
+        auriga.getSampleLambda().destroyFeedbackCall(callid);
+        //****************************************************************
+    }
+    //********************************************************************
 }
 //************************************************************************
