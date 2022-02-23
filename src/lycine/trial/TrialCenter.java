@@ -6,7 +6,7 @@ import methionine.DataBaseName;
 import methionine.TabList;
 import methionine.auth.AuthLamda;
 import methionine.finance.AlterUsage;
-import methionine.finance.BillingLambda;
+import methionine.finance.FinanceAtlas;
 import methionine.finance.FinanceRules;
 import methionine.project.Project;
 import methionine.project.ProjectErrorCodes;
@@ -28,14 +28,14 @@ public class TrialCenter {
     //********************************************************************
     AuthLamda authlambda = null;
     ProjectLambda projectatlas = null;
-    BillingLambda billinglambda = null;
+    FinanceAtlas billinglambda = null;
     PlayRoomAtlas triallambda = null;
     UniverseAtlas universelambda = null;
     SampleAtlas samplelambda = null;
     //====================================================================
     public void setAuthLambda (AuthLamda authlambda) { this.authlambda = authlambda; }
     public void setProjectLambda (ProjectLambda projectatlas) { this.projectatlas = projectatlas; }
-    public void setBillingLambda (BillingLambda billinglambda) { this.billinglambda = billinglambda; }
+    public void setBillingLambda (FinanceAtlas billinglambda) { this.billinglambda = billinglambda; }
     public void setEnvironmentLambda (PlayRoomAtlas environmentlambda) { this.triallambda = environmentlambda; }
     public void setUniverseLambda (UniverseAtlas universelambda) { this.universelambda = universelambda; }
     public void setSampleLambda (SampleAtlas samplelambda) { this.samplelambda = samplelambda; }

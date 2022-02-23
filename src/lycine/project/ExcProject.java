@@ -8,7 +8,7 @@ import methionine.auth.AuthLamda;
 import methionine.auth.User;
 import methionine.finance.BalanceInfo;
 import methionine.finance.BillingErrorCodes;
-import methionine.finance.BillingLambda;
+import methionine.finance.FinanceAtlas;
 import methionine.finance.FinanceRules;
 import methionine.finance.UsagePeriod;
 import methionine.project.Project;
@@ -45,7 +45,7 @@ public class ExcProject {
         //*****************************************************
         project.setDayCost(FinanceRules.PROJECT);
         ProjectLambda projatlas = auriga.projectAtlas();
-        BillingLambda fincatlas = auriga.getBillingLambda();
+        FinanceAtlas fincatlas = auriga.getBillingLambda();
         AuthLamda authatlas = auriga.getAuthLambda();
         authatlas.useMaster();
         //*****************************************************

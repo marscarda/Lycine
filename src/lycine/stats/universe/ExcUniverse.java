@@ -12,7 +12,7 @@ import methionine.auth.Session;
 import methionine.finance.AlterUsage;
 import methionine.finance.BalanceInfo;
 import methionine.finance.BillingErrorCodes;
-import methionine.finance.BillingLambda;
+import methionine.finance.FinanceAtlas;
 import methionine.finance.CommerceTransfer;
 import methionine.finance.FinanceRules;
 import methionine.project.Project;
@@ -174,7 +174,7 @@ public class ExcUniverse {
         //******************************************************************
         UniverseAtlas univatlas = auriga.getUniverseAtlas();
         ProjectLambda prjatlas = auriga.projectAtlas();
-        BillingLambda fncatlas = auriga.getBillingLambda();
+        FinanceAtlas fncatlas = auriga.getBillingLambda();
         //******************************************************************
         //Reading Part
         //******************************************************************
@@ -314,7 +314,7 @@ public class ExcUniverse {
         //******************************************************************
         UniverseAtlas univatlas = auriga.getUniverseAtlas();
         ProjectLambda prjcatlas = auriga.projectAtlas();
-        BillingLambda fincatlas = auriga.getBillingLambda();
+        FinanceAtlas fincatlas = auriga.getBillingLambda();
         //******************************************************************
         //First necesary reads.
         SubSet subset = univatlas.getSubset(0, subsetid);

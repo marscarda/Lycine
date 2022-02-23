@@ -6,7 +6,7 @@ import methionine.AppException;
 import methionine.TabList;
 import methionine.auth.Session;
 import methionine.finance.AlterUsage;
-import methionine.finance.BillingLambda;
+import methionine.finance.FinanceAtlas;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import threonine.universe.SubSet;
@@ -27,7 +27,7 @@ public class ExcUniverseDelete {
         //READING
         //******************************************************************
         UniverseAtlas univatlas = auriga.getUniverseAtlas();
-        BillingLambda fincatlas = auriga.getBillingLambda();
+        FinanceAtlas fincatlas = auriga.getBillingLambda();
         ProjectLambda prjatlas = auriga.projectAtlas();
         //******************************************************************
         TabList tablist = new TabList();
