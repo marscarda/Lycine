@@ -35,5 +35,18 @@ public class ExcMapLayer {
         //****************************************************************
     }
     //********************************************************************
+    public MapLayer[] getLayersByProject (long projectid, Session session) throws AppException, Exception {
+        //****************************************************************
+        //We check the performing user has access to the project.
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(projectid, session, 1);
+        //****************************************************************
+        //Returns the folders
+        return auriga.getMapsLambda().getLayersByProject(projectid);
+        //****************************************************************
+    }
+    //********************************************************************
 }
 //************************************************************************
