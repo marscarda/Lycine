@@ -335,7 +335,7 @@ public class ExcUniverse {
         //the project the subset belongs to.
         MapRecord record = auriga.getMapsLambda().getMapRecord(recordid);
         FolderUsage usage;
-        try { usage = auriga.getMapsLambda().getFolderUsage(projectsubset.projectID(), record.getFolderID()); }
+        try { usage = auriga.getMapsLambda().getFolderUsage(projectsubset.projectID(), record.layerID()); }
         catch (AppException e) {
             if (e.getErrorCode() == MapErrorCodes.FOLDERUSEAGENOTFOUND)
                 throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
@@ -348,7 +348,7 @@ public class ExcUniverse {
         Project projectto = null;
         if (usage.costPerUse() != 0) {
             dotransfer = true;
-            folder = auriga.getMapsLambda().getMapFolder(record.getFolderID());
+            folder = auriga.getMapsLambda().getMapFolder(record.layerID());
             projectto = auriga.projectAtlas().getProject(folder.projectID());
             //------------------------------------------------
             //The user to and from must be different. And Balance control to.

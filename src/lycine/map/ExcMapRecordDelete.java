@@ -25,7 +25,7 @@ public class ExcMapRecordDelete {
         //================================================================
         //We check the user has permission to do this.
         MapRecord record = auriga.getMapsLambda().getMapRecord(recordid);
-        MapFolder folder = auriga.getMapsLambda().getMapFolder(record.getFolderID());
+        MapFolder folder = auriga.getMapsLambda().getMapFolder(record.layerID());
         if (userid != 0)
             auriga.projectAtlas().checkAccess(folder.projectID(), userid, 3);
         //================================================================
@@ -62,7 +62,7 @@ public class ExcMapRecordDelete {
         //================================================================
         //We check the user has permission to do this.
         MapRecord record = auriga.getMapsLambda().getMapRecord(recordid);
-        MapFolder folder = auriga.getMapsLambda().getMapFolder(record.getFolderID());
+        MapFolder folder = auriga.getMapsLambda().getMapFolder(record.layerID());
         if (userid != 0)
             auriga.projectAtlas().checkAccess(folder.projectID(), userid, 3);
         //================================================================
