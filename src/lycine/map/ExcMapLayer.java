@@ -56,7 +56,7 @@ public class ExcMapLayer {
         //We check the auth to do this.
         ProjectAuth pauth = new ProjectAuth();
         pauth.setAuriga(auriga);
-        pauth.checkAccess(layer.projectID(), session, 2);
+        pauth.checkAccess(layer.projectID(), session, 1);
         //****************************************************************
         return layer;
         //****************************************************************
