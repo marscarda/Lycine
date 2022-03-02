@@ -1,6 +1,6 @@
 package lycine.map;
 //************************************************************************
-import threonine.midlayer.MapRecordGraphic;
+import threonine.midlayer.MapRecordDraw;
 import histidine.AurigaObject;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class MapReadDirecter {
     AurigaObject auriga = null;
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
     //********************************************************************
-    public MapRecordGraphic[] getMapRecords (MapGraphicGetParam param) throws AppException, Exception {
+    public MapRecordDraw[] getMapRecords (MapGraphicGetParam param) throws AppException, Exception {
         //==========================================================
         MapReaderGraphic mapreader = new MapReaderGraphic();
         mapreader.setUniverserLambda(auriga.getUniverseAtlas());
@@ -34,17 +34,17 @@ public class MapReadDirecter {
             return byTrial(param.trialid, param.nodecode);
         //==========================================================
         //No valid param received. Return an empty array.
-        return new MapRecordGraphic[0];
+        return new MapRecordDraw[0];
         //==========================================================
     }
     //********************************************************************
-    private MapRecordGraphic[] byFolder (long folderid) throws AppException, Exception {
+    private MapRecordDraw[] byFolder (long folderid) throws AppException, Exception {
         MapReaderGraphic reader = new MapReaderGraphic();
         reader.setMapsLambda(auriga.getMapsLambda());
         return reader.recordsByFolder(folderid);
     }
     //********************************************************************
-    private MapRecordGraphic[] bySubset (long universeid, long subsetid) throws AppException, Exception {
+    private MapRecordDraw[] bySubset (long universeid, long subsetid) throws AppException, Exception {
         MapReaderGraphic reader = new MapReaderGraphic();
         reader.setUniverserLambda(auriga.getUniverseAtlas());
         return reader.recordsBySubset(universeid, subsetid);
@@ -59,21 +59,21 @@ public class MapReadDirecter {
      * @throws AppException
      * @throws Exception 
      */
-    private MapRecordGraphic[] byTrial (long trialid, long parentnode) throws AppException, Exception {
+    private MapRecordDraw[] byTrial (long trialid, long parentnode) throws AppException, Exception {
         
         //Trial trial = auriga.getTrialAtlas().getTrial(trialid);
         
         MapReaderGraphic reader = new MapReaderGraphic();
         reader.setUniverserLambda(auriga.getUniverseAtlas());
         StatNode[] nodes = auriga.getNewAtlas().getStatNodes(trialid, parentnode);
-        List<MapRecordGraphic> maprecords = new ArrayList<>();
-        MapRecordGraphic maprecord;
+        List<MapRecordDraw> maprecords = new ArrayList<>();
+        MapRecordDraw maprecord;
         for (StatNode node : nodes) {
             maprecord = reader.subsetGetRecord(node.subsetID());
             maprecord.reWriteId(node.nodeID());
             maprecords.add(maprecord);
         }
-        return maprecords.toArray(new MapRecordGraphic[0]);
+        return maprecords.toArray(new MapRecordDraw[0]);
     }
     //********************************************************************
 }

@@ -23,7 +23,7 @@ import threonine.map.MapFolder;
 import threonine.map.MapRecord;
 import threonine.midlayer.MapObjectGraphic;
 import threonine.midlayer.MapReaderGraphic;
-import threonine.midlayer.MapRecordGraphic;
+import threonine.midlayer.MapRecordDraw;
 import threonine.universe.SubSet;
 import threonine.universe.Universe;
 import threonine.universe.UniverseAtlas;
@@ -363,7 +363,7 @@ public class ExcUniverse {
         //We fetch the map features from the record we want to set.
         MapReaderGraphic mapreader = new MapReaderGraphic();
         mapreader.setMapsLambda(auriga.getMapsLambda());
-        MapRecordGraphic recordg = mapreader.getRecord(record);
+        MapRecordDraw recordg = mapreader.getRecord(record);
         MapObjectGraphic[] features = recordg.getMapObjects();
         //------------------------------------------------------------------
         //If there is no map object in the record. We throw an exception
