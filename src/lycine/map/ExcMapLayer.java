@@ -4,6 +4,7 @@ import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
 import methionine.AppException;
 import methionine.auth.Session;
+import threonine.map.LayerUse;
 import threonine.map.MapErrorCodes;
 import threonine.map.MapLayer;
 import threonine.map.MappingAttlas;
@@ -25,14 +26,28 @@ public class ExcMapLayer {
         if (mapLayer.layerName().length() == 0)
             throw new AppException("Map Layer name is empty", MapErrorCodes.MAPLAYEREMPTY);
         //****************************************************************
+        MappingAttlas atlas = auriga.getMapsLambda();
+        //****************************************************************
         //We check the performing user has access to the project.
         //We check the auth to do this.
         ProjectAuth pauth = new ProjectAuth();
         pauth.setAuriga(auriga);
         pauth.checkAccess(mapLayer.projectID(), session, 2);
         //****************************************************************
+        //We do a transaction.
+        atlas.setAutoCommit(0);
+        //****************************************************************
         //We Create the layer
-        auriga.getMapsLambda().createLayer(mapLayer);
+        atlas.createLayer(mapLayer);
+        //----------------------------------------------------------------
+        //We create the use.
+        LayerUse layeruse = new LayerUse();
+        layeruse.setProjectId(mapLayer.projectID());
+        layeruse.setLayerId(mapLayer.layerID());
+        atlas.createLayerUse(layeruse);
+        //****************************************************************
+        //We are all done.
+        atlas.commit();
         //****************************************************************
     }
     //********************************************************************
