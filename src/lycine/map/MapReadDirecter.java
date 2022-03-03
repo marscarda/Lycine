@@ -70,7 +70,7 @@ public class MapReadDirecter {
         MapRecordDraw maprecord;
         for (StatNode node : nodes) {
             maprecord = reader.subsetGetRecord(node.subsetID());
-            maprecord.reWriteId(node.nodeID());
+            maprecord.setMatch(node.nodeID());
             maprecords.add(maprecord);
         }
         return maprecords.toArray(new MapRecordDraw[0]);

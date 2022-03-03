@@ -5,6 +5,7 @@ import histidine.auth.ProjectAuth;
 import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
 import methionine.auth.Session;
+import methionine.finance.FinanceRules;
 import threonine.map.MapLayer;
 import threonine.map.MapRecord;
 import threonine.map.MappingAttlas;
@@ -36,11 +37,22 @@ public class ExcMapFeature {
         PointLocation[] points = MapValidationAndMath.createPoints(pointstable);
         MapValidationAndMath.checkValid(points);
         //****************************************************************
+        //We calculate the cost of the object.
+        int billpts = points.length;
+        float cost = 0;
+        while (billpts > 0) {
+            billpts -= 100;
+            cost += FinanceRules.MAP100VERTICES;
+        }
         //****************************************************************
+        
         //****************************************************************
+        atlas.createMapObject(recordid, points, cost);
+        //****************************************************************
+        /*
         for (PointLocation p : points)
             System.out.println(p.latitude + " " + p.longitude);
-        //****************************************************************
+        */
         //****************************************************************
         //****************************************************************
     }
