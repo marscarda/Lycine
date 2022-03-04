@@ -111,5 +111,25 @@ public class ExcMapLayer {
         //****************************************************************
     }
     //********************************************************************
+    /**
+     * 
+     * @param projectid
+     * @param session
+     * @return
+     * @throws Exception 
+     */
+    public MapLayer[] searchLayers (long projectid, String searchkey, Session session) throws Exception {
+        //****************************************************************
+        //We check the performing user has access to the project.
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(projectid, session, 1);
+        //****************************************************************
+        //We return it
+        return auriga.getMapsLambda().searchLayers(projectid, searchkey);
+        //****************************************************************
+    }
+    //********************************************************************
 }
 //************************************************************************
