@@ -45,7 +45,7 @@ public class ExcMapFeature {
             cost += FinanceRules.MAP100VERTICES;
         }
         //****************************************************************
-        
+        atlas.setAutoCommit(0);
         //****************************************************************
         atlas.createMapObject(recordid, points, cost);
         //****************************************************************
@@ -54,6 +54,35 @@ public class ExcMapFeature {
             System.out.println(p.latitude + " " + p.longitude);
         */
         //****************************************************************
+        //We are all done.
+        atlas.commit();
+        //****************************************************************
+    }
+    //********************************************************************
+    /**
+     * Clears all features for a given record.
+     * @param recordid
+     * @param session
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void clearFeatures (long recordid, Session session) throws AppException, Exception {
+        //****************************************************************
+        MappingAttlas atlas = auriga.getMapsLambda();
+        atlas.usesrvFullNearSrv();
+        //****************************************************************
+        MapRecord record = atlas.getMapRecord(recordid);
+        MapLayer layer = atlas.getLayer(record.layerID());
+        //****************************************************************
+        //If it is in no project.
+        if (layer.projectID() == 0)
+            throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
+        //****************************************************************
+        atlas.setAutoCommit(0);
+        atlas.clearMapObjects(recordid);
+        //****************************************************************
+        //We are all done.
+        atlas.commit();
         //****************************************************************
     }
     //********************************************************************
