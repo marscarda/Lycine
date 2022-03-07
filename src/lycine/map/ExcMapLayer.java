@@ -4,6 +4,7 @@ import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
 import methionine.AppException;
 import methionine.auth.Session;
+import methionine.project.Project;
 import threonine.map.LayerUse;
 import threonine.map.MapErrorCodes;
 import threonine.map.MapLayer;
@@ -114,6 +115,7 @@ public class ExcMapLayer {
     /**
      * 
      * @param projectid
+     * @param searchkey
      * @param session
      * @return
      * @throws Exception 
@@ -128,6 +130,23 @@ public class ExcMapLayer {
         //****************************************************************
         //We return it
         return auriga.getMapsLambda().searchLayers(projectid, searchkey);
+        //****************************************************************
+    }
+    //********************************************************************
+    public void setForPublis (long layerid, Session session) throws AppException, Exception {
+        //****************************************************************
+        MappingAttlas atlas = auriga.getMapsLambda();
+        //****************************************************************
+        //We recover the layer where the record is going.
+        MapLayer layer = atlas.getLayer(layerid);
+        //****************************************************************
+        //We check the performing user has access to the project.
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(layer.projectID(), session);
+        //****************************************************************
+        atlas.setForPub(layerid, 1);
         //****************************************************************
     }
     //********************************************************************
