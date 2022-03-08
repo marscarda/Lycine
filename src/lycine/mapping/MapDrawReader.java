@@ -1,4 +1,4 @@
-package lycine.map;
+package lycine.mapping;
 //**************************************************************************
 import histidine.AurigaObject;
 import methionine.AppException;

@@ -1,4 +1,4 @@
-package lycine.map;
+package lycine.mapping;
 //************************************************************************
 import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
@@ -121,6 +121,10 @@ public class ExcMapLayer {
      * @throws Exception 
      */
     public MapLayer[] searchLayers (long projectid, String searchkey, Session session) throws Exception {
+        //****************************************************************
+        //Search key must not be empty. No exception
+        if (searchkey == null) return new MapLayer[0];
+        if (searchkey.length() == 0) return new MapLayer[0];
         //****************************************************************
         //We check the performing user has access to the project.
         //We check the auth to do this.
