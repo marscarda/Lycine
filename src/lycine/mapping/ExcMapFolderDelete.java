@@ -5,9 +5,9 @@ import methionine.AppException;
 import methionine.TabList;
 import methionine.finance.AlterUsage;
 import methionine.project.Project;
-import threonine.map.MapFolder;
-import threonine.map.MapObject;
-import threonine.map.MapRecord;
+import threonine.mapping.MapFolder;
+import threonine.mapping.MapObject;
+import threonine.mapping.MapRecord;
 //************************************************************************
 public class ExcMapFolderDelete {
     //********************************************************************

@@ -5,10 +5,10 @@ import histidine.auth.ProjectAuth;
 import methionine.AppException;
 import methionine.auth.Session;
 import methionine.project.Project;
-import threonine.map.LayerUse;
-import threonine.map.MapErrorCodes;
-import threonine.map.MapLayer;
-import threonine.map.MappingAttlas;
+import threonine.mapping.LayerUse;
+import threonine.mapping.MapErrorCodes;
+import threonine.mapping.MapLayer;
+import threonine.mapping.MappingAttlas;
 //************************************************************************
 public class ExcMapLayer {
     //********************************************************************

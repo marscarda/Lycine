@@ -3,9 +3,9 @@ package lycine.mapping;
 import histidine.AurigaObject;
 import methionine.AppException;
 import methionine.auth.Session;
-import threonine.map.MapLayer;
-import threonine.map.MapRecord;
-import threonine.map.MappingAttlas;
+import threonine.mapping.MapLayer;
+import threonine.mapping.MapRecord;
+import threonine.mapping.MappingAttlas;
 import threonine.midlayer.MapRecordDraw;
 //**************************************************************************
 public class MapDrawReader {

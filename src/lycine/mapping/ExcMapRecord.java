@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import methionine.AppException;
 import methionine.auth.Session;
-import threonine.map.MapErrorCodes;
-import threonine.map.MapLayer;
-import threonine.map.MapRecord;
-import threonine.map.MappingAttlas;
+import threonine.mapping.MapErrorCodes;
+import threonine.mapping.MapLayer;
+import threonine.mapping.MapRecord;
+import threonine.mapping.MappingAttlas;
 //************************************************************************
 public class ExcMapRecord {
     //********************************************************************

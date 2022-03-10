@@ -3,7 +3,7 @@ package lycine.mapping;
 import histidine.AurigaObject;
 import methionine.auth.User;
 import methionine.project.Project;
-import threonine.map.MapFolder;
+import threonine.mapping.MapFolder;
 //************************************************************************
 public class ExcMapping {
     //********************************************************************

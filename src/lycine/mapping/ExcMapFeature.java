@@ -6,10 +6,10 @@ import methionine.AppException;
 import methionine.auth.AuthErrorCodes;
 import methionine.auth.Session;
 import methionine.finance.FinanceRules;
-import threonine.map.MapLayer;
-import threonine.map.MapRecord;
-import threonine.map.MappingAttlas;
-import threonine.map.PointLocation;
+import threonine.mapping.MapLayer;
+import threonine.mapping.MapRecord;
+import threonine.mapping.MappingAttlas;
+import threonine.mapping.PointLocation;
 import threonine.midlayer.MapValidationAndMath;
 //************************************************************************
 public class ExcMapFeature {

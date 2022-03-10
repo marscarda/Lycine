@@ -4,9 +4,9 @@ import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
 import methionine.AppException;
 import methionine.auth.Session;
-import threonine.map.LayerUse;
-import threonine.map.MapLayer;
-import threonine.map.MappingAttlas;
+import threonine.mapping.LayerUse;
+import threonine.mapping.MapLayer;
+import threonine.mapping.MappingAttlas;
 //************************************************************************
 public class ExcMapLayerUse {
     //********************************************************************
