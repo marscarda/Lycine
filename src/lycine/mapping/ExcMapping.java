@@ -5,6 +5,7 @@ import methionine.auth.User;
 import methionine.project.Project;
 import threonine.mapping.MapFolder;
 //************************************************************************
+@Deprecated
 public class ExcMapping {
     //********************************************************************
     AurigaObject auriga = null;

@@ -3,8 +3,8 @@ package lycine.mapping;
 import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
 import methionine.AppException;
+import methionine.auth.AuthErrorCodes;
 import methionine.auth.Session;
-import methionine.project.Project;
 import threonine.mapping.LayerUse;
 import threonine.mapping.MapErrorCodes;
 import threonine.mapping.MapLayer;
@@ -78,6 +78,14 @@ public class ExcMapLayer {
         //****************************************************************
     }
     //********************************************************************
+    /**
+     * Returns a list of layers for a project.
+     * @param projectid
+     * @param session
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
     public MapLayer[] getLayersByProject (long projectid, Session session) throws AppException, Exception {
         //****************************************************************
         //We check the performing user has access to the project.
@@ -137,7 +145,7 @@ public class ExcMapLayer {
         //****************************************************************
     }
     //********************************************************************
-    public void setForPublis (long layerid, Session session) throws AppException, Exception {
+    public void setForPublish (long layerid, Session session) throws AppException, Exception {
         //****************************************************************
         MappingAttlas atlas = auriga.getMapsLambda();
         //****************************************************************
@@ -152,6 +160,21 @@ public class ExcMapLayer {
         //****************************************************************
         atlas.setForPub(layerid, 1);
         //****************************************************************
+    }
+    //********************************************************************
+    /* ADMIN USE */
+    //********************************************************************
+    /**
+     * 
+     * @param session
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public MapLayer[] getForPublishLayers (Session session) throws AppException, Exception {
+        if (!session.isAdmin())
+            throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
+        return auriga.getMapsLambda().forPublishLayers();
     }
     //********************************************************************
 }

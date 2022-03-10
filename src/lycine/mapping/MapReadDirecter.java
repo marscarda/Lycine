@@ -13,6 +13,7 @@ import tryptophan.trial.StatNode;
  *
  * @author marianoscardaccione
  */
+@Deprecated
 public class MapReadDirecter {
     //********************************************************************
     AurigaObject auriga = null;
