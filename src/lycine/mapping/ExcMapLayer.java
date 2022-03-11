@@ -79,6 +79,22 @@ public class ExcMapLayer {
     }
     //********************************************************************
     /**
+     * 
+     * @param layerid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public MapLayer getLayer (long layerid) throws AppException, Exception {
+        //****************************************************************
+        MappingAttlas atlas = auriga.getMapsLambda();
+        atlas.usesrvFullNearSrv();
+        //****************************************************************
+        return atlas.getLayer(layerid);
+        //****************************************************************
+    }
+    //********************************************************************
+    /**
      * Returns a list of layers for a project.
      * @param projectid
      * @param session
