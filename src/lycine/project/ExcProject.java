@@ -101,15 +101,15 @@ public class ExcProject {
      */
     public void createProjectAccess (ProjectAccess access, Session session) throws AppException, Exception {
         //****************************************************************
-        //We get the Atlas
-        ProjectLambda patlas = auriga.projectAtlas();
-        FinanceAtlas fatlas = auriga.getBillingLambda();
-        AuthLamda aatlas = auriga.getAuthLambda();
-        //****************************************************************
         //The owner of the project can perform this.
         ProjectAuth pauth = new ProjectAuth();
         pauth.setAuriga(auriga);
         pauth.checkAccess(access.projectID(), session);
+        //****************************************************************
+        //We get the Atlas
+        ProjectLambda patlas = auriga.projectAtlas();
+        FinanceAtlas fatlas = auriga.getBillingLambda();
+        AuthLamda aatlas = auriga.getAuthLambda();
         //****************************************************************
         //We use the main server
         patlas.usesrvFullMainSrv();
@@ -150,6 +150,55 @@ public class ExcProject {
         //****************************************************************
         //We are all done
         auriga.projectAtlas().commit();
+        //****************************************************************
+    }
+    //********************************************************************
+    /**
+     * Revokes an access to a project.
+     * @param projectid
+     * @param userid
+     * @param session
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void revokeAccess (long projectid, long userid, Session session) throws AppException, Exception {
+        //****************************************************************
+        //The owner of the project can perform this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(projectid, session);
+        //****************************************************************
+        //We get the Atlas
+        ProjectLambda patlas = auriga.projectAtlas();
+        FinanceAtlas fatlas = auriga.getBillingLambda();
+        //We use the main server
+        patlas.usesrvFullMainSrv();
+        fatlas.usesrvFullMainSrv();
+        //****************************************************************
+        //We lock all the tables we will use.
+        TabList tablist = new TabList();
+        patlas.lockUserAccess(tablist);
+        patlas.lockProjects(tablist);
+        fatlas.lockAlterUsage(tablist);
+        patlas.lockTables(tablist);
+        patlas.setAutoCommit(0);
+        //****************************************************************
+        //We get the project and the access we want to revoke.
+        Project project = patlas.getProject(projectid);
+        ProjectAccess access = patlas.getAccess(projectid, userid);
+        //================================================================
+        patlas.revokeProjectAccess(projectid, userid);
+        //****************************************************************
+        //We create the usage alteration. Performance.
+        AlterUsage alter = new AlterUsage();
+        alter.setDecrease(access.dayCost());
+        alter.setProjectId(project.projectID());
+        alter.setProjectName(project.getName());
+        alter.setStartingEvent("User Removed From Project");
+        fatlas.alterUsage(alter);        
+        //****************************************************************
+        //We are all done
+        patlas.commit();
         //****************************************************************
     }
     //********************************************************************
