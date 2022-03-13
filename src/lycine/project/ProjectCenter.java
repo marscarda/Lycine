@@ -54,50 +54,6 @@ public class ProjectCenter {
     //********************************************************************
     /**
      * 
-     * @param access
-     * @param userid //The user who is trying to perform this. Not the user to grant
-     * @throws AppException WORKTEAMNOTFOUND UNAUTHORIZED USERNOTFOUND
-     * @throws Exception 
-     */
-    public void createProjectAccess (ProjectAccess access, long userid) throws AppException, Exception {
-        //=============================================
-        //The user authorization to perform this is made 
-        //in projectlambda.createAccess(..)
-        //=============================================
-        //We recover the user we want to grant access.
-        long grantuserid = auriga.getAuthLambda().getUserId(access.getUserName());
-        //---------------------------------------------
-        //The access itself
-        access.setDayCost(FinanceRules.PROJECTUSER);
-        Project project = auriga.projectAtlas().getProject(access.projectID(), userid);
-        access.setUserID(grantuserid);
-        //---------------------------------------------
-        //Create the access. And alter the billing cost
-        //of the project
-        //---------------------------------------------
-        //We create the usage alteration before lockin tables. Performance.
-        AlterUsage alter = new AlterUsage();
-        alter.setIncrease(FinanceRules.PROJECTUSER);
-        alter.setProjectId(project.projectID());
-        alter.setProjectName(project.getName());
-        alter.setStartingEvent("User Added to project");
-        //---------------------------------------------
-        //We lock the tables
-        TabList tablist = new TabList();
-        auriga.getBillingLambda().lockAlterUsage(tablist);
-        auriga.projectAtlas().AddLockUserAccess(tablist);
-        auriga.projectAtlas().lockTables(tablist);
-        auriga.projectAtlas().setAutoCommit(0);
-        auriga.projectAtlas().createAccess(access, userid);
-        auriga.getBillingLambda().alterUsage(alter);
-        //---------------------------------------------
-        //We are done.
-        auriga.projectAtlas().commit();
-        //---------------------------------------------
-    }
-    //********************************************************************
-    /**
-     * 
      * @param projectid
      * @param userid
      * @param owner
@@ -147,6 +103,7 @@ public class ProjectCenter {
      * @throws AppException UNAUTHORIZED WORKTEAMNOTFOUND
      * @throws Exception 
      */
+    @Deprecated
     public ProjectAccess[] getAccessList (long projectid, long owner) throws AppException, Exception {
         //================================================================
         User user = auriga.getAuthLambda().getUser(owner, false);
