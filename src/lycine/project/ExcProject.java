@@ -203,6 +203,53 @@ public class ExcProject {
     }
     //********************************************************************
     /**
+     * Leaves a project in behalf of a member.s
+     * @param projectid
+     * @param userid
+     * @param session
+     * @throws AppException
+     * @throws Exception 
+     */
+    public void leaveProject (long projectid, long userid, Session session) throws AppException, Exception {
+        //****************************************************************
+        //We get the Atlas
+        ProjectLambda patlas = auriga.projectAtlas();
+        FinanceAtlas fatlas = auriga.getBillingLambda();
+        //We use the main server
+        patlas.usesrvFullMainSrv();
+        fatlas.usesrvFullMainSrv();
+        //****************************************************************
+        //We lock all the tables we will use.
+        TabList tablist = new TabList();
+        patlas.lockUserAccess(tablist);
+        patlas.lockProjects(tablist);
+        fatlas.lockAlterUsage(tablist);
+        patlas.lockTables(tablist);
+        patlas.setAutoCommit(0);
+        //****************************************************************
+        //We get the project and the access we want to revoke.
+        Project project = patlas.getProject(projectid);
+        ProjectAccess access = patlas.getAccess(projectid, userid);
+        //****************************************************************
+        if (access.userID() != userid)
+            throw new AppException("Unauthorized", AuthErrorCodes.UNAUTHORIZED);
+        //****************************************************************
+        patlas.leaveProject(projectid, userid);
+        //================================================================
+        //We create the usage alteration. Performance.
+        AlterUsage alter = new AlterUsage();
+        alter.setDecrease(access.dayCost());
+        alter.setProjectId(project.projectID());
+        alter.setProjectName(project.getName());
+        alter.setStartingEvent("User left project");
+        fatlas.alterUsage(alter);
+        //****************************************************************
+        //We are all done
+        patlas.commit();
+        //****************************************************************        
+    }
+    //********************************************************************
+    /**
      * Creates an access for a project. Only the owner is allowed to do this.
      * @param projectid
      * @param session

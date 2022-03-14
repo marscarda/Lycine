@@ -56,28 +56,6 @@ public class ProjectCenter {
      * 
      * @param projectid
      * @param userid
-     * @param owner
-     * @throws AppException
-     * @throws Exception 
-     */
-    public void revokeProjectAccess (long projectid, long userid, long owner) throws AppException, Exception {
-        ProjectAccess access = auriga.projectAtlas().getAccess(projectid, userid);
-        auriga.getBillingLambda().setAutoCommit(0);
-        //auriga.projectAtlas().revokeProjectAccess(projectid, userid, owner);
-        Project project = auriga.projectAtlas().getProject(projectid, 0);
-        AlterUsage alter = new AlterUsage();
-        alter.setDecrease(access.dayCost());
-        alter.setProjectId(project.projectID());
-        alter.setProjectName(project.getName());
-        alter.setStartingEvent("User Removed From Project");
-        auriga.getBillingLambda().alterUsage(alter);
-        auriga.getBillingLambda().commit();
-    }
-    //********************************************************************
-    /**
-     * 
-     * @param projectid
-     * @param userid
      * @throws AppException
      * @throws Exception 
      */
