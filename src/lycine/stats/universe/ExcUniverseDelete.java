@@ -52,7 +52,6 @@ public class ExcUniverseDelete {
         //******************************************************************
         clearMapFeature(universeid, subset);
         alterUsage("Map feature removed from subset " + subset.getName());
-        setEditsToPub(universe);
         //------------------------------------------------------------------
         univatlas.commit();
         //------------------------------------------------------------------
@@ -75,13 +74,6 @@ public class ExcUniverseDelete {
         alter.setStartingEvent(description);
         auriga.getBillingLambda().alterUsage(alter);
         //--------------------------------------------------------------
-    }
-    //**********************************************************************
-    private void setEditsToPub (Universe universe) throws Exception {
-        int topub = universe.editsTuPub();
-        if (topub < edits) topub = 0;
-        else topub -= edits;
-        auriga.getUniverseAtlas().setEditsToPub(universe.universeID(), topub);
     }
     //**********************************************************************
 }

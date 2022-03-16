@@ -130,34 +130,6 @@ public class ExcUniverse {
     }
     //**********************************************************************
     /**
-     * 
-     * @param universeid
-     * @param stat
-     * @param price
-     * @param session
-     * @throws AppException
-     * @throws Exception 
-     */
-    public void setUniversePubStatus (long universeid, int stat, float price, Session session) throws AppException, Exception {
-        //*******************************************************************
-        Universe universe = auriga.getUniverseAtlas().getUniverse(universeid);
-        //===================================================================
-        //We check the auth to do this.
-        ProjectAuth pauth = new ProjectAuth();
-        pauth.setAuriga(auriga);
-        pauth.checkAccess(universe.projectID(), session);
-        //*******************************************************************
-        //We check if the date for pub allowance is past.
-        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        String datenow = Celaeno.getDateString(now, true);
-        if (!universe.allowToPublish())
-            throw new AppException("More edits needed", UniverseErrorCodes.PUBLICNOTALLOWED);
-        //*******************************************************************
-        auriga.getUniverseAtlas().setPublicStatus(universeid, stat, price);
-        //*******************************************************************
-    }
-    //**********************************************************************
-    /**
      * Creates a universe subset 
      * @param subset
      * @param session
