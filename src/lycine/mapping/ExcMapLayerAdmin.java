@@ -42,10 +42,11 @@ public class ExcMapLayerAdmin {
      * @param name
      * @param description
      * @param session
+     * @return 
      * @throws AppException
      * @throws Exception 
      */
-    public void setLayerPublic (long layerid, String name, String description, Session session) throws AppException, Exception {
+    public MapLayer setLayerPublic (long layerid, String name, String description, Session session) throws AppException, Exception {
         //****************************************************************
         //We check privileges to do this.
         boolean allow = false;
@@ -57,7 +58,13 @@ public class ExcMapLayerAdmin {
         MappingAttlas atlas = auriga.getMapsLambda();
         atlas.usesrvFullMainSrv();
         //****************************************************************
+        MapLayer layer = atlas.getLayer(layerid);
+        if (name == null) name = layer.layerName();
+        if (name.length() == 0) name = layer.layerName();
+        //****************************************************************
         atlas.setPublic(layerid, name, description);
+        //****************************************************************
+        return layer;
         //****************************************************************
     }
     //********************************************************************
