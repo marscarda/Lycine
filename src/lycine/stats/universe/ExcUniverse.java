@@ -64,7 +64,6 @@ public class ExcUniverse {
         //The subset fields are completed in createUniverse(..)
         SubSet subset = new SubSet();
         subset.setName(universe.getName());
-        subset.setDescription(universe.getDescription());
         subset.setWeight(1);
         subset.setCost(FinanceRules.UNIVSUBSET);
         //******************************************************************
@@ -144,35 +143,36 @@ public class ExcUniverse {
         if (subset.getParentSubSet() == 0)
             throw new AppException("Subser cannot be created in the root", UniverseErrorCodes.ROOTSUBSETALREADYEXISTS);
         //******************************************************************
-        UniverseAtlas univatlas = auriga.getUniverseAtlas();
-        ProjectLambda prjatlas = auriga.projectAtlas();
-        FinanceAtlas fncatlas = auriga.getBillingLambda();
+        UniverseAtlas uatlas = auriga.getUniverseAtlas();
+        ProjectLambda patlas = auriga.projectAtlas();
+        FinanceAtlas fatlas = auriga.getBillingLambda();
         //******************************************************************
-        //Reading Part
+        //We use the main server
+        uatlas.usesrvFullMainSrv();
+        patlas.usesrvFullMainSrv();
+        fatlas.usesrvFullMainSrv();
         //******************************************************************
-        //We recover the universe and check the user is able to perform this.
-        Universe universe = univatlas.getUniverse(subset.getUniverseID());
+        Universe universe = uatlas.getUniverse(subset.getUniverseID());
+        //******************************************************************
+        //We check the performing user has access to the project.
+        //We check the auth to do this.
         ProjectAuth pauth = new ProjectAuth();
         pauth.setAuriga(auriga);
-        pauth.checkAccess(universe.projectID(), session, 2);
-        //------------------------------------------------------------------
-        //We recover the project. Needed ahead when altering usage.
-        Project project = prjatlas.getProject(universe.projectID());
-        //------------------------------------------------------------------
-        //We persist the cost of this particular subset.
-        subset.setCost(FinanceRules.UNIVSUBSET);
-        //******************************************************************
-        //Writing Part
+        pauth.checkAccess(universe.projectID(), session, 2);        
         //******************************************************************
         //Lock All tables.
         TabList tabs = new TabList();
-        univatlas.AddLockCreateSubset(tabs);
-        fncatlas.lockAlterUsage(tabs);
-        univatlas.setAutoCommit(0);
-        univatlas.lockTables(tabs);
+        uatlas.AddLockCreateSubset(tabs);
+        fatlas.lockAlterUsage(tabs);
+        patlas.lockProjects(tabs);
+        uatlas.setAutoCommit(0);
+        uatlas.lockTables(tabs);
+        //******************************************************************
+        //We recover the project. Needed ahead when altering usage.
+        Project project = patlas.getProject(universe.projectID());
         //------------------------------------------------------------------
-        //Creating the subset.
-        univatlas.createSubSet(subset);
+        subset.setCost(FinanceRules.UNIVSUBSET);
+        uatlas.createSubSet(subset);
         //------------------------------------------------------------------
         //We alter the usage cost.
         AlterUsage alter = new AlterUsage();
@@ -180,15 +180,14 @@ public class ExcUniverse {
         alter.setProjectName(project.getName());
         alter.setIncrease(FinanceRules.UNIVSUBSET);
         alter.setStartingEvent("Subset " + subset.getName() + " Added to universe " + universe.getName());
-        fncatlas.alterUsage(alter);
-        //******************************************************************
+        fatlas.alterUsage(alter);        
+        //------------------------------------------------------------------
         //We recalculate the population to parents.
         updateParentsPop(subset.getUniverseID(), subset.getParentSubSet());
         //******************************************************************
         //We are done.
-        univatlas.commit();
-        univatlas.unLockTables();
-        //------------------------------------------------------------------
+        uatlas.commit();
+        //******************************************************************
     }
     //**********************************************************************
     /**
