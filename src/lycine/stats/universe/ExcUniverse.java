@@ -2,10 +2,7 @@ package lycine.stats.universe;
 //**************************************************************************
 import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
-import java.util.Calendar;
-import java.util.TimeZone;
 import methionine.AppException;
-import methionine.Celaeno;
 import methionine.TabList;
 import methionine.auth.AuthErrorCodes;
 import methionine.auth.Session;
@@ -18,9 +15,11 @@ import methionine.finance.FinanceRules;
 import methionine.project.Project;
 import methionine.project.ProjectLambda;
 import threonine.mapping.FolderUsage;
+import threonine.mapping.LayerUse;
 import threonine.mapping.MapErrorCodes;
 import threonine.mapping.MapFolder;
 import threonine.mapping.MapRecord;
+import threonine.mapping.MappingAttlas;
 import threonine.midlayer.MapObjectGraphic;
 import threonine.midlayer.MapReaderGraphic;
 import threonine.midlayer.MapRecordDraw;
@@ -270,6 +269,8 @@ public class ExcUniverse {
         return subsets;
         //==================================================================
     }
+    
+    
     //**********************************************************************
     /**
      * 
@@ -313,7 +314,7 @@ public class ExcUniverse {
             throw e;
         }
         //******************************************************************
-        //We decide wether to make a commerce transfer.        
+        //We decide wether to make a commerce transfer.
         boolean dotransfer = false;
         MapFolder folder = null;
         Project projectto = null;
@@ -397,6 +398,12 @@ public class ExcUniverse {
         auriga.getUniverseAtlas().unLockTables();
         //******************************************************************
     }
+    //**********************************************************************
+    
+    
+    
+    
+    
     //**********************************************************************
     /**
      * 
