@@ -16,8 +16,6 @@ public class ExcMapRecord {
     AurigaObject auriga = null;
     public void setAuriga (AurigaObject auriga) { this.auriga = auriga; }
     //********************************************************************
-    
-    //********************************************************************
     /**
      * Creates a map record.
      * @param record
@@ -80,38 +78,6 @@ public class ExcMapRecord {
     public MapRecord[] getRecords (long layerid) throws AppException, Exception {
         return auriga.getMapsLambda().getMapRecords(layerid);
     }
-    //********************************************************************
-    /*
-    public MapRecord[] getRecords (MapLayer layer) throws AppException, Exception { 
-        return auriga.getMapsLambda().getMapRecords(layer.layerID()); 
-    }
-    */
-    //====================================================================
-    /*
-    public MapRecord[] getRecords (long layerid, Session session) throws AppException, Exception {
-        MapLayer layer = auriga.getMapsLambda().getLayer(layerid);
-        return getRecords(layer, session);
-    }
-    */
-    //====================================================================
-    /*
-    public MapRecord[] getRecords (MapLayer layer, Session session) throws AppException, Exception {
-        //****************************************************************
-        //We check the performing user has access to the project.
-        //We check the auth to do this.
-        ProjectAuth pauth = new ProjectAuth();
-        pauth.setAuriga(auriga);
-        pauth.checkAccess(layer.projectID(), session, 1);
-        //****************************************************************
-        //Returns the folders
-        return auriga.getMapsLambda().getMapRecords(layer.layerID());
-        //****************************************************************
-    }
-    */
-    //********************************************************************
-    
-    //********************************************************************
-    
     //********************************************************************
 }
 //************************************************************************
