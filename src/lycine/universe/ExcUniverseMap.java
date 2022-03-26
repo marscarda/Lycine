@@ -1,4 +1,4 @@
-package lycine.stats.universe;
+package lycine.universe;
 //**************************************************************************
 import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
