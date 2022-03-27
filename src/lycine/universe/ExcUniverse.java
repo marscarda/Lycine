@@ -362,7 +362,7 @@ public class ExcUniverse {
         //------------------------------------------------------------------
         //We Add the objects to the subset.
         for (MapObjectGraphic feature : features)
-            univatlas.addMapObject(subset.getSubsetID(), feature.getPoints());
+            univatlas.addMapFeature(subset.getSubsetID(), feature.getPoints());
         univatlas.setMapStatus(subsetid, 1);
         //==================================================================
         //If the use of the map object has a cost we create a transfer.

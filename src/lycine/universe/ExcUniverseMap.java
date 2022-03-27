@@ -77,7 +77,7 @@ public class ExcUniverseMap {
         //------------------------------------------------------------------
         //We Add the objects to the subset.
         for (MapObjectGraphic feature : features)
-            uatlas.addMapObject(subset.getSubsetID(), feature.getPoints());
+            uatlas.addMapFeature(subset.getSubsetID(), feature.getPoints());
         uatlas.setMapStatus(subsetid, 1);
         //******************************************************************
     }    
