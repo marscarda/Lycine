@@ -20,8 +20,8 @@ public class ExcUniverseTemplate {
      * @throws AppException
      * @throws Exception 
      */
-    public Universe getUniverse (long universeid) throws AppException, Exception {
-        Universe universe = auriga.getUniverseAtlas().getUniverse(universeid);
+    public Universe getTemplate (long universeid) throws AppException, Exception {
+        Universe universe = auriga.getUniverseAtlas().getTemplate(universeid);
         return universe;
         //==================================================================
     }    
