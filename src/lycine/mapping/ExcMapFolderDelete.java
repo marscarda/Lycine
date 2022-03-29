@@ -6,7 +6,7 @@ import methionine.TabList;
 import methionine.finance.AlterUsage;
 import methionine.project.Project;
 import threonine.mapping.MapFolder;
-import threonine.mapping.MapObject;
+import threonine.mapping.MapFeature;
 import threonine.mapping.MapRecord;
 //************************************************************************
 public class ExcMapFolderDelete {
@@ -76,8 +76,8 @@ public class ExcMapFolderDelete {
     }
     //********************************************************************
     private void doObjects (long recordid) throws Exception {
-        MapObject[] objects = auriga.getMapsLambda().getObjectsByRecord(recordid, false);
-        for (MapObject obj : objects) cost += obj.cost;
+        MapFeature[] objects = auriga.getMapsLambda().getObjectsByRecord(recordid, false);
+        for (MapFeature obj : objects) cost += obj.cost;
         auriga.getMapsLambda().clearMapObjects(recordid);
     }
     //********************************************************************
