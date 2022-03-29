@@ -68,7 +68,8 @@ public class ExcUniverse {
         //******************************************************************
         //Transaction section
         TabList tabs = new TabList();
-        auriga.getUniverseAtlas().AddLockCreateSubset(tabs);
+        auriga.getUniverseAtlas().lockUniverse(tabs);
+        auriga.getUniverseAtlas().lockSubset(tabs);
         auriga.getBillingLambda().lockAlterUsage(tabs);
         auriga.getUniverseAtlas().setAutoCommit(0);
         auriga.getUniverseAtlas().lockTables(tabs);
@@ -159,7 +160,8 @@ public class ExcUniverse {
         //******************************************************************
         //Lock All tables.
         TabList tabs = new TabList();
-        uatlas.AddLockCreateSubset(tabs);
+        auriga.getUniverseAtlas().lockUniverse(tabs);
+        auriga.getUniverseAtlas().lockSubset(tabs);
         fatlas.lockAlterUsage(tabs);
         patlas.lockProjects(tabs);
         uatlas.setAutoCommit(0);
