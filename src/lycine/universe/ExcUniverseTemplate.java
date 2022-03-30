@@ -1,9 +1,7 @@
 package lycine.universe;
 //**************************************************************************
 import histidine.AurigaObject;
-import histidine.auth.ProjectAuth;
 import methionine.AppException;
-import methionine.auth.Session;
 import threonine.universe.SubSet;
 import threonine.universe.Universe;
 //**************************************************************************
@@ -50,6 +48,17 @@ public class ExcUniverseTemplate {
         else subset = auriga.getUniverseAtlas().getSubset(universe.universeID(), subsetid);
         return subset;
         //------------------------------------------------------------------
+    }    
+    //**********************************************************************
+    public SubSet[] getSubsets (Universe universe, long parentid) throws AppException, Exception {
+        SubSet[] subsets = auriga.templateUniverseAtlas().getSubsets(universe.universeID(), parentid);
+        //==================================================================
+        mapstatus = false;
+        for (SubSet s : subsets)
+            if (s.mapStatus()) { mapstatus = true; break; }
+        //==================================================================
+        return subsets;
+        //==================================================================
     }    
     //**********************************************************************
 }
