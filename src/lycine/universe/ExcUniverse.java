@@ -201,7 +201,7 @@ public class ExcUniverse {
      */
     public SubSet getSubset (Universe universe, long subsetid, Session session) throws AppException, Exception {
         //==================================================================
-        //We check the user has write acces to the project where the universe belongs
+        //We check the user has read acces to the project where the universe belongs
         ProjectAuth pauth = new ProjectAuth();
         pauth.setAuriga(auriga);
         pauth.checkAccess(universe.projectID(), session, 1);
