@@ -45,7 +45,7 @@ public class ExcUniverseTemplate {
             subset.setValid();
             subset.setROOT();
         }
-        else subset = auriga.getUniverseAtlas().getSubset(universe.universeID(), subsetid);
+        else subset = auriga.templateUniverseAtlas().getSubset(universe.universeID(), subsetid);
         return subset;
         //------------------------------------------------------------------
     }    
