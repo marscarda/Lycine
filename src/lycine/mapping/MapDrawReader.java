@@ -8,6 +8,7 @@ import threonine.mapping.MapRecord;
 import threonine.mapping.MappingAttlas;
 import threonine.midlayer.MapRecordDraw;
 import threonine.universe.SubSet;
+import threonine.universe.TemplateAtlas;
 import threonine.universe.UniverseAtlas;
 //**************************************************************************
 public class MapDrawReader {
@@ -66,6 +67,28 @@ public class MapDrawReader {
             recordsdraw[n] = new MapRecordDraw();
             recordsdraw[n].relationid = subsets[n].getSubsetID();
             recordsdraw[n].setObjects(uatlas.getObjectsBySubset(recordsdraw[n].relationid, true));
+        }
+        return recordsdraw;
+    }
+    //**********************************************************************
+    /**
+     * 
+     * @param universeid
+     * @param subsetid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
+    public MapRecordDraw[] getDrawingSubsetTemplate (long universeid, long subsetid) throws AppException, Exception {
+        TemplateAtlas tatlas = auriga.templateUniverseAtlas();
+        SubSet[] subsets = tatlas.getSubsets(universeid, subsetid);
+        if (subsets.length == 0) return new MapRecordDraw[0];
+        int scount = subsets.length;
+        MapRecordDraw[] recordsdraw = new MapRecordDraw[scount];
+        for (int n = 0; n < scount; n++) {
+            recordsdraw[n] = new MapRecordDraw();
+            recordsdraw[n].relationid = subsets[n].getSubsetID();
+            recordsdraw[n].setObjects(tatlas.getFeaturesBySubset(recordsdraw[n].relationid, true));
         }
         return recordsdraw;
     }
