@@ -1,7 +1,10 @@
 package lycine.universe;
 //**************************************************************************
 import histidine.AurigaObject;
+import histidine.auth.ProjectAuth;
+import histidine.universe.TemplateToUniverse;
 import methionine.AppException;
+import methionine.auth.Session;
 import threonine.universe.SubSet;
 import threonine.universe.Universe;
 //**************************************************************************
@@ -50,6 +53,14 @@ public class ExcUniverseTemplate {
         //------------------------------------------------------------------
     }    
     //**********************************************************************
+    /**
+     * 
+     * @param universe
+     * @param parentid
+     * @return
+     * @throws AppException
+     * @throws Exception 
+     */
     public SubSet[] getSubsets (Universe universe, long parentid) throws AppException, Exception {
         SubSet[] subsets = auriga.templateUniverseAtlas().getSubsets(universe.universeID(), parentid);
         //==================================================================
@@ -60,6 +71,22 @@ public class ExcUniverseTemplate {
         return subsets;
         //==================================================================
     }    
+    //**********************************************************************
+    //ACQUIRE AS UNIVERSE.
+    //**********************************************************************
+    public void aquireUniverse (long templateid, Session session) throws AppException, Exception {
+        //******************************************************************
+        //We check the auth to do this.
+        ProjectAuth pauth = new ProjectAuth();
+        pauth.setAuriga(auriga);
+        pauth.checkAccess(session.getCurrentProject(), session, 2);
+        //******************************************************************
+        TemplateToUniverse touniverse = new TemplateToUniverse();
+        touniverse.setTemplateId(templateid);
+        touniverse.setProjectId(session.getCurrentProject());
+        touniverse.start();
+        //******************************************************************
+    }
     //**********************************************************************
 }
 //**************************************************************************
