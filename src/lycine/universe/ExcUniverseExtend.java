@@ -1,9 +1,9 @@
 package lycine.universe;
 //**************************************************************************
-import histidine.AurigaObject;
 import histidine.auth.ProjectAuth;
 import methionine.AppException;
 import methionine.auth.Session;
+import threonine.slot.SampleSlot;
 import threonine.universe.SubSet;
 import threonine.universe.Universe;
 //**************************************************************************
@@ -57,6 +57,19 @@ public class ExcUniverseExtend extends ExcUniverse {
         //==================================================================
         return loads;
         //==================================================================
+    }
+    //**********************************************************************
+    public void setSampleToSubset (SampleSlot slot) throws AppException, Exception {
+        
+        
+        
+        auriga.getSlotAtlas().setSample(slot);
+        //SubSet subset = auriga.getUniverseAtlas().getSubset(universeid, subsetid);
+        
+        
+        
+        
+        
     }
     //**********************************************************************
 }
