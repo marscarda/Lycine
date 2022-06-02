@@ -105,7 +105,7 @@ public class ExcUniverse {
         //We check the user has write acces to the project where the universe belongs
         ProjectAuth pauth = new ProjectAuth();
         pauth.setAuriga(auriga);
-        pauth.checkAccess(universe.projectID(), session, 1);
+        pauth.checkAccess(universe.projectID(), session, 2);
         //==================================================================
         return universe;
         //==================================================================
